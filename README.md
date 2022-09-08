@@ -3,7 +3,7 @@
 </div>
 <p align="center">
    <strong>Personal Website</strong><br>
-   www.wouterwisse.com
+   https://wouterwisse.com
 </p>
 <p align="center">
    <a href="https://www.twitter.com/wouterwisse" target="_blank">
