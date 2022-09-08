@@ -2,7 +2,7 @@
    <img width="200" src="images/memoji/memoji-2.png" alt="Logo">
 </div>
 <p align="center">
-   <strong>Personal Website</strong><br>
+   <strong>Just my personal website</strong><br>
    https://wouterwisse.com
 </p>
 <p align="center">
