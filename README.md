@@ -1,5 +1,5 @@
 <div align="center">
-   <img width="200" src="images/memoji/memoji-2.png" alt="Logo">
+   <img width="200" src="images/memoji/memoji-1.png" alt="Logo">
 </div>
 <p align="center">
    <strong>Just my personal website</strong><br>
