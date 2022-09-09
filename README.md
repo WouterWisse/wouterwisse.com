@@ -1,6 +1,13 @@
 <div align="center">
    <img width="200" src="images/memoji/memoji-1.png" alt="Logo">
 </div>
+
+<div align="center">
+   <img width="200" src=".github/assets/memoji-light@2x.png?raw=true#gh-light-mode-only" alt="Memoji">
+   <img width="200" src=".github/assets/memoji-dark@2x.png?raw=true#gh-dark-mode-only" alt="Memoji">
+</div>
+
+
 <p align="center">
    <strong>Just my personal website</strong><br>
    https://wouterwisse.com
