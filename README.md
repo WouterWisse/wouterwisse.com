@@ -11,7 +11,7 @@
    </a>
    
    <a href="https://themeforest.net/user/pxlsolutions" target="_blank">
-      <img src="https://img.shields.io/badge/template by%20-pxlsolutions-brown.svg">
+      <img src="https://img.shields.io/badge/template by%20-pxlsolutions-green.svg">
    </a>
    
    
