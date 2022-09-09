@@ -1,6 +1,6 @@
 <div align="center">
-   <img width="200" src=".github/assets/memoji-light@2x.png?raw=true#gh-light-mode-only" alt="Memoji">
-   <img width="200" src=".github/assets/memoji-dark@2x.png?raw=true#gh-dark-mode-only" alt="Memoji">
+   <img width="210" src=".github/assets/memoji-light@2x.png?raw=true#gh-light-mode-only" alt="Memoji">
+   <img width="210" src=".github/assets/memoji-dark@2x.png?raw=true#gh-dark-mode-only" alt="Memoji">
 </div>
 
 
