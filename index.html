@@ -35,11 +35,19 @@
 			<!-- intro -->
 			<div class="intro">
 				<!-- avatar image -->
-				<img src="images/memoji/memoji-1.png" alt="Wouter - Memoji" width="200px" class="mb-4" />
+
+				<script type="text/javascript">
+					function getRandomInt(min, max) {
+  						min = Math.ceil(min);
+  						max = Math.floor(max);
+  						return Math.floor(Math.random() * (max - min)) + min;
+					}
+					document.write('<img src="images/memoji/memoji-' + getRandomInt(1, 5) + '.png" alt="Wouter - Memoji" width="200px" class="mb-4">')
+				</script>
 
 				<!-- info -->
 				<h1 class="mb-2 mt-0">Wouter Wisse</h1>
-				<span><span class="text-rotating">Senior iOS Engineer, Located in New York City</span></span>
+				<span><span class="text-rotating">Senior iOS Engineer, Located in New York City, Available from January 2023</span></span>
 
 				<!-- social icons -->
 				<ul class="social-icons light list-inline mb-0 mt-4">
