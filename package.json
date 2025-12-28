@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate-images": "tsx scripts/generate-images.ts"
+    "generate-images": "tsx scripts/generate-images.ts",
+    "remove-backgrounds": "tsx scripts/remove-backgrounds.ts"
   },
   "dependencies": {
     "@imgly/background-removal-node": "^1.4.5",

@@ -1,8 +1,7 @@
 import Replicate from 'replicate';
 import fs from 'fs/promises';
 import path from 'path';
-import { removeBackground } from '@imgly/background-removal-node';
-import { SCENE_PROMPTS, MONTHS, Month } from '../src/config/prompts';
+import { LIGHT_PROMPTS, DARK_PROMPTS, MONTHS, Month, Mode } from '../src/config/prompts';
 
 const replicate = new Replicate();
 
@@ -11,13 +10,13 @@ const OUTPUT_DIR = path.join(process.cwd(), 'public', 'images', 'themes');
 // Parse CLI arguments
 const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
-const skipBgRemoval = args.includes('--skip-bg-removal');
 const monthArg = args.find(a => a.startsWith('--month='))?.split('=')[1] as Month | undefined;
+const modeArg = args.find(a => a.startsWith('--mode='))?.split('=')[1] as Mode | undefined;
 
 // Character reference image for consistent look
-const CHARACTER_REFERENCE = process.env.CHARACTER_REF || '';
+const CHARACTER_REFERENCE = process.env.CHARACTER_REF || 'https://github.com/WouterWisse/wouterwisse.com/blob/develop/public/images/character-reference.png?raw=true';
 
-// Rate limiting delay (ms between requests)
+// Rate limiting delay (ms between requests) - Replicate has 6 req/min limit
 const RATE_LIMIT_DELAY = 12000;
 
 async function sleep(ms: number): Promise<void> {
@@ -47,7 +46,27 @@ async function generateScene(prompt: string): Promise<string | null> {
       { input }
     );
 
-    return output as string;
+    // Handle different output formats from Replicate
+    if (typeof output === 'string') {
+      return output;
+    }
+    if (Array.isArray(output) && typeof output[0] === 'string') {
+      return output[0];
+    }
+    // Handle FileOutput object (has url() method or direct URL property)
+    if (output && typeof output === 'object') {
+      const obj = output as { url?: () => string | Promise<string> } | { toString?: () => string };
+      if ('url' in obj && typeof obj.url === 'function') {
+        return await obj.url();
+      }
+      // Try toString which often returns the URL
+      const str = String(output);
+      if (str.startsWith('http')) {
+        return str;
+      }
+    }
+    console.error('  Unexpected output format:', typeof output, output);
+    return null;
   } catch (error) {
     console.error(`  Error generating scene:`, error);
     return null;
@@ -60,34 +79,16 @@ async function downloadImage(url: string): Promise<Buffer> {
   return Buffer.from(buffer);
 }
 
-async function removeImageBackground(imageBuffer: Buffer): Promise<Buffer> {
-  try {
-    const blob = new Blob([imageBuffer], { type: 'image/png' });
-    const resultBlob = await removeBackground(blob);
-    const arrayBuffer = await resultBlob.arrayBuffer();
-    return Buffer.from(arrayBuffer);
-  } catch (error) {
-    console.error(`  Error removing background:`, error);
-    return imageBuffer;
-  }
-}
-
 async function ensureDir(dir: string): Promise<void> {
   await fs.mkdir(dir, { recursive: true });
 }
 
 async function main() {
-  console.log('🎨 Scene Generation Pipeline (Single Image per Month)');
-  console.log('=====================================================\n');
+  console.log('🎨 Scene Generation Pipeline');
+  console.log('============================\n');
 
   if (dryRun) {
     console.log('🔍 DRY RUN MODE - No images will be generated\n');
-  }
-
-  if (skipBgRemoval) {
-    console.log('⏭️  Skipping background removal\n');
-  } else {
-    console.log('🖥️  Using local background removal\n');
   }
 
   if (CHARACTER_REFERENCE) {
@@ -97,48 +98,54 @@ async function main() {
   }
 
   const monthsToProcess = monthArg ? [monthArg] : MONTHS;
+  const modesToProcess: Mode[] = modeArg ? [modeArg] : ['light', 'dark'];
 
-  let totalScenes = 0;
-  let generatedScenes = 0;
+  const totalImages = monthsToProcess.length * modesToProcess.length;
+  console.log(`📋 Generating ${totalImages} image(s) (${monthsToProcess.length} month(s) × ${modesToProcess.length} mode(s))...\n`);
+
+  let processedImages = 0;
+  let generatedImages = 0;
 
   for (const month of monthsToProcess) {
-    totalScenes++;
-    console.log(`📅 ${month.charAt(0).toUpperCase() + month.slice(1)}`);
+    for (const mode of modesToProcess) {
+      processedImages++;
+      const prompts = mode === 'light' ? LIGHT_PROMPTS : DARK_PROMPTS;
+      const prompt = prompts[month];
 
-    const monthDir = path.join(OUTPUT_DIR, month);
-    await ensureDir(monthDir);
+      console.log(`📅 ${month} (${mode}) [${processedImages}/${totalImages}]`);
 
-    const prompt = SCENE_PROMPTS[month];
-    const outputPath = path.join(monthDir, 'scene.png');
+      const monthDir = path.join(OUTPUT_DIR, month);
+      await ensureDir(monthDir);
 
-    console.log(`  🖼️  Generating complete scene...`);
+      const outputPath = path.join(monthDir, `${mode}.png`);
 
-    const imageUrl = await generateScene(prompt);
+      console.log(`  🖼️  Generating ${mode} scene...`);
 
-    if (imageUrl) {
-      let imageBuffer = await downloadImage(imageUrl);
+      const imageUrl = await generateScene(prompt);
 
-      if (!skipBgRemoval) {
-        console.log(`  🔄 Removing background...`);
-        imageBuffer = await removeImageBackground(imageBuffer);
+      if (imageUrl) {
+        const imageBuffer = await downloadImage(imageUrl);
+        await fs.writeFile(outputPath, imageBuffer);
+        console.log(`  ✅ Saved to ${outputPath}`);
+        generatedImages++;
       }
 
-      await fs.writeFile(outputPath, imageBuffer);
-      console.log(`  ✅ Saved to ${outputPath}`);
-      generatedScenes++;
-    }
-
-    // Rate limiting
-    if (!dryRun && monthsToProcess.indexOf(month) < monthsToProcess.length - 1) {
-      console.log(`  ⏳ Waiting ${RATE_LIMIT_DELAY / 1000}s...\n`);
-      await sleep(RATE_LIMIT_DELAY);
-    } else {
-      console.log('');
+      // Rate limiting between requests (not after the last one)
+      if (!dryRun && processedImages < totalImages) {
+        console.log(`  ⏳ Waiting ${RATE_LIMIT_DELAY / 1000}s for rate limit...\n`);
+        await sleep(RATE_LIMIT_DELAY);
+      } else {
+        console.log('');
+      }
     }
   }
 
-  console.log('=====================================================');
-  console.log(`✨ Complete! ${dryRun ? 'Would generate' : 'Generated'} ${generatedScenes}/${totalScenes} scenes`);
+  console.log('============================');
+  console.log(`✨ Complete! ${dryRun ? 'Would generate' : 'Generated'} ${generatedImages}/${totalImages} images`);
+
+  if (!dryRun && generatedImages > 0) {
+    console.log(`\n💡 Images saved to: ${OUTPUT_DIR}`);
+  }
 }
 
 main().catch(console.error);

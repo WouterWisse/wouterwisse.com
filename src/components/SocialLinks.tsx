@@ -1,38 +1,42 @@
-import { FaLinkedin, FaGithub, FaEnvelope } from 'react-icons/fa';
+import { FaLinkedin, FaGithub } from 'react-icons/fa';
 
 const LINKS = [
   {
     href: 'https://www.linkedin.com/in/wwisse/',
     icon: FaLinkedin,
-    label: 'LinkedIn'
+    label: 'LinkedIn',
   },
   {
     href: 'https://github.com/WouterWisse',
     icon: FaGithub,
-    label: 'GitHub'
-  },
-  {
-    href: 'mailto:hello@wouterwisse.com',
-    icon: FaEnvelope,
-    label: 'Email'
+    label: 'GitHub',
   },
 ];
 
-export function SocialLinks() {
+interface SocialLinksProps {
+  isDark?: boolean;
+  color?: string;
+}
+
+export function SocialLinks({ isDark = false, color }: SocialLinksProps) {
+  const iconColor = color || (isDark ? '#a0a0b0' : '#64748b');
+
   return (
-    <ul className="flex justify-center gap-4">
+    <ul className="flex gap-3 md:gap-4">
       {LINKS.map(({ href, icon: Icon, label }) => (
         <li key={label}>
           <a
             href={href}
-            target={href.startsWith('mailto:') ? undefined : '_blank'}
-            rel={href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label={label}
-            className="flex h-12 w-12 items-center justify-center rounded-full
-                       bg-white/20 text-white backdrop-blur-sm
-                       transition-all duration-300 hover:bg-white/30 hover:scale-110"
+            className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full transition-all duration-500 hover:scale-110"
+            style={{
+              backgroundColor: isDark ? '#2a2040' : '#f0f0f0',
+              color: iconColor,
+            }}
           >
-            <Icon className="h-6 w-6" />
+            <Icon className="h-4 w-4 md:h-5 md:w-5" />
           </a>
         </li>
       ))}
