@@ -7,6 +7,7 @@ import { getThemeForMonth, getColorsForMonth, LIGHT_BACKGROUND, DARK_BACKGROUND 
 import { SocialLinks } from './SocialLinks';
 import { ThemeToggle } from './ThemeToggle';
 
+
 function ChevronLeft({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -64,14 +65,15 @@ export function Hero() {
       className="h-screen w-full relative overflow-x-clip transition-colors duration-700 ease-in-out"
       style={{ backgroundColor: bgColor }}
     >
-      {/* Image - absolutely positioned, centered but offset up, behind everything */}
+      {/* Image - absolutely positioned, centered but offset up */}
       <div className="absolute inset-0 flex items-center justify-center z-0 pb-52 md:pb-60">
+        {/* Simple radial gradient fade */}
         <div
           key={`image-${displayedMonth}`}
           className={`relative w-[120vw] md:w-[90vw] lg:w-[80vw] max-w-4xl aspect-square ${slideClass}`}
           style={{
-            maskImage: 'radial-gradient(circle, black 42%, transparent 67%)',
-            WebkitMaskImage: 'radial-gradient(circle, black 42%, transparent 67%)',
+            maskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 0%, black 70%, transparent 95%)',
+            WebkitMaskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 0%, black 70%, transparent 95%)',
           }}
         >
           <Image
@@ -96,32 +98,36 @@ export function Hero() {
       </div>
 
       {/* Top bar - Name and toggle */}
-      <div className="relative flex justify-between items-start px-4 md:px-8 pt-4 md:pt-8 z-20">
-        {/* Name */}
-        <div>
-          <div className="w-fit">
-            <p
-              className="font-body text-xs md:text-sm uppercase tracking-[0.3em] mb-2 md:mb-3 text-center transition-colors duration-700"
-              style={{ color: textMuted }}
-            >
-              Full Stack Developer
-            </p>
+      <div className="relative pt-4 md:pt-8 z-20">
+        {/* Theme toggle - positioned absolutely on the right */}
+        <div className="absolute top-4 md:top-8 right-4 md:right-8">
+          <ThemeToggle mode={mode} onToggle={toggleMode} color={themeColor} />
+        </div>
+        {/* Name - left-aligned text, centered container on wide screens */}
+        <div className="px-4 md:px-8 lg:flex lg:justify-center">
+          <div className="lg:w-[800px]">
+            <div className="w-fit">
+              <p
+                className="font-body text-xs md:text-sm uppercase tracking-[0.3em] mb-2 md:mb-3 text-center transition-colors duration-700"
+                style={{ color: textMuted }}
+              >
+                Full Stack Developer
+              </p>
+              <h1
+                className="font-display text-7xl md:text-8xl lg:text-9xl tracking-tight leading-[0.85] transition-colors duration-700"
+                style={{ color: themeColor, fontWeight: 900 }}
+              >
+                Wouter
+              </h1>
+            </div>
             <h1
               className="font-display text-7xl md:text-8xl lg:text-9xl tracking-tight leading-[0.85] transition-colors duration-700"
               style={{ color: themeColor, fontWeight: 900 }}
             >
-              Wouter
+              Wisse
             </h1>
           </div>
-          <h1
-            className="font-display text-7xl md:text-8xl lg:text-9xl tracking-tight leading-[0.85] transition-colors duration-700"
-            style={{ color: themeColor, fontWeight: 900 }}
-          >
-            Wisse
-          </h1>
         </div>
-        {/* Theme toggle */}
-        <ThemeToggle mode={mode} onToggle={toggleMode} color={themeColor} />
       </div>
 
       {/* Bottom - Tagline and socials */}
