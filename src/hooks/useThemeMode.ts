@@ -6,21 +6,46 @@ import { isDaytime } from './useSunPosition';
 
 const STORAGE_KEY = 'theme-mode';
 
+function getSystemPreference(): Mode | null {
+  if (typeof window === 'undefined') return null;
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  return mediaQuery.matches ? 'dark' : 'light';
+}
+
 export function useThemeMode() {
   const [mode, setModeState] = useState<Mode>('light');
   const [mounted, setMounted] = useState(false);
 
-  // Load saved preference on mount, fallback to sun position
+  // Load saved preference on mount, fallback to system preference, then sun position
   useEffect(() => {
     setMounted(true);
     const saved = localStorage.getItem(STORAGE_KEY) as Mode | null;
     if (saved === 'light' || saved === 'dark') {
       setModeState(saved);
     } else {
-      // Default based on sunrise/sunset (light during day, dark at night)
-      const daytime = isDaytime();
-      setModeState(daytime ? 'light' : 'dark');
+      // Check system preference first, then fall back to sun position
+      const systemPref = getSystemPreference();
+      if (systemPref) {
+        setModeState(systemPref);
+      } else {
+        const daytime = isDaytime();
+        setModeState(daytime ? 'light' : 'dark');
+      }
     }
+  }, []);
+
+  // Listen for system preference changes (only when no saved preference)
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return; // User has explicit preference, don't override
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setModeState(e.matches ? 'dark' : 'light');
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   const setMode = useCallback((newMode: Mode) => {
