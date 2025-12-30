@@ -138,14 +138,24 @@ export function Hero() {
                 full stack dev
               </p>
               <h1
-                className="font-display text-6xl md:text-8xl lg:text-9xl tracking-tight leading-[0.85] transition-colors duration-700"
-                style={{ color: themeColor, fontWeight: 900 }}
+                className="font-display text-6xl md:text-8xl lg:text-9xl tracking-tight leading-[0.85]"
+                style={{
+                  color: themeColor,
+                  fontWeight: 900,
+                  textShadow: `0 0 20px ${bgColor}99, 0 0 40px ${bgColor}80, 0 0 60px ${bgColor}66`,
+                  transition: 'color 700ms cubic-bezier(0.4, 0, 0.2, 1), text-shadow 700ms cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
               >
                 Wouter
               </h1>
               <h1
-                className="font-display text-6xl md:text-8xl lg:text-9xl tracking-tight leading-[0.85] transition-colors duration-700"
-                style={{ color: themeColor, fontWeight: 900 }}
+                className="font-display text-6xl md:text-8xl lg:text-9xl tracking-tight leading-[0.85]"
+                style={{
+                  color: themeColor,
+                  fontWeight: 900,
+                  textShadow: `0 0 20px ${bgColor}99, 0 0 40px ${bgColor}80, 0 0 60px ${bgColor}66`,
+                  transition: 'color 700ms cubic-bezier(0.4, 0, 0.2, 1), text-shadow 700ms cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
               >
                 Wisse
               </h1>

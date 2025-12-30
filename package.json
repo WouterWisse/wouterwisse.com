@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run clean && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "clean": "rm -rf .next",
     "generate-images": "tsx scripts/generate-images.ts && npm run clean",
-    "generate-blur-placeholders": "tsx scripts/generate-blur-placeholders.ts"
+    "generate-blur-placeholders": "tsx scripts/generate-blur-placeholders.ts",
+    "generate-theme-colors": "tsx scripts/generate-theme-colors.ts"
   },
   "dependencies": {
     "framer-motion": "^12.23.26",

@@ -1,56 +1,9 @@
 import type { Month, MonthlyTheme, ThemeConfig, ThemeColors, ModeColors, Mode } from '@/types/theme';
+import { EXTRACTED_COLORS } from './extracted-colors';
 
-// Handpicked colors for each month that work well with light (#fafafa) and dark (#1a1025) backgrounds
-const MONTH_COLORS: Record<Month, ModeColors> = {
-  january: {
-    light: { top: '#1e3a5f', bottom: '#1e3a5f' },    // Deep winter blue
-    dark: { top: '#7dd3fc', bottom: '#7dd3fc' },     // Light sky blue
-  },
-  february: {
-    light: { top: '#7c2d12', bottom: '#7c2d12' },    // Warm brown (fireplace)
-    dark: { top: '#fdba74', bottom: '#fdba74' },     // Soft orange glow
-  },
-  march: {
-    light: { top: '#166534', bottom: '#166534' },    // Spring green
-    dark: { top: '#86efac', bottom: '#86efac' },     // Light green
-  },
-  april: {
-    light: { top: '#0e7490', bottom: '#0e7490' },    // Cycling teal
-    dark: { top: '#67e8f9', bottom: '#67e8f9' },     // Bright cyan
-  },
-  may: {
-    light: { top: '#4d7c0f', bottom: '#4d7c0f' },    // Fresh grass green
-    dark: { top: '#bef264', bottom: '#bef264' },     // Lime green
-  },
-  june: {
-    light: { top: '#0369a1', bottom: '#0369a1' },    // Ocean blue
-    dark: { top: '#38bdf8', bottom: '#38bdf8' },     // Light blue
-  },
-  july: {
-    light: { top: '#c2410c', bottom: '#c2410c' },    // Sunset orange
-    dark: { top: '#fb923c', bottom: '#fb923c' },     // Bright orange
-  },
-  august: {
-    light: { top: '#0f766e', bottom: '#0f766e' },    // Tropical teal
-    dark: { top: '#5eead4', bottom: '#5eead4' },     // Turquoise
-  },
-  september: {
-    light: { top: '#4338ca', bottom: '#4338ca' },    // Deep indigo (back to work)
-    dark: { top: '#a5b4fc', bottom: '#a5b4fc' },     // Soft indigo
-  },
-  october: {
-    light: { top: '#9a3412', bottom: '#9a3412' },    // Rust orange (autumn)
-    dark: { top: '#fb923c', bottom: '#fb923c' },     // Warm orange
-  },
-  november: {
-    light: { top: '#78350f', bottom: '#78350f' },    // Cozy brown
-    dark: { top: '#fcd34d', bottom: '#fcd34d' },     // Warm yellow
-  },
-  december: {
-    light: { top: '#b91c1c', bottom: '#b91c1c' },    // Christmas red
-    dark: { top: '#fca5a5', bottom: '#fca5a5' },     // Soft red/pink
-  },
-};
+// Use auto-extracted colors from images
+// Run: npm run generate-theme-colors
+const MONTH_COLORS: Record<Month, ModeColors> = EXTRACTED_COLORS;
 
 const THEMES: ThemeConfig = {
   january: {
@@ -71,7 +24,7 @@ const THEMES: ThemeConfig = {
     id: 'february',
     name: 'February',
     light: {
-      tagline: 'beanie snug, deploy with bug',
+      tagline: 'beanie snug, deploy bug',
       image: '/images/themes/february/light.png',
       alt: 'Wouter at desk with beanie and slippers, coding on ultrawide monitor',
     },
@@ -85,7 +38,7 @@ const THEMES: ThemeConfig = {
     id: 'march',
     name: 'March',
     light: {
-      tagline: 'morning run, sprints get done',
+      tagline: 'morning run, sprints done',
       image: '/images/themes/march/light.png',
       alt: 'Wouter running while coding on MacBook',
     },
@@ -127,7 +80,7 @@ const THEMES: ThemeConfig = {
     id: 'june',
     name: 'June',
     light: {
-      tagline: 'deep water, shallow documentation',
+      tagline: 'take a dip, features ship',
       image: '/images/themes/june/light.png',
       alt: 'Wouter treading water while holding MacBook',
     },
