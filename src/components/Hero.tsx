@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useCurrentMonth, useThemeMode } from '@/hooks';
 import { getThemeForMonth, getColorsForMonth, LIGHT_BACKGROUND, DARK_BACKGROUND } from '@/config/themes';
 import { getBlurDataURL } from '@/config/blur-placeholders';
@@ -24,6 +25,8 @@ function ChevronRight({ className }: { className?: string }) {
     </svg>
   );
 }
+
+const SWIPE_THRESHOLD = 50;
 
 export function Hero() {
   const { displayedMonth, goToNextMonth, goToPrevMonth, direction } = useCurrentMonth();
@@ -48,7 +51,7 @@ export function Hero() {
 
   // Show loading state
   if (displayedMonth === null || !mounted) {
-    return <section className="min-h-screen w-full bg-[#fafafa]" />;
+    return <section className="min-h-dvh w-full bg-[#fafafa]" />;
   }
 
   const theme = getThemeForMonth(displayedMonth);
@@ -61,17 +64,26 @@ export function Hero() {
   const bgColor = isDark ? DARK_BACKGROUND : LIGHT_BACKGROUND;
   const textMuted = isDark ? '#a0a0b0' : '#94a3b8';
 
+  const handlePanEnd = (_: unknown, info: { offset: { x: number } }) => {
+    if (info.offset.x > SWIPE_THRESHOLD) {
+      goToPrevMonth();
+    } else if (info.offset.x < -SWIPE_THRESHOLD) {
+      goToNextMonth();
+    }
+  };
+
   return (
-    <section
-      className="h-screen w-full relative overflow-x-clip transition-colors duration-700 ease-in-out"
+    <motion.section
+      className="h-dvh w-full relative overflow-clip transition-colors duration-700 ease-in-out touch-pan-y"
       style={{ backgroundColor: bgColor }}
+      onPanEnd={handlePanEnd}
     >
-      {/* Image - absolutely positioned, centered but offset up */}
-      <div className="absolute inset-0 flex items-center justify-center z-0 pb-52 md:pb-60">
+      {/* Image - positioned to allow overflow below viewport */}
+      <div className="absolute inset-x-0 top-0 bottom-0 flex items-start justify-center z-0 pt-[15dvh] md:pt-[10dvh]">
         {/* Simple radial gradient fade */}
         <div
           key={`image-${displayedMonth}`}
-          className={`relative w-[120vw] md:w-[90vw] lg:w-[80vw] max-w-4xl aspect-square ${slideClass}`}
+          className={`relative w-[130vw] md:w-[90vw] lg:w-[80vw] max-w-4xl aspect-square ${slideClass}`}
           style={{
             maskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 0%, black 70%, transparent 95%)',
             WebkitMaskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 0%, black 70%, transparent 95%)',
@@ -82,7 +94,7 @@ export function Hero() {
             alt={lightTheme.alt}
             fill
             priority
-            sizes="(max-width: 768px) 120vw, 800px"
+            sizes="(max-width: 768px) 130vw, 800px"
             className="object-cover transition-opacity duration-700 ease-in-out"
             style={{ opacity: isDark ? 0 : 1 }}
             placeholder="blur"
@@ -93,7 +105,7 @@ export function Hero() {
             alt={darkTheme.alt}
             fill
             priority
-            sizes="(max-width: 768px) 120vw, 800px"
+            sizes="(max-width: 768px) 130vw, 800px"
             className="object-cover transition-opacity duration-700 ease-in-out"
             style={{ opacity: isDark ? 1 : 0 }}
             placeholder="blur"
@@ -174,6 +186,6 @@ export function Hero() {
           <SocialLinks isDark={isDark} color={themeColor} />
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
