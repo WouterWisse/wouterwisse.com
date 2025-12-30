@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useEffect } from 'react';
 import { useCurrentMonth, useThemeMode } from '@/hooks';
 import { getThemeForMonth, getColorsForMonth, LIGHT_BACKGROUND, DARK_BACKGROUND } from '@/config/themes';
+import { getBlurDataURL } from '@/config/blur-placeholders';
 import { SocialLinks } from './SocialLinks';
 import { ThemeToggle } from './ThemeToggle';
 
@@ -84,6 +85,8 @@ export function Hero() {
             sizes="(max-width: 768px) 120vw, 800px"
             className="object-cover transition-opacity duration-700 ease-in-out"
             style={{ opacity: isDark ? 0 : 1 }}
+            placeholder="blur"
+            blurDataURL={getBlurDataURL(theme.id, 'light')}
           />
           <Image
             src={darkTheme.image}
@@ -93,6 +96,8 @@ export function Hero() {
             sizes="(max-width: 768px) 120vw, 800px"
             className="object-cover transition-opacity duration-700 ease-in-out"
             style={{ opacity: isDark ? 1 : 0 }}
+            placeholder="blur"
+            blurDataURL={getBlurDataURL(theme.id, 'dark')}
           />
         </div>
       </div>

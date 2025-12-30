@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "clean": "rm -rf .next",
-    "generate-images": "tsx scripts/generate-images.ts && npm run clean"
+    "generate-images": "tsx scripts/generate-images.ts && npm run clean",
+    "generate-blur-placeholders": "tsx scripts/generate-blur-placeholders.ts"
   },
   "dependencies": {
     "framer-motion": "^12.23.26",
