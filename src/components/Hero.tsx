@@ -46,6 +46,13 @@ export function Hero() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [goToNextMonth, goToPrevMonth]);
 
+  // Sync background color to html element for Safari overscroll
+  useEffect(() => {
+    if (!mounted) return;
+    const bgColor = mode === 'dark' ? DARK_BACKGROUND : LIGHT_BACKGROUND;
+    document.documentElement.style.backgroundColor = bgColor;
+  }, [mode, mounted]);
+
   // Animation class based on navigation direction
   const slideClass = direction === 'right' ? 'slide-in-right' : direction === 'left' ? 'slide-in-left' : '';
 
@@ -79,11 +86,11 @@ export function Hero() {
       onPanEnd={handlePanEnd}
     >
       {/* Image - positioned to allow overflow below viewport */}
-      <div className="absolute inset-x-0 top-0 bottom-0 flex items-start justify-center z-0 pt-[15dvh] md:pt-[10dvh]">
+      <div className="absolute inset-x-0 top-0 bottom-0 flex items-start justify-center z-0 pt-[5dvh] md:pt-[10dvh]">
         {/* Simple radial gradient fade */}
         <div
           key={`image-${displayedMonth}`}
-          className={`relative w-[130vw] md:w-[90vw] lg:w-[80vw] max-w-4xl aspect-square ${slideClass}`}
+          className={`relative h-[70dvh] md:h-[80dvh] aspect-square ${slideClass}`}
           style={{
             maskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 0%, black 70%, transparent 95%)',
             WebkitMaskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 0%, black 70%, transparent 95%)',
@@ -123,26 +130,26 @@ export function Hero() {
         {/* Name - left-aligned text, centered container on wide screens */}
         <div className="px-4 md:px-8 lg:flex lg:justify-center">
           <div className="lg:w-[800px]">
-            <div className="w-fit">
+            <div className="w-fit text-center">
               <p
-                className="font-body text-xs md:text-sm uppercase tracking-[0.3em] mb-2 md:mb-3 text-center transition-colors duration-700"
+                className="font-body text-sm md:text-base font-bold tracking-[0.3em] mb-2 md:mb-3 transition-colors duration-700"
                 style={{ color: textMuted }}
               >
-                Full Stack Developer
+                full stack dev
               </p>
               <h1
-                className="font-display text-7xl md:text-8xl lg:text-9xl tracking-tight leading-[0.85] transition-colors duration-700"
+                className="font-display text-6xl md:text-8xl lg:text-9xl tracking-tight leading-[0.85] transition-colors duration-700"
                 style={{ color: themeColor, fontWeight: 900 }}
               >
                 Wouter
               </h1>
+              <h1
+                className="font-display text-6xl md:text-8xl lg:text-9xl tracking-tight leading-[0.85] transition-colors duration-700"
+                style={{ color: themeColor, fontWeight: 900 }}
+              >
+                Wisse
+              </h1>
             </div>
-            <h1
-              className="font-display text-7xl md:text-8xl lg:text-9xl tracking-tight leading-[0.85] transition-colors duration-700"
-              style={{ color: themeColor, fontWeight: 900 }}
-            >
-              Wisse
-            </h1>
           </div>
         </div>
       </div>
@@ -161,7 +168,7 @@ export function Hero() {
           </button>
           <p
             key={`month-${displayedMonth}`}
-            className={`font-body text-xs md:text-sm uppercase tracking-[0.3em] min-w-[100px] text-center ${slideClass}`}
+            className={`font-body text-sm md:text-base font-bold lowercase tracking-[0.3em] min-w-[100px] text-center ${slideClass}`}
             style={{ color: textMuted }}
           >
             {theme.name}
