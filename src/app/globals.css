@@ -16,6 +16,14 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Disable text selection globally */
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 /* Typography utilities */
 .font-display {
   font-family: var(--font-display);
