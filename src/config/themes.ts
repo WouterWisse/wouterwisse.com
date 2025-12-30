@@ -71,12 +71,12 @@ const THEMES: ThemeConfig = {
     id: 'february',
     name: 'February',
     light: {
-      tagline: 'beanie snug, shipping bugs',
+      tagline: 'beanie snug, deploy with bug',
       image: '/images/themes/february/light.png',
       alt: 'Wouter at desk with beanie and slippers, coding on ultrawide monitor',
     },
     dark: {
-      tagline: '2am flow, morning: oh no',
+      tagline: '2 am vibes, morning yikes',
       image: '/images/themes/february/dark.png',
       alt: 'Wouter coding in bed with laptop and glasses',
     },
@@ -99,7 +99,7 @@ const THEMES: ThemeConfig = {
     id: 'april',
     name: 'April',
     light: {
-      tagline: 'high cadence, zero patience',
+      tagline: 'gears click, hotfix quick',
       image: '/images/themes/april/light.png',
       alt: 'Wouter cycling while coding on handlebar-mounted laptop',
     },
@@ -115,7 +115,7 @@ const THEMES: ThemeConfig = {
     light: {
       tagline: 'grass green, code clean',
       image: '/images/themes/may/light.png',
-      alt: 'Wouter coding on MacBook in sunny park',
+      alt: 'Wouter with wireless headphones coding on MacBook in sunny park',
     },
     dark: {
       tagline: 'nap attack, prod goes black',
@@ -146,7 +146,7 @@ const THEMES: ThemeConfig = {
       alt: 'Wouter surfing while coding on MacBook',
     },
     dark: {
-      tagline: 'tide\'s out, prod\'s out',
+      tagline: 'waves fade, deploy delayed',
       image: '/images/themes/july/dark.png',
       alt: 'Wouter asleep on beach with surfboard and MacBook',
     },
@@ -157,10 +157,10 @@ const THEMES: ThemeConfig = {
     light: {
       tagline: 'throttle high, bugs won\'t die',
       image: '/images/themes/august/light.png',
-      alt: 'Wouter on motorcycle coding on tank-mounted laptop',
+      alt: 'Wouter with helmet working on laptop open on parked motorcycle seat',
     },
     dark: {
-      tagline: 'ignition off, thoughts off',
+      tagline: 'bike parked, mind embarked',
       image: '/images/themes/august/dark.png',
       alt: 'Wouter asleep in hammock with MacBook on chest',
     },
@@ -171,7 +171,7 @@ const THEMES: ThemeConfig = {
     light: {
       tagline: 'plants thriving, dev surviving',
       image: '/images/themes/september/light.png',
-      alt: 'Wouter coding at his desk with multiple monitors',
+      alt: 'Wouter with light stubble coding at desk surrounded by many plants',
     },
     dark: {
       tagline: 'desk sleep, bugs creep',
@@ -183,9 +183,9 @@ const THEMES: ThemeConfig = {
     id: 'october',
     name: 'October',
     light: {
-      tagline: 'YouTube mechanic, Stack Overflow panic',
+      tagline: 'from YouTube mechanic, to kernel panic',
       image: '/images/themes/october/light.png',
-      alt: 'Wouter working on Porsche while checking phone',
+      alt: 'Wouter working on Porsche with iPhone in one hand and wrench in other',
     },
     dark: {
       tagline: 'DIY tried, dreams died',
@@ -197,9 +197,9 @@ const THEMES: ThemeConfig = {
     id: 'november',
     name: 'November',
     light: {
-      tagline: 'tea steams, ship dreams',
+      tagline: 'coffee steams, shipping dreams',
       image: '/images/themes/november/light.png',
-      alt: 'Wouter coding in armchair with tea',
+      alt: 'Wouter coding in armchair with coffee',
     },
     dark: {
       tagline: 'chapters read, prod is dead',
