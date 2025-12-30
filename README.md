@@ -20,6 +20,7 @@
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19"></a>
   <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript"></a>
+  <a href="https://vercel.com/"><img src="https://img.shields.io/badge/Vercel-Deployed-000000?logo=vercel&logoColor=white" alt="Vercel"></a>
 </div>
 
 ## Tech Stack
@@ -34,9 +35,12 @@
 ## Features
 
 - Seasonal themes that automatically change each month
-- Light and dark mode support
+- Light/dark mode with system preference sync
+- Swipe gestures for month navigation (mobile)
+- Keyboard navigation with arrow keys
 - AI-generated illustrations for each season
-- Responsive design
+- Blur placeholders for smooth image loading
+- Responsive design optimized for mobile
 
 ## Development
 
@@ -49,7 +53,19 @@ npm run dev
 
 # Build for production
 npm run build
+
+# Generate blur placeholders (after adding new images)
+npm run generate-blur-placeholders
 ```
+
+## Deployment
+
+This site is deployed on [Vercel](https://vercel.com) with automatic deployments on push to the `develop` branch.
+
+To deploy your own:
+1. Fork this repository
+2. Import to Vercel
+3. Add your custom domain in Vercel dashboard
 
 ## Project Structure
 
