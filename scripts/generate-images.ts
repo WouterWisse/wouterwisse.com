@@ -14,7 +14,7 @@ const monthArg = args.find(a => a.startsWith('--month='))?.split('=')[1] as Mont
 const modeArg = args.find(a => a.startsWith('--mode='))?.split('=')[1] as Mode | undefined;
 
 // Character reference image for consistent look
-const CHARACTER_REFERENCE = process.env.CHARACTER_REF || 'https://github.com/WouterWisse/wouterwisse.com/blob/develop/public/images/character-reference.png?raw=true';
+const CHARACTER_REFERENCE = process.env.CHARACTER_REF || 'https://raw.githubusercontent.com/WouterWisse/wouterwisse.com/6b78c66e44740d126b53c2281c429427fb347738/public/images/character-reference.png';
 
 // Rate limiting delay (ms between requests) - Replicate has 6 req/min limit
 const RATE_LIMIT_DELAY = 12000;

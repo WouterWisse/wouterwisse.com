@@ -9,7 +9,7 @@ const CHARACTER_DESC = 'single person, one man only, friendly young caucasian ma
 
 const PROMPT = `3D render, Pixar Disney animation style, soft lighting, vibrant colors, highly detailed, cute, solid light grey background, ${CHARACTER_DESC}, head and shoulders portrait only, looking directly at camera, friendly welcoming expression, clean simple centered composition, perfect for profile picture or avatar icon`;
 
-const CHARACTER_REFERENCE = 'https://raw.githubusercontent.com/WouterWisse/wouterwisse.com/develop/public/images/character-reference.png';
+const CHARACTER_REFERENCE = 'https://raw.githubusercontent.com/WouterWisse/wouterwisse.com/6b78c66e44740d126b53c2281c429427fb347738/public/images/character-reference.png';
 
 async function main() {
   console.log('🎨 Generating favicon...\n');

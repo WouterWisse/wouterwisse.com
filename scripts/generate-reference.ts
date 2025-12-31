@@ -8,7 +8,7 @@ const CHARACTER_DESC = 'single person, one man only, friendly young caucasian ma
 
 const PROMPT = `3D render, Pixar Disney animation style, soft lighting, vibrant colors, highly detailed, cute, solid white background, ${CHARACTER_DESC}, wearing casual grey hoodie, upper body portrait, arms relaxed at sides in neutral stance, looking directly at camera, friendly slight smile, clean simple centered composition, perfect character reference sheet`;
 
-const CHARACTER_REFERENCE = 'https://raw.githubusercontent.com/WouterWisse/wouterwisse.com/develop/public/images/character-reference.png';
+const CHARACTER_REFERENCE = 'https://raw.githubusercontent.com/WouterWisse/wouterwisse.com/6b78c66e44740d126b53c2281c429427fb347738/public/images/character-reference.png';
 
 async function main() {
   console.log('🎨 Generating character reference image...\n');
