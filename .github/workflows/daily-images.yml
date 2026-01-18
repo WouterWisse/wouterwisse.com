@@ -19,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event_name == 'schedule' && 'main' || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
