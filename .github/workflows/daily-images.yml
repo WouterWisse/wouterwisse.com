@@ -2,13 +2,15 @@ name: Generate Daily Images
 
 on:
   schedule:
-    # Run every day at 00:00 UTC
+    # Run every day at 00:00 UTC on main branch
     - cron: '0 0 * * *'
   workflow_dispatch: # Allow manual triggering for testing
 
 jobs:
   generate-images:
     runs-on: ubuntu-latest
+    # Only run scheduled jobs on main branch
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
 
     permissions:
       contents: write # Allow pushing commits
@@ -17,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
