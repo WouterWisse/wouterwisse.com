@@ -89,55 +89,113 @@ function isNewsAppropriate(headline: NewsHeadline): boolean {
   return true;
 }
 
-// Theme-specific ways to incorporate news naturally into each scene
+// Extract props/items that represent news topics visually
+function extractNewsProps(headlines: NewsHeadline[]): string[] {
+  const props: string[] = [];
+  const allText = headlines.map(h => `${h.title} ${h.description}`).join(' ').toLowerCase();
+
+  const propMappings: [RegExp, string[]][] = [
+    // Sports
+    [/tennis|australian open|grand slam|wimbledon|us open|french open/, ['tennis ball', 'tennis racket']],
+    [/football|soccer|premier league|world cup|champions league/, ['football', 'soccer ball']],
+    [/basketball|nba/, ['basketball']],
+    [/f1|formula 1|racing|grand prix|verstappen|hamilton/, ['toy race car', 'checkered flag']],
+    [/golf|pga|masters/, ['golf ball', 'golf club']],
+    [/olympics|olympic/, ['olympic rings symbol', 'gold medal']],
+    [/cricket/, ['cricket ball', 'cricket bat']],
+    [/rugby/, ['rugby ball']],
+    [/cycling|tour de france/, ['cycling jersey', 'bike helmet']],
+    [/skiing|winter sports/, ['ski goggles', 'ski poles']],
+
+    // Tech
+    [/artificial intelligence|chatgpt|openai|llm|machine learning/, ['small robot toy', 'AI circuit board']],
+    [/apple|iphone|mac|tim cook/, ['apple logo sticker']],
+    [/spacex|nasa|rocket|mars|moon|astronaut/, ['toy rocket', 'astronaut figurine', 'planet model']],
+    [/crypto|bitcoin|ethereum/, ['bitcoin coin', 'crypto logo']],
+    [/gaming|playstation|xbox|nintendo/, ['game controller']],
+
+    // Politics/World
+    [/election|vote|democracy|ballot/, ['voting sticker', 'ballot']],
+    [/climate|environment|sustainability|renewable/, ['small plant', 'leaf', 'solar panel model']],
+    [/europe|eu|european union/, ['EU flag']],
+    [/usa|america|washington|congress/, ['american flag', 'eagle figurine']],
+    [/uk|britain|london|parliament/, ['union jack']],
+
+    // Entertainment
+    [/movie|film|oscar|cinema|hollywood/, ['film reel', 'movie ticket', 'clapperboard']],
+    [/music|concert|album|grammy|spotify/, ['vinyl record', 'guitar pick', 'music notes']],
+    [/book|author|novel|bestseller/, ['stack of books']],
+    [/art|museum|exhibition|painting/, ['paint palette', 'art brush']],
+
+    // Business/Economy
+    [/stock|market|economy|wall street|trading/, ['stock chart', 'dollar bills']],
+    [/startup|entrepreneur|venture/, ['startup swag', 'pitch deck']],
+
+    // Food/Lifestyle
+    [/coffee|cafe|barista/, ['coffee beans', 'latte art cup']],
+    [/wine|vineyard|sommelier/, ['wine bottle', 'wine glass']],
+    [/food|restaurant|chef|michelin/, ['chef hat', 'cookbook']],
+  ];
+
+  for (const [pattern, items] of propMappings) {
+    if (pattern.test(allText)) {
+      props.push(...items);
+    }
+  }
+
+  // Return unique props, limit to 4
+  return [...new Set(props)].slice(0, 4);
+}
+
+// Theme-specific ways to incorporate news - $PROPS and $HEADLINES get replaced
 const NEWS_INTEGRATION: Record<string, { light: string; dark: string }> = {
   january: {
-    light: 'sticker on ski helmet or goggles strap referencing "$HEADLINE"',
-    dark: 'newspaper on side table beside fireplace with headline "$HEADLINE" visible',
+    light: 'creatively incorporate current events into the ski scene: $PROPS visible in snow or attached to ski gear, stickers on helmet or goggles referencing today\'s news',
+    dark: 'incorporate current events into cozy chalet scene: newspaper on side table showing ($HEADLINES), $PROPS arranged on mantle or side table',
   },
   february: {
-    light: 'newspaper on desk or coffee mug with text referencing "$HEADLINE"',
-    dark: 'phone on nightstand showing notification about "$HEADLINE"',
+    light: 'incorporate current events into home office: newspaper on desk showing ($HEADLINES), $PROPS on desk or shelves, topical mug or stickers',
+    dark: 'incorporate current events into bedroom scene: phone showing news ($HEADLINES), $PROPS on nightstand',
   },
   march: {
-    light: 'running bib or shirt with creative text referencing "$HEADLINE"',
-    dark: 'phone on grass showing news alert "$HEADLINE"',
+    light: 'incorporate current events into running scene: $PROPS along trail or tucked in waistband, running gear with topical designs',
+    dark: 'incorporate current events into post-run scene: phone showing news ($HEADLINES), $PROPS scattered in grass nearby',
   },
   april: {
-    light: 'water bottle or cycling jersey with sticker referencing "$HEADLINE"',
-    dark: 'phone screen showing "$HEADLINE" while googling flat tire fix',
+    light: 'incorporate current events into cycling scene: $PROPS in jersey pocket or bike bag, stickers on frame or helmet referencing news',
+    dark: 'incorporate current events into roadside scene: phone showing headlines ($HEADLINES) while stuck, $PROPS on ground nearby',
   },
   may: {
-    light: 'newspaper on picnic blanket with headline "$HEADLINE"',
-    dark: 'newspaper tucked under arm on bench with headline "$HEADLINE" visible',
+    light: 'incorporate current events into picnic scene: newspaper on blanket showing ($HEADLINES), $PROPS scattered on picnic blanket among snacks',
+    dark: 'incorporate current events into bench scene: newspaper showing headlines, $PROPS on bench or ground nearby',
   },
   june: {
-    light: 'swim cap with playful text referencing "$HEADLINE" or banner in background',
-    dark: 'phone in hand showing "$HEADLINE" while floating on pool',
+    light: 'incorporate current events into swimming scene: $PROPS floating nearby or on shore, swim gear with topical designs or text',
+    dark: 'incorporate current events into pool float scene: phone showing news ($HEADLINES), $PROPS floating on water or on pool edge',
   },
   july: {
-    light: 'surfboard art or beach banner in background referencing "$HEADLINE"',
-    dark: 'magazine on beach towel with headline "$HEADLINE"',
+    light: 'incorporate current events into surf scene: $PROPS on beach or in sand, surfboard art referencing current events, beach towels with topical designs',
+    dark: 'incorporate current events into beach nap scene: magazine showing headlines ($HEADLINES), $PROPS in sand nearby',
   },
   august: {
-    light: 'helmet sticker or motorcycle tank decal referencing "$HEADLINE"',
-    dark: 'phone in relaxed hand showing "$HEADLINE"',
+    light: 'incorporate current events into motorcycle scene: $PROPS in saddlebag or on overlook, helmet stickers and patches referencing news',
+    dark: 'incorporate current events into hammock scene: phone showing news ($HEADLINES), $PROPS hanging nearby or on ground',
   },
   september: {
-    light: 'newspaper on desk or second monitor showing headline "$HEADLINE"',
-    dark: 'monitor in background showing news headline "$HEADLINE"',
+    light: 'incorporate current events into office scene: newspaper on desk showing ($HEADLINES), $PROPS among plants and desk items, monitor showing news',
+    dark: 'incorporate current events into desk sleep scene: monitor showing headlines, $PROPS on messy desk',
   },
   october: {
-    light: 'garage radio or poster on wall referencing "$HEADLINE"',
-    dark: 'small radio on workbench playing news about "$HEADLINE"',
+    light: 'incorporate current events into garage scene: $PROPS on workbench among tools, radio or poster referencing news, topical bumper stickers',
+    dark: 'incorporate current events into garage sleep scene: radio playing news ($HEADLINES), $PROPS scattered on floor and workbench',
   },
   november: {
-    light: 'newspaper beside armchair or book spine referencing "$HEADLINE"',
-    dark: 'newspaper draped over armchair arm with headline "$HEADLINE"',
+    light: 'incorporate current events into armchair scene: newspaper showing ($HEADLINES), $PROPS on side table or bookshelf, topical book titles',
+    dark: 'incorporate current events into sleep scene: newspaper on armchair arm, $PROPS on side table with wine and cheese',
   },
   december: {
-    light: 'TV showing news about "$HEADLINE" alongside darts championship',
-    dark: 'TV in background showing news headline "$HEADLINE"',
+    light: 'incorporate current events into christmas scene: TV showing news ($HEADLINES) alongside darts, $PROPS among presents and christmas chaos',
+    dark: 'incorporate current events into dinner scene: TV in background showing news, $PROPS on table among feast remains',
   },
 };
 
@@ -151,19 +209,24 @@ export function generateNewsPromptAdditions(
     return { light: '', dark: '' };
   }
 
-  // Use the top headline directly
-  const topHeadline = headlines[0].title
-    .replace(/["']/g, '')
-    .substring(0, 60);
+  // Get top 2-3 headlines shortened
+  const topHeadlines = headlines
+    .slice(0, 3)
+    .map(h => h.title.replace(/["']/g, '').substring(0, 40))
+    .join('; ');
 
-  // Get theme-specific integration or use a generic fallback
+  // Extract visual props from all headlines
+  const props = extractNewsProps(headlines);
+  const propsText = props.length > 0 ? props.join(', ') : 'newspaper, magazine, topical stickers';
+
+  // Get theme-specific integration
   const integration = NEWS_INTEGRATION[month] || {
-    light: 'somewhere in the scene a reference to "$HEADLINE"',
-    dark: 'somewhere in the scene a reference to "$HEADLINE"',
+    light: 'incorporate current events naturally: $PROPS visible in scene, news references ($HEADLINES)',
+    dark: 'incorporate current events naturally: $PROPS visible, news showing ($HEADLINES)',
   };
 
   return {
-    light: `, ${integration.light.replace('$HEADLINE', topHeadline)}`,
-    dark: `, ${integration.dark.replace('$HEADLINE', topHeadline)}`,
+    light: `, ${integration.light.replace('$HEADLINES', topHeadlines).replace('$PROPS', propsText)}`,
+    dark: `, ${integration.dark.replace('$HEADLINES', topHeadlines).replace('$PROPS', propsText)}`,
   };
 }
