@@ -89,23 +89,81 @@ function isNewsAppropriate(headline: NewsHeadline): boolean {
   return true;
 }
 
-export function generateNewsPromptAdditions(newsSummary: NewsSummary): { light: string; dark: string } {
+// Theme-specific ways to incorporate news naturally into each scene
+const NEWS_INTEGRATION: Record<string, { light: string; dark: string }> = {
+  january: {
+    light: 'sticker on ski helmet or goggles strap referencing "$HEADLINE"',
+    dark: 'newspaper on side table beside fireplace with headline "$HEADLINE" visible',
+  },
+  february: {
+    light: 'newspaper on desk or coffee mug with text referencing "$HEADLINE"',
+    dark: 'phone on nightstand showing notification about "$HEADLINE"',
+  },
+  march: {
+    light: 'running bib or shirt with creative text referencing "$HEADLINE"',
+    dark: 'phone on grass showing news alert "$HEADLINE"',
+  },
+  april: {
+    light: 'water bottle or cycling jersey with sticker referencing "$HEADLINE"',
+    dark: 'phone screen showing "$HEADLINE" while googling flat tire fix',
+  },
+  may: {
+    light: 'newspaper on picnic blanket with headline "$HEADLINE"',
+    dark: 'newspaper tucked under arm on bench with headline "$HEADLINE" visible',
+  },
+  june: {
+    light: 'swim cap with playful text referencing "$HEADLINE" or banner in background',
+    dark: 'phone in hand showing "$HEADLINE" while floating on pool',
+  },
+  july: {
+    light: 'surfboard art or beach banner in background referencing "$HEADLINE"',
+    dark: 'magazine on beach towel with headline "$HEADLINE"',
+  },
+  august: {
+    light: 'helmet sticker or motorcycle tank decal referencing "$HEADLINE"',
+    dark: 'phone in relaxed hand showing "$HEADLINE"',
+  },
+  september: {
+    light: 'newspaper on desk or second monitor showing headline "$HEADLINE"',
+    dark: 'monitor in background showing news headline "$HEADLINE"',
+  },
+  october: {
+    light: 'garage radio or poster on wall referencing "$HEADLINE"',
+    dark: 'small radio on workbench playing news about "$HEADLINE"',
+  },
+  november: {
+    light: 'newspaper beside armchair or book spine referencing "$HEADLINE"',
+    dark: 'newspaper draped over armchair arm with headline "$HEADLINE"',
+  },
+  december: {
+    light: 'TV showing news about "$HEADLINE" alongside darts championship',
+    dark: 'TV in background showing news headline "$HEADLINE"',
+  },
+};
+
+export function generateNewsPromptAdditions(
+  newsSummary: NewsSummary,
+  month: string
+): { light: string; dark: string } {
   const { headlines } = newsSummary;
 
   if (headlines.length === 0) {
     return { light: '', dark: '' };
   }
 
-  // Use the top headline directly in the prompt
-  const topHeadline = headlines[0].title;
-
-  // Clean up the headline for use in prompt (remove quotes, limit length)
-  const cleanHeadline = topHeadline
+  // Use the top headline directly
+  const topHeadline = headlines[0].title
     .replace(/["']/g, '')
-    .substring(0, 80);
+    .substring(0, 60);
+
+  // Get theme-specific integration or use a generic fallback
+  const integration = NEWS_INTEGRATION[month] || {
+    light: 'somewhere in the scene a reference to "$HEADLINE"',
+    dark: 'somewhere in the scene a reference to "$HEADLINE"',
+  };
 
   return {
-    light: `, large newspaper prominently visible in scene with headline "${cleanHeadline}", TV or screen in background showing related news coverage`,
-    dark: `, newspaper or tablet visible showing headline "${cleanHeadline}", TV in background with news channel on`,
+    light: `, ${integration.light.replace('$HEADLINE', topHeadline)}`,
+    dark: `, ${integration.dark.replace('$HEADLINE', topHeadline)}`,
   };
 }

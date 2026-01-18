@@ -141,10 +141,10 @@ async function main() {
         console.log(`   ${i + 1}. ${h.title}`);
       });
 
-      newsAdditions = generateNewsPromptAdditions(newsSummary);
-      console.log(`\n   Using top headline in prompt`);
-      console.log(`   Light additions: ${newsAdditions.light}`);
-      console.log(`   Dark additions: ${newsAdditions.dark}\n`);
+      newsAdditions = generateNewsPromptAdditions(newsSummary, month);
+      console.log(`\n   Using top headline for ${month} theme:`);
+      console.log(`   Light: ${newsAdditions.light}`);
+      console.log(`   Dark: ${newsAdditions.dark}\n`);
     } catch (error) {
       console.error('⚠️  Failed to fetch news, continuing without news context\n', error);
     }
