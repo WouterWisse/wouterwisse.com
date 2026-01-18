@@ -164,15 +164,6 @@ async function main() {
 
     const outputPath = path.join(monthDir, `${dateString}-${mode}.png`);
 
-    // Check if file already exists
-    try {
-      await fs.access(outputPath);
-      console.log(`  ⏭️  File already exists, skipping: ${outputPath}\n`);
-      continue;
-    } catch {
-      // File doesn't exist, continue with generation
-    }
-
     console.log(`  🖼️  Generating scene...`);
 
     const imageUrl = await generateScene(fullPrompt);
