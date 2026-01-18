@@ -89,97 +89,6 @@ function isNewsAppropriate(headline: NewsHeadline): boolean {
   return true;
 }
 
-// Extract visual props that represent news topics - no text, just objects
-function extractNewsProps(headlines: NewsHeadline[]): string[] {
-  const props: string[] = [];
-  const allText = headlines.map(h => `${h.title} ${h.description}`).join(' ').toLowerCase();
-
-  const propMappings: [RegExp, string[]][] = [
-    // Sports
-    [/tennis|australian open|grand slam|wimbledon|us open|french open/, ['tennis ball', 'tennis racket']],
-    [/super bowl|nfl|american football/, ['american football']],
-    [/football|soccer|premier league|world cup|champions league/, ['soccer ball']],
-    [/basketball|nba/, ['basketball']],
-    [/f1|formula 1|grand prix|verstappen|hamilton/, ['toy formula 1 car', 'checkered flag']],
-    [/golf|pga|masters/, ['golf ball', 'golf tee']],
-    [/olympics|olympic/, ['olympic rings', 'gold medal']],
-    [/cricket/, ['cricket ball']],
-    [/rugby/, ['rugby ball']],
-    [/baseball|mlb/, ['baseball', 'baseball glove']],
-    [/hockey|nhl/, ['hockey puck']],
-    [/boxing|ufc|mma/, ['boxing gloves']],
-    [/skiing|winter sports/, ['mini skis']],
-    [/swimming/, ['swimming goggles']],
-    [/marathon|running/, ['running shoes', 'race medal']],
-
-    // Countries/Regions (flags, maps, landmarks)
-    [/greenland/, ['flag of greenland', 'map of greenland']],
-    [/usa|america|united states/, ['american flag', 'statue of liberty miniature']],
-    [/uk|britain|england/, ['union jack flag', 'big ben miniature']],
-    [/france|paris/, ['french flag', 'eiffel tower miniature']],
-    [/germany/, ['german flag']],
-    [/china|beijing/, ['chinese flag', 'chinese dragon figurine']],
-    [/japan|tokyo/, ['japanese flag', 'lucky cat figurine']],
-    [/australia/, ['australian flag', 'kangaroo figurine']],
-    [/canada/, ['canadian flag', 'maple leaf']],
-    [/netherlands|dutch/, ['dutch flag', 'orange lion', 'tiny windmill']],
-    [/europe|eu|european/, ['EU flag']],
-    [/russia|moscow/, ['russian nesting doll']],
-    [/brazil/, ['brazilian flag']],
-    [/india/, ['indian flag']],
-    [/mexico/, ['mexican flag', 'sombrero miniature']],
-
-    // Tech
-    [/artificial intelligence|chatgpt|openai|ai |robot/, ['small robot toy', 'circuit board']],
-    [/apple|iphone|mac/, ['apple logo', 'airpods']],
-    [/spacex|nasa|rocket|mars|moon|astronaut|space/, ['toy rocket', 'astronaut figurine', 'moon globe']],
-    [/crypto|bitcoin|ethereum/, ['gold bitcoin coin']],
-    [/gaming|playstation|xbox|nintendo/, ['game controller']],
-    [/drone/, ['small drone']],
-    [/electric car|tesla|ev /, ['toy electric car']],
-
-    // Nature/Climate
-    [/climate|global warming/, ['small globe', 'thermometer']],
-    [/solar|renewable/, ['mini solar panel']],
-    [/ocean|marine|whale|dolphin/, ['whale figurine', 'seashell']],
-    [/forest|trees|amazon/, ['small tree', 'leaf']],
-    [/polar bear|arctic|antarctic/, ['polar bear figurine', 'ice cube']],
-
-    // Entertainment
-    [/oscar|academy award|hollywood/, ['oscar statuette', 'film reel']],
-    [/grammy|music award/, ['grammy trophy', 'vinyl record']],
-    [/concert|tour|band/, ['guitar pick', 'concert ticket stub']],
-    [/netflix|streaming/, ['popcorn bucket']],
-    [/disney/, ['mickey mouse ears']],
-
-    // Food/Drink
-    [/coffee/, ['coffee beans', 'espresso cup']],
-    [/wine|champagne/, ['wine bottle', 'wine cork']],
-    [/beer|brewery/, ['beer bottle']],
-    [/chocolate/, ['chocolate bar']],
-
-    // Finance/Business
-    [/stock|wall street|market/, ['bull figurine', 'gold bar']],
-    [/bitcoin|crypto/, ['bitcoin coin']],
-
-    // Misc
-    [/royal|king|queen|crown/, ['tiny crown']],
-    [/wedding|marriage/, ['wedding rings']],
-    [/baby|birth/, ['baby bootie']],
-    [/dog|puppy/, ['dog toy']],
-    [/cat|kitten/, ['cat toy']],
-  ];
-
-  for (const [pattern, items] of propMappings) {
-    if (pattern.test(allText)) {
-      props.push(...items);
-    }
-  }
-
-  // Return unique props, limit to 4
-  return [...new Set(props)].slice(0, 4);
-}
-
 export function generateNewsPromptAdditions(
   newsSummary: NewsSummary,
   _month: string
@@ -190,17 +99,14 @@ export function generateNewsPromptAdditions(
     return { light: '', dark: '' };
   }
 
-  // Extract visual props from headlines
-  const props = extractNewsProps(headlines);
+  // Get top 3 headline topics (just the key subject, shortened)
+  const topics = headlines
+    .slice(0, 3)
+    .map(h => h.title.replace(/["']/g, '').substring(0, 50))
+    .join(', ');
 
-  if (props.length === 0) {
-    return { light: '', dark: '' };
-  }
-
-  const propsText = props.join(', ');
-
-  // Simple prompt - let the AI figure out natural placement
-  const addition = `, IMPORTANT: naturally incorporate these props somewhere in the scene to reflect today's news: ${propsText}`;
+  // Let the AI be creative - just tell it the news topics
+  const addition = `, IMPORTANT: creatively incorporate small props, items, or visual references somewhere in the scene that relate to today's news topics: ${topics}. Use objects like balls, flags, figurines, miniatures, or other items that visually represent these topics - no text or writing.`;
 
   return {
     light: addition,
