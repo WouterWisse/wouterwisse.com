@@ -95,31 +95,38 @@ function isNewsAppropriate(headline: NewsHeadline): boolean {
 }
 
 function extractTopics(headlines: NewsHeadline[]): string[] {
-  // Extract satirizable themes with progressive lens
-  const topics: string[] = [];
+  // Extract themes from headlines, ranked by keyword match count
   const allText = headlines.map(h => `${h.title} ${h.description}`).join(' ').toLowerCase();
 
-  const topicKeywords = {
-    // Topics good for satire
-    tech_billionaires: ['musk', 'elon', 'bezos', 'zuckerberg', 'billionaire', 'tech ceo', 'twitter'],
-    ai_hype: ['ai', 'artificial intelligence', 'chatgpt', 'openai', 'machine learning', 'automation'],
-    climate_action: ['climate', 'renewable', 'solar', 'wind power', 'green energy', 'sustainability', 'electric vehicle'],
-    politics: ['trump', 'election', 'congress', 'senate', 'vote', 'campaign', 'debate', 'policy'],
-    crypto: ['bitcoin', 'crypto', 'blockchain', 'nft', 'ethereum', 'cryptocurrency'],
-    space_race: ['spacex', 'nasa', 'mars', 'moon', 'rocket', 'space tourism', 'satellite'],
-    big_tech: ['apple', 'google', 'microsoft', 'meta', 'amazon', 'antitrust', 'monopoly'],
-    labor_wins: ['union', 'strike', 'workers', 'labor', 'wage', 'organizing'],
-    sports: ['championship', 'olympics', 'world cup', 'super bowl', 'playoff'],
-    absurd_rich: ['yacht', 'mansion', 'luxury', 'private jet', 'wealth'],
+  const topicKeywords: Record<string, string[]> = {
+    // More specific keywords first, broader ones later
+    tech_billionaires: ['musk', 'elon', 'bezos', 'zuckerberg', 'billionaire tech', 'tech ceo'],
+    ai_hype: ['artificial intelligence', 'chatgpt', 'openai', 'machine learning', 'generative ai', 'llm', 'large language model'],
+    climate_action: ['climate change', 'renewable energy', 'solar power', 'wind power', 'green energy', 'sustainability', 'electric vehicle', 'ev sales', 'carbon emissions'],
+    politics: ['trump', 'biden', 'election', 'congress', 'senate', 'white house', 'campaign', 'democrat', 'republican', 'parliament', 'prime minister'],
+    crypto: ['bitcoin', 'cryptocurrency', 'blockchain', 'ethereum', 'crypto market'],
+    space_race: ['spacex', 'nasa', 'mars mission', 'moon landing', 'rocket launch', 'space station', 'astronaut'],
+    big_tech: ['antitrust', 'monopoly', 'tech regulation', 'data privacy', 'silicon valley'],
+    labor_wins: ['union', 'strike', 'workers rights', 'labor dispute', 'wage increase', 'organizing'],
+    sports: ['australian open', 'tennis', 'grand slam', 'championship', 'olympics', 'world cup', 'super bowl', 'playoff', 'premier league', 'nba', 'nfl', 'football', 'soccer', 'basketball', 'cricket', 'rugby', 'f1', 'formula 1', 'golf', 'pga'],
+    absurd_rich: ['yacht', 'mansion', 'luxury', 'private jet', 'billionaire lifestyle'],
   };
 
+  // Count keyword matches for each topic
+  const topicScores: { topic: string; score: number }[] = [];
+
   for (const [topic, keywords] of Object.entries(topicKeywords)) {
-    if (keywords.some(keyword => allText.includes(keyword))) {
-      topics.push(topic);
+    const score = keywords.filter(keyword => allText.includes(keyword)).length;
+    if (score > 0) {
+      topicScores.push({ topic, score });
     }
   }
 
-  return topics.slice(0, 3); // Return top 3 topics
+  // Sort by score descending, return top 3
+  return topicScores
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(t => t.topic);
 }
 
 export function generateNewsPromptAdditions(newsSummary: NewsSummary): { light: string; dark: string } {
@@ -129,69 +136,68 @@ export function generateNewsPromptAdditions(newsSummary: NewsSummary): { light: 
     return { light: '', dark: '' };
   }
 
-  // Create clever, satirical props based on topics
-  // These are subtle visual gags that mock absurdity without being disrespectful
-  const satireProps: { light: string; dark: string } = { light: '', dark: '' };
+  // Create prominent, visible scene elements based on the primary topic
+  // These should be large enough to be clearly visible in the final image
+  const additions: { light: string; dark: string } = { light: '', dark: '' };
 
   // Pick the most prominent topic
   const primaryTopic = topics[0];
 
   switch (primaryTopic) {
     case 'tech_billionaires':
-      satireProps.light = ', small newspaper on desk with oversized cartoon caricature of tech billionaire on front page, coffee mug with text "Tax The Rich" visible';
-      satireProps.dark = ', satirical political cartoon poster on wall mocking tech billionaire egos, coffee table book titled "How To Spend A Billion Dollars Badly"';
+      additions.light = ', large prominent newspaper in scene with bold headline about tech billionaire visible, satirical "Tax The Rich" protest sign leaning against wall';
+      additions.dark = ', large satirical poster on wall with caricature mocking tech billionaire ego clearly visible, coffee table book titled "How To Spend A Billion Dollars Badly"';
       break;
 
     case 'ai_hype':
-      satireProps.light = ', satirical sticker on laptop saying "AI Will Replace Everyone (Except Prompt Engineers)", coffee mug with text "Still Smarter Than ChatGPT"';
-      satireProps.dark = ', framed poster on wall reading "In AI We Trust (But Verify)", open book titled "How To Survive The Robot Uprising" on side table';
+      additions.light = ', large visible sign or poster reading "AI Will Replace Everyone (Except Prompt Engineers)", robot toy figure on desk';
+      additions.dark = ', prominent neon sign on wall reading "HUMANS > ROBOTS", vintage sci-fi robot poster visible';
       break;
 
     case 'climate_action':
-      satireProps.light = ', small recycling bin full of Amazon boxes ironically visible, reusable water bottle with "Save The Planet" sticker, solar calculator on desk';
-      satireProps.dark = ', framed vintage "Reduce Reuse Recycle" poster on wall, canvas tote bag with environmental slogan draped over chair';
+      additions.light = ', large "SAVE THE PLANET" protest banner visible in scene, solar panel model on desk, many green plants everywhere';
+      additions.dark = ', prominent Earth Day poster on wall, globe with visible ice caps, environmental books stacked high';
       break;
 
     case 'politics':
-      satireProps.light = ', newspaper with political cartoon visible, coffee mug with democratic donkey logo, voter registration reminder sticky note on monitor';
-      satireProps.dark = ', satirical political poster on wall, stack of progressive magazines on side table, "I Voted" sticker collection visible';
+      additions.light = ', large newspaper with bold political headline prominently displayed, "VOTE" poster on wall, political bumper stickers visible';
+      additions.dark = ', prominent political campaign poster on wall, stack of newspapers with election coverage, democracy-themed art';
       break;
 
     case 'crypto':
-      satireProps.light = ', satirical "Bitcoin To The Moon" poster with eyeroll emoji, newspaper headline about crypto volatility, piggy bank labeled "Real Money" visible';
-      satireProps.dark = ', framed joke poster "In Crypto We Trust (JK)", book titled "Understanding Blockchain (Still Confused)", abandoned crypto wallet on shelf gathering dust';
+      additions.light = ', large satirical "TO THE MOON" crypto poster with rocket ship, fake gold bitcoin coin prominently displayed, chart showing volatile line going up and down';
+      additions.dark = ', neon "HODL" sign on wall (turned off), abandoned hardware wallet visible, crypto memes printed and pinned to board';
       break;
 
     case 'space_race':
-      satireProps.light = ', vintage NASA poster on wall, newspaper with space mission headline, toy rocket ship on desk, coffee mug with "Space Is Cool Earth Is Cooler"';
-      satireProps.dark = ', retro space travel poster, book titled "Why Mars When Earth Needs Fixing", telescope pointed out window at stars';
+      additions.light = ', large vintage NASA mission poster prominently displayed, detailed rocket model on desk, astronaut helmet decoration visible';
+      additions.dark = ', huge moon poster on wall, telescope prominently positioned by window, star chart visible, space memorabilia collection';
       break;
 
     case 'big_tech':
-      satireProps.light = ', multiple devices from competing tech companies visible (subtle flex), satirical "Don\'t Be Evil (Unless Profitable)" sticker, privacy-focused browser tabs visible';
-      satireProps.dark = ', vintage "Break Up Big Tech" poster, book about antitrust law, old phone collection showing planned obsolescence';
+      additions.light = ', large "BREAK UP BIG TECH" protest sign visible, multiple competing brand devices arranged ironically, privacy screen on monitor';
+      additions.dark = ', prominent vintage "1984" themed poster on wall, old tech devices displayed as museum pieces, antitrust law books';
       break;
 
     case 'labor_wins':
-      satireProps.light = ', "Union Strong" sticker on laptop, newspaper with labor victory headline, coffee mug saying "Solidarity Forever", fair trade coffee bag visible';
-      satireProps.dark = ', vintage union organizing poster on wall, stack of progressive labor magazines, "Workers Rights Are Human Rights" banner';
+      additions.light = ', large "UNION STRONG" banner prominently displayed, solidarity fist poster on wall, fair trade certified products visible';
+      additions.dark = ', prominent vintage union organizing poster, workers rights themed art on wall, labor history books stacked';
       break;
 
     case 'sports':
-      satireProps.light = ', sports newspaper folded to show championship headline, team scarf draped over chair back, coffee mug with local team logo';
-      satireProps.dark = ', framed vintage sports poster, sports jersey hanging in background, pennant flag on wall';
+      additions.light = ', large sports championship banner or pennant prominently displayed, team jersey hanging visibly on wall, sports trophy or medal visible, tennis racket or sports equipment in scene';
+      additions.dark = ', huge sports team poster on wall, championship memorabilia prominently displayed, game day snacks and drinks visible, sports jersey draped over furniture';
       break;
 
     case 'absurd_rich':
-      satireProps.light = ', satirical magazine cover mocking wealth inequality, "Eat The Rich" sticker on water bottle, newspaper article about billionaire excess visible';
-      satireProps.dark = ', sarcastic "Billionaire Tears" coffee mug, framed wealth inequality chart on wall, book titled "Why Billionaires Shouldn\'t Exist"';
+      additions.light = ', large satirical magazine cover about wealth inequality prominently displayed, "EAT THE RICH" protest sign visible, champagne bottle used as plant holder';
+      additions.dark = ', prominent wealth inequality infographic poster on wall, satirical "billionaire tears" collection, economics books about inequality';
       break;
 
     default:
-      // Generic progressive vibes
-      satireProps.light = ', newspaper with interesting headline folded on desk, coffee from local independent cafe, reusable water bottle';
-      satireProps.dark = ', progressive magazine on coffee table, indie bookstore tote bag visible, local newspaper';
+      additions.light = ', large newspaper with interesting headline prominently visible in scene';
+      additions.dark = ', prominent magazine or newspaper visible with current events coverage';
   }
 
-  return satireProps;
+  return additions;
 }
