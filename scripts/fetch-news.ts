@@ -89,7 +89,7 @@ function isNewsAppropriate(headline: NewsHeadline): boolean {
   return true;
 }
 
-// Extract props/items that represent news topics visually
+// Extract visual props that represent news topics - no text, just objects
 function extractNewsProps(headlines: NewsHeadline[]): string[] {
   const props: string[] = [];
   const allText = headlines.map(h => `${h.title} ${h.description}`).join(' ').toLowerCase();
@@ -97,44 +97,77 @@ function extractNewsProps(headlines: NewsHeadline[]): string[] {
   const propMappings: [RegExp, string[]][] = [
     // Sports
     [/tennis|australian open|grand slam|wimbledon|us open|french open/, ['tennis ball', 'tennis racket']],
-    [/football|soccer|premier league|world cup|champions league/, ['football', 'soccer ball']],
+    [/super bowl|nfl|american football/, ['american football']],
+    [/football|soccer|premier league|world cup|champions league/, ['soccer ball']],
     [/basketball|nba/, ['basketball']],
-    [/f1|formula 1|racing|grand prix|verstappen|hamilton/, ['toy race car', 'checkered flag']],
-    [/golf|pga|masters/, ['golf ball', 'golf club']],
-    [/olympics|olympic/, ['olympic rings symbol', 'gold medal']],
-    [/cricket/, ['cricket ball', 'cricket bat']],
+    [/f1|formula 1|grand prix|verstappen|hamilton/, ['toy formula 1 car', 'checkered flag']],
+    [/golf|pga|masters/, ['golf ball', 'golf tee']],
+    [/olympics|olympic/, ['olympic rings', 'gold medal']],
+    [/cricket/, ['cricket ball']],
     [/rugby/, ['rugby ball']],
-    [/cycling|tour de france/, ['cycling jersey', 'bike helmet']],
-    [/skiing|winter sports/, ['ski goggles', 'ski poles']],
+    [/baseball|mlb/, ['baseball', 'baseball glove']],
+    [/hockey|nhl/, ['hockey puck']],
+    [/boxing|ufc|mma/, ['boxing gloves']],
+    [/skiing|winter sports/, ['mini skis']],
+    [/swimming/, ['swimming goggles']],
+    [/marathon|running/, ['running shoes', 'race medal']],
+
+    // Countries/Regions (flags, maps, landmarks)
+    [/greenland/, ['flag of greenland', 'map of greenland']],
+    [/usa|america|united states/, ['american flag', 'statue of liberty miniature']],
+    [/uk|britain|england/, ['union jack flag', 'big ben miniature']],
+    [/france|paris/, ['french flag', 'eiffel tower miniature']],
+    [/germany/, ['german flag']],
+    [/china|beijing/, ['chinese flag', 'chinese dragon figurine']],
+    [/japan|tokyo/, ['japanese flag', 'lucky cat figurine']],
+    [/australia/, ['australian flag', 'kangaroo figurine']],
+    [/canada/, ['canadian flag', 'maple leaf']],
+    [/netherlands|dutch/, ['dutch flag', 'orange lion', 'tiny windmill']],
+    [/europe|eu|european/, ['EU flag']],
+    [/russia|moscow/, ['russian nesting doll']],
+    [/brazil/, ['brazilian flag']],
+    [/india/, ['indian flag']],
+    [/mexico/, ['mexican flag', 'sombrero miniature']],
 
     // Tech
-    [/artificial intelligence|chatgpt|openai|llm|machine learning/, ['small robot toy', 'AI circuit board']],
-    [/apple|iphone|mac|tim cook/, ['apple logo sticker']],
-    [/spacex|nasa|rocket|mars|moon|astronaut/, ['toy rocket', 'astronaut figurine', 'planet model']],
-    [/crypto|bitcoin|ethereum/, ['bitcoin coin', 'crypto logo']],
+    [/artificial intelligence|chatgpt|openai|ai |robot/, ['small robot toy', 'circuit board']],
+    [/apple|iphone|mac/, ['apple logo', 'airpods']],
+    [/spacex|nasa|rocket|mars|moon|astronaut|space/, ['toy rocket', 'astronaut figurine', 'moon globe']],
+    [/crypto|bitcoin|ethereum/, ['gold bitcoin coin']],
     [/gaming|playstation|xbox|nintendo/, ['game controller']],
+    [/drone/, ['small drone']],
+    [/electric car|tesla|ev /, ['toy electric car']],
 
-    // Politics/World
-    [/election|vote|democracy|ballot/, ['voting sticker', 'ballot']],
-    [/climate|environment|sustainability|renewable/, ['small plant', 'leaf', 'solar panel model']],
-    [/europe|eu|european union/, ['EU flag']],
-    [/usa|america|washington|congress/, ['american flag', 'eagle figurine']],
-    [/uk|britain|london|parliament/, ['union jack']],
+    // Nature/Climate
+    [/climate|global warming/, ['small globe', 'thermometer']],
+    [/solar|renewable/, ['mini solar panel']],
+    [/ocean|marine|whale|dolphin/, ['whale figurine', 'seashell']],
+    [/forest|trees|amazon/, ['small tree', 'leaf']],
+    [/polar bear|arctic|antarctic/, ['polar bear figurine', 'ice cube']],
 
     // Entertainment
-    [/movie|film|oscar|cinema|hollywood/, ['film reel', 'movie ticket', 'clapperboard']],
-    [/music|concert|album|grammy|spotify/, ['vinyl record', 'guitar pick', 'music notes']],
-    [/book|author|novel|bestseller/, ['stack of books']],
-    [/art|museum|exhibition|painting/, ['paint palette', 'art brush']],
+    [/oscar|academy award|hollywood/, ['oscar statuette', 'film reel']],
+    [/grammy|music award/, ['grammy trophy', 'vinyl record']],
+    [/concert|tour|band/, ['guitar pick', 'concert ticket stub']],
+    [/netflix|streaming/, ['popcorn bucket']],
+    [/disney/, ['mickey mouse ears']],
 
-    // Business/Economy
-    [/stock|market|economy|wall street|trading/, ['stock chart', 'dollar bills']],
-    [/startup|entrepreneur|venture/, ['startup swag', 'pitch deck']],
+    // Food/Drink
+    [/coffee/, ['coffee beans', 'espresso cup']],
+    [/wine|champagne/, ['wine bottle', 'wine cork']],
+    [/beer|brewery/, ['beer bottle']],
+    [/chocolate/, ['chocolate bar']],
 
-    // Food/Lifestyle
-    [/coffee|cafe|barista/, ['coffee beans', 'latte art cup']],
-    [/wine|vineyard|sommelier/, ['wine bottle', 'wine glass']],
-    [/food|restaurant|chef|michelin/, ['chef hat', 'cookbook']],
+    // Finance/Business
+    [/stock|wall street|market/, ['bull figurine', 'gold bar']],
+    [/bitcoin|crypto/, ['bitcoin coin']],
+
+    // Misc
+    [/royal|king|queen|crown/, ['tiny crown']],
+    [/wedding|marriage/, ['wedding rings']],
+    [/baby|birth/, ['baby bootie']],
+    [/dog|puppy/, ['dog toy']],
+    [/cat|kitten/, ['cat toy']],
   ];
 
   for (const [pattern, items] of propMappings) {
@@ -147,61 +180,9 @@ function extractNewsProps(headlines: NewsHeadline[]): string[] {
   return [...new Set(props)].slice(0, 4);
 }
 
-// Theme-specific ways to incorporate news - $PROPS and $HEADLINES get replaced
-const NEWS_INTEGRATION: Record<string, { light: string; dark: string }> = {
-  january: {
-    light: 'creatively incorporate current events into the ski scene: $PROPS visible in snow or attached to ski gear, stickers on helmet or goggles referencing today\'s news',
-    dark: 'incorporate current events into cozy chalet scene: newspaper on side table showing ($HEADLINES), $PROPS arranged on mantle or side table',
-  },
-  february: {
-    light: 'incorporate current events into home office: newspaper on desk showing ($HEADLINES), $PROPS on desk or shelves, topical mug or stickers',
-    dark: 'incorporate current events into bedroom scene: phone showing news ($HEADLINES), $PROPS on nightstand',
-  },
-  march: {
-    light: 'incorporate current events into running scene: $PROPS along trail or tucked in waistband, running gear with topical designs',
-    dark: 'incorporate current events into post-run scene: phone showing news ($HEADLINES), $PROPS scattered in grass nearby',
-  },
-  april: {
-    light: 'incorporate current events into cycling scene: $PROPS in jersey pocket or bike bag, stickers on frame or helmet referencing news',
-    dark: 'incorporate current events into roadside scene: phone showing headlines ($HEADLINES) while stuck, $PROPS on ground nearby',
-  },
-  may: {
-    light: 'incorporate current events into picnic scene: newspaper on blanket showing ($HEADLINES), $PROPS scattered on picnic blanket among snacks',
-    dark: 'incorporate current events into bench scene: newspaper showing headlines, $PROPS on bench or ground nearby',
-  },
-  june: {
-    light: 'incorporate current events into swimming scene: $PROPS floating nearby or on shore, swim gear with topical designs or text',
-    dark: 'incorporate current events into pool float scene: phone showing news ($HEADLINES), $PROPS floating on water or on pool edge',
-  },
-  july: {
-    light: 'incorporate current events into surf scene: $PROPS on beach or in sand, surfboard art referencing current events, beach towels with topical designs',
-    dark: 'incorporate current events into beach nap scene: magazine showing headlines ($HEADLINES), $PROPS in sand nearby',
-  },
-  august: {
-    light: 'incorporate current events into motorcycle scene: $PROPS in saddlebag or on overlook, helmet stickers and patches referencing news',
-    dark: 'incorporate current events into hammock scene: phone showing news ($HEADLINES), $PROPS hanging nearby or on ground',
-  },
-  september: {
-    light: 'incorporate current events into office scene: newspaper on desk showing ($HEADLINES), $PROPS among plants and desk items, monitor showing news',
-    dark: 'incorporate current events into desk sleep scene: monitor showing headlines, $PROPS on messy desk',
-  },
-  october: {
-    light: 'incorporate current events into garage scene: $PROPS on workbench among tools, radio or poster referencing news, topical bumper stickers',
-    dark: 'incorporate current events into garage sleep scene: radio playing news ($HEADLINES), $PROPS scattered on floor and workbench',
-  },
-  november: {
-    light: 'incorporate current events into armchair scene: newspaper showing ($HEADLINES), $PROPS on side table or bookshelf, topical book titles',
-    dark: 'incorporate current events into sleep scene: newspaper on armchair arm, $PROPS on side table with wine and cheese',
-  },
-  december: {
-    light: 'incorporate current events into christmas scene: TV showing news ($HEADLINES) alongside darts, $PROPS among presents and christmas chaos',
-    dark: 'incorporate current events into dinner scene: TV in background showing news, $PROPS on table among feast remains',
-  },
-};
-
 export function generateNewsPromptAdditions(
   newsSummary: NewsSummary,
-  month: string
+  _month: string
 ): { light: string; dark: string } {
   const { headlines } = newsSummary;
 
@@ -209,24 +190,20 @@ export function generateNewsPromptAdditions(
     return { light: '', dark: '' };
   }
 
-  // Get top 2-3 headlines shortened
-  const topHeadlines = headlines
-    .slice(0, 3)
-    .map(h => h.title.replace(/["']/g, '').substring(0, 40))
-    .join('; ');
-
-  // Extract visual props from all headlines
+  // Extract visual props from headlines
   const props = extractNewsProps(headlines);
-  const propsText = props.length > 0 ? props.join(', ') : 'newspaper, magazine, topical stickers';
 
-  // Get theme-specific integration
-  const integration = NEWS_INTEGRATION[month] || {
-    light: 'incorporate current events naturally: $PROPS visible in scene, news references ($HEADLINES)',
-    dark: 'incorporate current events naturally: $PROPS visible, news showing ($HEADLINES)',
-  };
+  if (props.length === 0) {
+    return { light: '', dark: '' };
+  }
+
+  const propsText = props.join(', ');
+
+  // Simple prompt - let the AI figure out natural placement
+  const addition = `, IMPORTANT: naturally incorporate these props somewhere in the scene to reflect today's news: ${propsText}`;
 
   return {
-    light: `, ${integration.light.replace('$HEADLINES', topHeadlines).replace('$PROPS', propsText)}`,
-    dark: `, ${integration.dark.replace('$HEADLINES', topHeadlines).replace('$PROPS', propsText)}`,
+    light: addition,
+    dark: addition,
   };
 }
