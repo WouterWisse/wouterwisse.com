@@ -1,0 +1,62 @@
+name: Generate Daily Images
+
+on:
+  schedule:
+    # Run every day at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual triggering for testing
+
+jobs:
+  generate-images:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # Allow pushing commits
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate daily images
+        env:
+          REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          CHARACTER_REF: ${{ vars.CHARACTER_REF || 'https://raw.githubusercontent.com/WouterWisse/wouterwisse.com/6b78c66e44740d126b53c2281c429427fb347738/public/images/character-reference.png' }}
+        run: npm run generate:daily
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push images
+        run: |
+          git add public/images/themes/
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No new images generated, skipping commit"
+            exit 0
+          fi
+
+          # Get current date for commit message
+          CURRENT_DATE=$(date -u +%Y-%m-%d)
+
+          git commit -m "chore: add daily images for ${CURRENT_DATE}
+
+          Generated via GitHub Actions
+
+          Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+
+          git push

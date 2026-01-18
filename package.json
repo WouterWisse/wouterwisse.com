@@ -9,6 +9,7 @@
     "lint": "eslint",
     "clean": "rm -rf .next",
     "generate-images": "tsx scripts/generate-images.ts && npm run clean",
+    "generate:daily": "tsx scripts/generate-daily-images.ts",
     "generate-blur-placeholders": "tsx scripts/generate-blur-placeholders.ts",
     "generate-theme-colors": "tsx scripts/generate-theme-colors.ts"
   },
