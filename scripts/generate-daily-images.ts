@@ -136,13 +136,17 @@ async function main() {
   if (NEWS_API_KEY) {
     try {
       const newsSummary = await fetchTopHeadlines(targetDate, NEWS_API_KEY);
-      console.log(`✅ Fetched ${newsSummary.headlines.length} headlines`);
-      console.log(`   Topics: ${newsSummary.topics.join(', ') || 'general news'}`);
-      console.log(`   Top headline: "${newsSummary.headlines[0]?.title.substring(0, 60)}..."\n`);
+      console.log(`✅ Fetched ${newsSummary.headlines.length} headlines:`);
+      newsSummary.headlines.forEach((h, i) => {
+        console.log(`   ${i + 1}. ${h.title}`);
+      });
+      console.log(`\n   Detected topics: ${newsSummary.topics.join(', ') || 'none'}`);
 
       newsAdditions = generateNewsPromptAdditions(newsSummary);
+      console.log(`\n   Light mode additions: ${newsAdditions.light || '(none)'}`);
+      console.log(`   Dark mode additions: ${newsAdditions.dark || '(none)'}\n`);
     } catch (error) {
-      console.error('⚠️  Failed to fetch news, continuing without news context\n');
+      console.error('⚠️  Failed to fetch news, continuing without news context\n', error);
     }
   } else {
     console.log('⚠️  No NEWS_API_KEY, skipping news fetch\n');
@@ -161,6 +165,7 @@ async function main() {
     const fullPrompt = basePrompt + newsAddition;
 
     console.log(`🎨 Generating ${mode} mode image [${i + 1}/${modes.length}]`);
+    console.log(`  📝 Full prompt:\n${fullPrompt}\n`);
 
     const outputPath = path.join(monthDir, `${dateString}-${mode}.png`);
 
