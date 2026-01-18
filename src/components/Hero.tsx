@@ -1,10 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useCurrentMonth, useThemeMode } from '@/hooks';
-import { getThemeForMonth, getColorsForMonth, LIGHT_BACKGROUND, DARK_BACKGROUND } from '@/config/themes';
+import { getThemeForMonth, getColorsForMonth, getDailyImagePath, LIGHT_BACKGROUND, DARK_BACKGROUND } from '@/config/themes';
 import { getBlurDataURL } from '@/config/blur-placeholders';
 import { SocialLinks } from './SocialLinks';
 import { ThemeToggle } from './ThemeToggle';
@@ -31,6 +31,29 @@ const SWIPE_THRESHOLD = 50;
 export function Hero() {
   const { displayedMonth, goToNextMonth, goToPrevMonth, direction } = useCurrentMonth();
   const { mode, toggleMode, mounted } = useThemeMode();
+
+  // Daily image paths with fallback (use month 0 as default for hooks consistency)
+  const effectiveMonth = displayedMonth ?? 0;
+  const lightPaths = getDailyImagePath(effectiveMonth, 'light');
+  const darkPaths = getDailyImagePath(effectiveMonth, 'dark');
+
+  // Track which images to use (daily or fallback)
+  const [lightSrc, setLightSrc] = useState(lightPaths.daily);
+  const [darkSrc, setDarkSrc] = useState(darkPaths.daily);
+
+  // Reset to daily images when month changes
+  useEffect(() => {
+    setLightSrc(lightPaths.daily);
+    setDarkSrc(darkPaths.daily);
+  }, [lightPaths.daily, darkPaths.daily]);
+
+  const handleLightError = useCallback(() => {
+    setLightSrc(lightPaths.fallback);
+  }, [lightPaths.fallback]);
+
+  const handleDarkError = useCallback(() => {
+    setDarkSrc(darkPaths.fallback);
+  }, [darkPaths.fallback]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -97,7 +120,7 @@ export function Hero() {
           }}
         >
           <Image
-            src={lightTheme.image}
+            src={lightSrc}
             alt={lightTheme.alt}
             fill
             priority
@@ -106,9 +129,10 @@ export function Hero() {
             style={{ opacity: isDark ? 0 : 1 }}
             placeholder="blur"
             blurDataURL={getBlurDataURL(theme.id, 'light')}
+            onError={handleLightError}
           />
           <Image
-            src={darkTheme.image}
+            src={darkSrc}
             alt={darkTheme.alt}
             fill
             priority
@@ -117,6 +141,7 @@ export function Hero() {
             style={{ opacity: isDark ? 1 : 0 }}
             placeholder="blur"
             blurDataURL={getBlurDataURL(theme.id, 'dark')}
+            onError={handleDarkError}
           />
         </div>
       </div>

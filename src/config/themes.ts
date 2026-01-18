@@ -191,6 +191,20 @@ export function getColorsForMonth(monthIndex: number, mode: Mode = 'light'): The
   return MONTH_COLORS[monthKey][mode];
 }
 
+// Get daily image path for a specific date, with fallback to default
+export function getDailyImagePath(monthIndex: number, mode: Mode, date: Date = new Date()): {
+  daily: string;
+  fallback: string;
+} {
+  const monthKey = MONTHS[monthIndex] || 'january';
+  const dateString = date.toISOString().split('T')[0]; // YYYY-MM-DD
+
+  return {
+    daily: `/images/themes/${monthKey}/${dateString}-${mode}.png`,
+    fallback: `/images/themes/${monthKey}/${mode}.png`,
+  };
+}
+
 export function getAllThemes(): MonthlyTheme[] {
   return Object.values(THEMES);
 }
