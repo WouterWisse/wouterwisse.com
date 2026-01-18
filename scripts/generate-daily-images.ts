@@ -1,7 +1,7 @@
 import Replicate from 'replicate';
 import fs from 'fs/promises';
 import path from 'path';
-import { CHARACTER_DESC, LIGHT_BASE_STYLE, DARK_BASE_STYLE, MONTHS, Month } from '../src/config/prompts';
+import { LIGHT_PROMPTS, DARK_PROMPTS, MONTHS, Month } from '../src/config/prompts';
 import { fetchTopHeadlines, generateNewsPromptAdditions } from './fetch-news';
 
 const replicate = new Replicate();
@@ -92,18 +92,10 @@ function getMonthFromDate(date: Date): Month {
 }
 
 function getBasePromptForMonth(month: Month, mode: 'light' | 'dark'): string {
-  // Create a simplified base prompt that maintains the monthly theme style
-  // but allows for daily variations with news elements
-
-  const baseStyle = mode === 'light' ? LIGHT_BASE_STYLE : DARK_BASE_STYLE;
-
-  // Create generic activity-based prompts that match the monthly vibe
-  const activityPrompts = {
-    light: `${baseStyle}, ${CHARACTER_DESC} sitting at modern home office desk with clay pink walls, wearing comfortable casual clothing, MacBook Pro open displaying code editor, multiple monitors, focused working expression, warm natural lighting, plants visible, coffee mug nearby`,
-    dark: `${baseStyle}, ${CHARACTER_DESC} relaxing in comfortable home environment, wearing cozy casual clothing, closed laptop nearby, peaceful satisfied expression after productive day, warm ambient lighting, personal items and books visible`,
-  };
-
-  return activityPrompts[mode];
+  // Use the full monthly themed prompts from config
+  // These contain the rich, detailed scene descriptions for each month
+  const prompts = mode === 'light' ? LIGHT_PROMPTS : DARK_PROMPTS;
+  return prompts[month];
 }
 
 async function main() {
