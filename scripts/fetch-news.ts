@@ -105,8 +105,8 @@ export function generateNewsPromptAdditions(
     .map(h => h.title.replace(/["']/g, '').substring(0, 50))
     .join(', ');
 
-  // Let the AI be creative - just tell it the news topics
-  const addition = `, IMPORTANT: creatively incorporate small props, items, or visual references somewhere in the scene that relate to today's news topics: ${topics}. Use objects like balls, flags, figurines, miniatures, or other items that visually represent these topics - no text or writing.`;
+  // Let the AI be creative - pass news topics with our progressive worldview
+  const addition = `, IMPORTANT: creatively incorporate small props, items, or visual references somewhere in the scene that relate to today's news topics: ${topics}. Use objects like balls, flags, figurines, miniatures, or other items that visually represent these topics - no text or writing. Reflect a progressive, environmentally-conscious, open-minded, and democratic perspective - celebrate diversity, sustainability, science, and human rights.`;
 
   return {
     light: addition,
