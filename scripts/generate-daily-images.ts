@@ -140,11 +140,11 @@ async function main() {
       newsSummary.headlines.forEach((h, i) => {
         console.log(`   ${i + 1}. ${h.title}`);
       });
-      console.log(`\n   Detected topics: ${newsSummary.topics.join(', ') || 'none'}`);
 
       newsAdditions = generateNewsPromptAdditions(newsSummary);
-      console.log(`\n   Light mode additions: ${newsAdditions.light || '(none)'}`);
-      console.log(`   Dark mode additions: ${newsAdditions.dark || '(none)'}\n`);
+      console.log(`\n   Using top headline in prompt`);
+      console.log(`   Light additions: ${newsAdditions.light}`);
+      console.log(`   Dark additions: ${newsAdditions.dark}\n`);
     } catch (error) {
       console.error('⚠️  Failed to fetch news, continuing without news context\n', error);
     }
