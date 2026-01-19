@@ -2,7 +2,6 @@ import Replicate from 'replicate';
 import fs from 'fs/promises';
 import path from 'path';
 import { LIGHT_PROMPTS, DARK_PROMPTS, MONTHS, Month } from '../src/config/prompts';
-import { fetchTopHeadlines, generateNewsPromptAdditions } from './fetch-news';
 
 const replicate = new Replicate();
 
@@ -17,7 +16,6 @@ const dateArg = args.find(a => a.startsWith('--date='))?.split('=')[1];
 const CHARACTER_REFERENCE = process.env.CHARACTER_REF || 'https://raw.githubusercontent.com/WouterWisse/wouterwisse.com/6b78c66e44740d126b53c2281c429427fb347738/public/images/character-reference.png';
 
 // API Keys
-const NEWS_API_KEY = process.env.NEWS_API_KEY;
 const REPLICATE_TOKEN = process.env.REPLICATE_API_TOKEN;
 
 // Rate limiting delay (ms between requests) - Replicate has 6 req/min limit
@@ -92,22 +90,13 @@ function getMonthFromDate(date: Date): Month {
 }
 
 function getBasePromptForMonth(month: Month, mode: 'light' | 'dark'): string {
-  // Use the full monthly themed prompts from config
-  // These contain the rich, detailed scene descriptions for each month
   const prompts = mode === 'light' ? LIGHT_PROMPTS : DARK_PROMPTS;
   return prompts[month];
 }
 
 async function main() {
-  console.log('📰 Daily News-Based Image Generation');
-  console.log('====================================\n');
-
-  // Check for required API keys
-  if (!NEWS_API_KEY && !dryRun) {
-    console.error('❌ ERROR: NEWS_API_KEY environment variable not set');
-    console.error('   Get your free API key from: https://newsapi.org/');
-    process.exit(1);
-  }
+  console.log('🎨 Daily Image Generation');
+  console.log('=========================\n');
 
   if (!REPLICATE_TOKEN && !dryRun) {
     console.error('❌ ERROR: REPLICATE_API_TOKEN environment variable not set');
@@ -129,29 +118,6 @@ async function main() {
 
   console.log(`📅 Generating images for: ${dateString} (${month})\n`);
 
-  // Fetch news headlines
-  console.log('📡 Fetching news headlines...');
-  let newsAdditions = { light: '', dark: '' };
-
-  if (NEWS_API_KEY) {
-    try {
-      const newsSummary = await fetchTopHeadlines(targetDate, NEWS_API_KEY);
-      console.log(`✅ Fetched ${newsSummary.headlines.length} headlines:`);
-      newsSummary.headlines.forEach((h, i) => {
-        console.log(`   ${i + 1}. ${h.title}`);
-      });
-
-      newsAdditions = generateNewsPromptAdditions(newsSummary, month);
-      console.log(`\n   Using top headline for ${month} theme:`);
-      console.log(`   Light: ${newsAdditions.light}`);
-      console.log(`   Dark: ${newsAdditions.dark}\n`);
-    } catch (error) {
-      console.error('⚠️  Failed to fetch news, continuing without news context\n', error);
-    }
-  } else {
-    console.log('⚠️  No NEWS_API_KEY, skipping news fetch\n');
-  }
-
   const monthDir = path.join(OUTPUT_DIR, month);
   await ensureDir(monthDir);
 
@@ -160,18 +126,16 @@ async function main() {
 
   for (let i = 0; i < modes.length; i++) {
     const mode = modes[i];
-    const basePrompt = getBasePromptForMonth(month, mode);
-    const newsAddition = newsAdditions[mode];
-    const fullPrompt = basePrompt + newsAddition;
+    const prompt = getBasePromptForMonth(month, mode);
 
     console.log(`🎨 Generating ${mode} mode image [${i + 1}/${modes.length}]`);
-    console.log(`  📝 Full prompt:\n${fullPrompt}\n`);
+    console.log(`  📝 Prompt:\n${prompt}\n`);
 
     const outputPath = path.join(monthDir, `${dateString}-${mode}.png`);
 
     console.log(`  🖼️  Generating scene...`);
 
-    const imageUrl = await generateScene(fullPrompt);
+    const imageUrl = await generateScene(prompt);
 
     if (imageUrl) {
       const imageBuffer = await downloadImage(imageUrl);
@@ -191,7 +155,7 @@ async function main() {
     }
   }
 
-  console.log('====================================');
+  console.log('=========================');
   console.log(`✨ Complete! ${dryRun ? 'Would generate' : 'Generated'} ${generatedImages}/${modes.length} images`);
 
   if (!dryRun && generatedImages > 0) {

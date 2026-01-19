@@ -1,35 +1,25 @@
-# Daily News-Based Image Generation
+# Daily Image Generation
 
-This feature automatically generates daily hero images that incorporate current world news events into the monthly themed images.
+This feature automatically generates daily hero images using monthly themed prompts.
 
 ## How It Works
 
 1. Every day at 00:00 UTC, a GitHub Action runs
-2. It fetches the top news headlines from the previous day using NewsAPI
-3. It extracts themes/topics from the headlines (e.g., technology, sports, climate, politics)
-4. It generates two images (light and dark mode) with subtle news-related props and details
-5. Images are saved in the monthly folder with date-based naming: `YYYY-MM-DD-light.png` and `YYYY-MM-DD-dark.png`
-6. The workflow commits and pushes the new images automatically
+2. It generates two images (light and dark mode) based on the monthly themed prompts
+3. Images are saved in the monthly folder with date-based naming: `YYYY-MM-DD-light.png` and `YYYY-MM-DD-dark.png`
+4. The workflow commits and pushes the new images automatically
 
 ## Setup Instructions
 
-### 1. Get a NewsAPI Key
-
-1. Visit [newsapi.org](https://newsapi.org/)
-2. Sign up for a free account
-3. Get your API key from the dashboard
-4. Free tier includes: 100 requests/day (you only need 1/day)
-
-### 2. Add Secrets to GitHub
+### 1. Add Secrets to GitHub
 
 Go to your repository settings → Secrets and variables → Actions → Repository secrets
 
-Add the following secrets:
+Add the following secret:
 
-- `NEWS_API_KEY`: Your NewsAPI key
-- `REPLICATE_API_TOKEN`: Your Replicate API token (should already exist)
+- `REPLICATE_API_TOKEN`: Your Replicate API token
 
-### 3. Configure Character Reference (Optional)
+### 2. Configure Character Reference (Optional)
 
 If you want to use a custom character reference image:
 
@@ -40,7 +30,7 @@ If you want to use a custom character reference image:
 
 If not set, it will use the default reference image from the repository.
 
-### 4. Enable GitHub Actions
+### 3. Enable GitHub Actions
 
 1. Go to repository Settings → Actions → General
 2. Under "Workflow permissions", select "Read and write permissions"
@@ -86,52 +76,18 @@ public/images/themes/
     ...
 ```
 
-## How News is Incorporated
-
-The script intelligently filters and satirizes news with a progressive, witty lens:
-
-### Smart Filtering
-- **Filters out tragic events**: No crashes, disasters, deaths, violence, or negative news
-- **Focuses on satirizable topics**: Tech billionaires, AI hype, climate action, politics, crypto, etc.
-- **Fetches 20 headlines but filters to find 5 appropriate ones**
-
-### Clever Visual Satire
-Based on detected topics, subtle props are added:
-
-- **Tech billionaires** → "Tax The Rich" coffee mug, satirical cartoon
-- **AI hype** → "Still Smarter Than ChatGPT" mug, laptop stickers mocking AI
-- **Climate action** → Recycling bin full of Amazon boxes (ironic), "Save The Planet" stickers
-- **Politics** → Democratic donkey mug, voter registration reminders, "I Voted" stickers
-- **Crypto** → "In Crypto We Trust (JK)" poster, piggy bank labeled "Real Money"
-- **Space race** → "Space Is Cool Earth Is Cooler" mug, book "Why Mars When Earth Needs Fixing"
-- **Big tech** → "Don't Be Evil (Unless Profitable)" sticker, antitrust books
-- **Labor wins** → "Union Strong" stickers, "Solidarity Forever" mug
-- **Absurd wealth** → "Eat The Rich" stickers, "Billionaire Tears" mug
-
-The satire is witty and progressive without being disrespectful or tragic.
-
 ## Cost Considerations
 
-- NewsAPI: Free (100 requests/day, you use 1)
 - Replicate: ~$0.04 per image × 2 images/day = ~$2.40/month
 - GitHub Actions: Free for public repos, 2000 minutes/month for private
 - Storage: ~2MB/day × 365 days = ~730MB/year
 
 ## Customization
 
-### Adjust News Sources
-
-Edit `scripts/fetch-news.ts` to modify:
-- Number of headlines fetched
-- Language preference
-- Date range
-- Topic extraction keywords
-
 ### Modify Prompt Style
 
-Edit `scripts/generate-daily-images.ts` to customize:
-- Base prompts for light/dark mode
-- How news is incorporated into scenes
+Edit `src/config/prompts.ts` to customize:
+- Monthly themed prompts for light/dark mode
 - Character positioning and style
 
 ### Change Schedule
@@ -151,12 +107,6 @@ schedule:
 1. Check GitHub Actions logs for errors
 2. Verify API keys are set correctly in repository secrets
 3. Ensure workflow has write permissions
-
-### News not fetching
-
-1. Check NewsAPI key is valid
-2. Verify you haven't exceeded the 100 requests/day limit
-3. Check the Actions logs for specific error messages
 
 ### Rate limit errors from Replicate
 
@@ -180,5 +130,4 @@ To remove this feature:
 2. Remove secrets from GitHub repository settings
 3. Optionally delete:
    - `scripts/generate-daily-images.ts`
-   - `scripts/fetch-news.ts`
    - Daily image files from `public/images/themes/`
