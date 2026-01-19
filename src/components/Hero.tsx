@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { useCurrentMonth, useThemeMode } from '@/hooks';
 import { getThemeForMonth, getColorsForMonth, getDailyImagePath, LIGHT_BACKGROUND, DARK_BACKGROUND } from '@/config/themes';
 import { getBlurDataURL } from '@/config/blur-placeholders';
-import { WORK_IMAGE_PATHS, WORK_BLUR_DATA, WORK_DISPLAY_DURATION } from '@/config/work';
+import { WORK_IMAGE_PATHS, WORK_BLUR_DATA, WORK_DISPLAY_DURATION, WORK_TAGLINES } from '@/config/work';
 import { SocialLinks } from './SocialLinks';
 import { ThemeToggle } from './ThemeToggle';
 
@@ -243,13 +243,17 @@ export function Hero() {
 
       {/* Bottom - Tagline and socials */}
       <div className="absolute bottom-0 left-0 right-0 text-center z-20 px-4 md:px-8 pb-6 md:pb-8">
-        {/* Month navigation */}
-        <div className="flex items-center justify-center gap-3 mb-2">
+        {/* Month navigation - fades out in work mode */}
+        <div
+          className="flex items-center justify-center gap-3 mb-2 transition-opacity duration-700"
+          style={{ opacity: isWorkMode ? 0 : 1 }}
+        >
           <button
             onClick={goToPrevMonth}
             className="p-1 rounded-full transition-all duration-200 hover:scale-110 active:scale-95"
             style={{ color: textMuted }}
             aria-label="Previous month"
+            disabled={isWorkMode}
           >
             <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
           </button>
@@ -265,16 +269,19 @@ export function Hero() {
             className="p-1 rounded-full transition-all duration-200 hover:scale-110 active:scale-95"
             style={{ color: textMuted }}
             aria-label="Next month"
+            disabled={isWorkMode}
           >
             <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
           </button>
         </div>
         <p
-          key={`tagline-${displayedMonth}`}
-          className={`font-display text-4xl md:text-4xl lg:text-5xl text-center max-w-[280px] md:max-w-3xl mx-auto ${slideClass}`}
+          key={isWorkMode ? 'work-tagline' : `tagline-${displayedMonth}`}
+          className={`font-display text-4xl md:text-4xl lg:text-5xl text-center max-w-[280px] md:max-w-3xl mx-auto transition-opacity duration-700 ${isWorkMode ? '' : slideClass}`}
           style={{ color: themeColor, fontWeight: 900 }}
         >
-          {modeTheme.tagline.charAt(0).toUpperCase() + modeTheme.tagline.slice(1)}.
+          {isWorkMode
+            ? WORK_TAGLINES[mode].charAt(0).toUpperCase() + WORK_TAGLINES[mode].slice(1) + '.'
+            : modeTheme.tagline.charAt(0).toUpperCase() + modeTheme.tagline.slice(1) + '.'}
         </p>
         <div className="mt-4 md:mt-6 flex justify-center">
           <SocialLinks isDark={isDark} color={themeColor} onWorkClick={handleWorkClick} isWorkActive={isWorkMode} />
