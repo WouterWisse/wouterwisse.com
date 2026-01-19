@@ -14,21 +14,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Wouter Wisse | Full Stack Developer',
-  description: 'Full Stack Developer with 15 years of experience. Building web and mobile applications.',
-  keywords: ['Full Stack Developer', 'iOS Developer', 'Web Developer', 'React', 'Next.js', 'Swift'],
+  title: 'Wouter Wisse | full stack developer',
+  description: 'full stack developer with 15 years of experience. Building web and mobile applications.',
+  keywords: ['full stack developer', 'iOS Developer', 'Web Developer', 'React', 'Next.js', 'Swift'],
   authors: [{ name: 'Wouter Wisse' }],
   openGraph: {
-    title: 'Wouter Wisse | Full Stack Developer',
-    description: 'Full Stack Developer with 15 years of experience',
+    title: 'Wouter Wisse | full stack developer',
+    description: 'full stack developer with 15 years of experience',
     url: 'https://wouterwisse.com',
     siteName: 'Wouter Wisse',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Wouter Wisse | Full Stack Developer',
-    description: 'Full Stack Developer with 15 years of experience',
+    title: 'Wouter Wisse | full stack developer',
+    description: 'full stack developer with 15 years of experience',
   },
 };
 
