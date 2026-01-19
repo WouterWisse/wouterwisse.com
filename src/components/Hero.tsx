@@ -1,11 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useCurrentMonth, useThemeMode } from '@/hooks';
 import { getThemeForMonth, getColorsForMonth, getDailyImagePath, LIGHT_BACKGROUND, DARK_BACKGROUND } from '@/config/themes';
 import { getBlurDataURL } from '@/config/blur-placeholders';
+import { WORK_IMAGE_PATHS, WORK_BLUR_DATA, WORK_DISPLAY_DURATION } from '@/config/work';
 import { SocialLinks } from './SocialLinks';
 import { ThemeToggle } from './ThemeToggle';
 
@@ -31,6 +32,36 @@ const SWIPE_THRESHOLD = 50;
 export function Hero() {
   const { displayedMonth, goToNextMonth, goToPrevMonth, direction } = useCurrentMonth();
   const { mode, toggleMode, mounted } = useThemeMode();
+
+  // Work mode state - shows secret project sneak peek
+  const [isWorkMode, setIsWorkMode] = useState(false);
+  const workTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleWorkClick = useCallback(() => {
+    if (isWorkMode) return; // Prevent clicking while already showing
+
+    setIsWorkMode(true);
+
+    // Clear any existing timer
+    if (workTimerRef.current) {
+      clearTimeout(workTimerRef.current);
+    }
+
+    // Set timer to return to normal view
+    workTimerRef.current = setTimeout(() => {
+      setIsWorkMode(false);
+      workTimerRef.current = null;
+    }, WORK_DISPLAY_DURATION);
+  }, [isWorkMode]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (workTimerRef.current) {
+        clearTimeout(workTimerRef.current);
+      }
+    };
+  }, []);
 
   // Daily image paths with fallback (use month 0 as default for hooks consistency)
   const effectiveMonth = displayedMonth ?? 0;
@@ -143,6 +174,27 @@ export function Hero() {
             blurDataURL={getBlurDataURL(theme.id, 'dark')}
             onError={handleDarkError}
           />
+          {/* Work mode images - overlay on top of regular images */}
+          <Image
+            src={WORK_IMAGE_PATHS.light}
+            alt="Working on a secret project"
+            fill
+            sizes="(max-width: 768px) 130vw, 800px"
+            className="object-cover transition-opacity duration-700 ease-in-out"
+            style={{ opacity: isWorkMode && !isDark ? 1 : 0 }}
+            placeholder="blur"
+            blurDataURL={WORK_BLUR_DATA.light}
+          />
+          <Image
+            src={WORK_IMAGE_PATHS.dark}
+            alt="Working on a secret project"
+            fill
+            sizes="(max-width: 768px) 130vw, 800px"
+            className="object-cover transition-opacity duration-700 ease-in-out"
+            style={{ opacity: isWorkMode && isDark ? 1 : 0 }}
+            placeholder="blur"
+            blurDataURL={WORK_BLUR_DATA.dark}
+          />
         </div>
       </div>
 
@@ -225,7 +277,7 @@ export function Hero() {
           {modeTheme.tagline.charAt(0).toUpperCase() + modeTheme.tagline.slice(1)}.
         </p>
         <div className="mt-4 md:mt-6 flex justify-center">
-          <SocialLinks isDark={isDark} color={themeColor} />
+          <SocialLinks isDark={isDark} color={themeColor} onWorkClick={handleWorkClick} isWorkActive={isWorkMode} />
         </div>
       </div>
     </motion.section>
