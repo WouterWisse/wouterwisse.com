@@ -100,11 +100,20 @@ export function Hero() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [goToNextMonth, goToPrevMonth]);
 
-  // Sync background color to html element for Safari overscroll
+  // Sync background color to html element and meta theme-color for browser UI
   useEffect(() => {
     if (!mounted) return;
     const bgColor = mode === 'dark' ? DARK_BACKGROUND : LIGHT_BACKGROUND;
     document.documentElement.style.backgroundColor = bgColor;
+
+    // Update or create meta theme-color for browser UI (address bar, status bar)
+    let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (!metaThemeColor) {
+      metaThemeColor = document.createElement('meta');
+      metaThemeColor.setAttribute('name', 'theme-color');
+      document.head.appendChild(metaThemeColor);
+    }
+    metaThemeColor.setAttribute('content', bgColor);
   }, [mode, mounted]);
 
   // Animation class based on navigation direction
