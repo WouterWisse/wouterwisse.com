@@ -1,10 +1,10 @@
-# Daily Image Generation
+# Weekly Image Generation
 
-This feature automatically generates daily hero images using monthly themed prompts.
+This feature automatically generates weekly hero images using monthly themed prompts.
 
 ## How It Works
 
-1. Every day at 00:00 UTC, a GitHub Action runs
+1. Every Monday at 00:00 UTC, a GitHub Action runs
 2. It generates two images (light and dark mode) based on the monthly themed prompts
 3. Images are saved in the monthly folder with date-based naming: `YYYY-MM-DD-light.png` and `YYYY-MM-DD-dark.png`
 4. The workflow commits and pushes the new images automatically
@@ -56,7 +56,7 @@ npm run generate:daily -- --date=2026-01-15
 You can manually trigger the workflow:
 
 1. Go to Actions tab in GitHub
-2. Select "Generate Daily Images" workflow
+2. Select "Generate Weekly Images" workflow
 3. Click "Run workflow"
 4. Choose the branch and run
 
@@ -78,9 +78,9 @@ public/images/themes/
 
 ## Cost Considerations
 
-- Replicate: ~$0.04 per image × 2 images/day = ~$2.40/month
+- Replicate: ~$0.04 per image × 2 images/week = ~$0.35/month
 - GitHub Actions: Free for public repos, 2000 minutes/month for private
-- Storage: ~2MB/day × 365 days = ~730MB/year
+- Storage: ~2MB/week × 52 weeks = ~104MB/year
 
 ## Customization
 
@@ -92,7 +92,7 @@ Edit `src/config/prompts.ts` to customize:
 
 ### Change Schedule
 
-Edit `.github/workflows/daily-images.yml`:
+Edit `.github/workflows/weekly-images.yml`:
 
 ```yaml
 schedule:
@@ -112,11 +112,11 @@ schedule:
 
 The script includes automatic rate limiting (12 seconds between requests). If you still hit limits, increase the `RATE_LIMIT_DELAY` value in `scripts/generate-daily-images.ts`.
 
-## Pausing Daily Generation
+## Pausing Weekly Generation
 
 To temporarily pause:
 
-1. Go to `.github/workflows/daily-images.yml`
+1. Go to `.github/workflows/weekly-images.yml`
 2. Comment out or remove the `schedule` trigger
 3. Commit the change
 
@@ -126,7 +126,7 @@ To resume, uncomment the schedule trigger.
 
 To remove this feature:
 
-1. Delete `.github/workflows/daily-images.yml`
+1. Delete `.github/workflows/weekly-images.yml`
 2. Remove secrets from GitHub repository settings
 3. Optionally delete:
    - `scripts/generate-daily-images.ts`

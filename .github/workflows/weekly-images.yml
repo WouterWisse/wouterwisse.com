@@ -1,9 +1,9 @@
-name: Generate Daily Images
+name: Generate Weekly Images
 
 on:
   schedule:
-    # Run every day at 00:00 UTC on main branch
-    - cron: '0 0 * * *'
+    # Run every Monday at 00:00 UTC on main branch
+    - cron: '0 0 * * 1'
   workflow_dispatch: # Allow manual triggering for testing
 
 jobs:
@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate daily images
+      - name: Generate weekly images
         env:
           REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
           CHARACTER_REF: ${{ vars.CHARACTER_REF || 'https://raw.githubusercontent.com/WouterWisse/wouterwisse.com/6b78c66e44740d126b53c2281c429427fb347738/public/images/character-reference.png' }}
@@ -54,7 +54,7 @@ jobs:
           # Get current date for commit message
           CURRENT_DATE=$(date -u +%Y-%m-%d)
 
-          git commit -m "chore: add daily images for ${CURRENT_DATE}
+          git commit -m "chore: add weekly images for ${CURRENT_DATE}
 
           Generated via GitHub Actions
 
