@@ -5,11 +5,6 @@
   </picture>
   <br>
   <br>
-  <picture>
-    <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" height="28">
-  </picture>
-  <br>
-  <br>
   <em>My personal website with seasonal themes that change throughout the year.</em>
   <br>
   <br>
@@ -28,19 +23,21 @@
 | Component | Technology |
 |-----------|------------|
 | Framework | Next.js 16 (App Router) |
-| UI | React 19, Tailwind CSS 4 |
+| UI | React 19, Tailwind CSS 4, Framer Motion |
 | Language | TypeScript |
+| Analytics | Vercel Analytics & Speed Insights |
 | Deployment | Vercel |
 
 ## Features
 
-- Seasonal themes that automatically change each month
-- Light/dark mode with system preference sync
-- Swipe gestures for month navigation (mobile)
-- Keyboard navigation with arrow keys
-- AI-generated illustrations for each season
-- Blur placeholders for smooth image loading
-- Responsive design optimized for mobile
+- **Seasonal themes** - 12 unique monthly themes with custom illustrations
+- **Light/dark mode** - System preference sync with manual toggle
+- **AI-generated art** - Weekly hero images generated via Replicate
+- **Parallax effects** - Mouse and device orientation responsive
+- **Swipe navigation** - Browse months with touch gestures on mobile
+- **Keyboard navigation** - Arrow keys to explore themes
+- **Blur placeholders** - Smooth progressive image loading
+- **Responsive design** - Optimized for all screen sizes
 
 ## Development
 
@@ -54,32 +51,51 @@ npm run dev
 # Build for production
 npm run build
 
-# Generate blur placeholders (after adding new images)
-npm run generate-blur-placeholders
+# Lint code
+npm run lint
 ```
+
+## Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run generate:daily` | Generate daily hero images using AI |
+| `npm run generate-blur-placeholders` | Create blur placeholders for images |
+| `npm run generate-theme-colors` | Extract colors from theme images |
+| `npm run generate-images` | Generate all theme images |
 
 ## Deployment
 
-This site is deployed on [Vercel](https://vercel.com) with automatic deployments on push to the `develop` branch.
+Deployed on [Vercel](https://vercel.com) with automatic deployments on push to `develop`.
 
 To deploy your own:
 1. Fork this repository
 2. Import to Vercel
-3. Add your custom domain in Vercel dashboard
+3. Add `REPLICATE_API_TOKEN` secret for weekly image generation
+4. Add your custom domain in Vercel dashboard
 
 ## Project Structure
 
 ```
 src/
-├── app/           # Next.js App Router
-├── components/    # React components
-├── config/        # Theme configuration
-├── hooks/         # Custom React hooks
+├── app/           # Next.js App Router pages
+├── components/    # React components (Hero, ThemeToggle, SocialLinks)
+├── config/        # Theme configuration and extracted colors
+├── hooks/         # Custom hooks (parallax, orientation, theme)
 └── types/         # TypeScript definitions
 
-public/
-└── images/
-    └── themes/    # Monthly theme images (light/dark)
+public/images/
+└── themes/        # Monthly theme images (12 months × light/dark)
 
-scripts/           # Image generation utilities
+scripts/           # Image generation and processing utilities
+
+docs/              # Documentation (weekly image generation)
 ```
+
+## Weekly Image Generation
+
+A GitHub Actions workflow generates fresh hero images every week using Replicate's AI. See [docs/WEEKLY_IMAGES.md](docs/WEEKLY_IMAGES.md) for setup and configuration.
+
+## License
+
+MIT
