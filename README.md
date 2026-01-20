@@ -30,17 +30,35 @@
 | Framework | Next.js 16 (App Router) |
 | UI | React 19, Tailwind CSS 4 |
 | Language | TypeScript |
+| Animation | Framer Motion |
+| Analytics | Vercel Analytics & Speed Insights |
+| Fonts | Geist Sans & Geist Mono |
+| Image Processing | Sharp |
 | Deployment | Vercel |
 
 ## Features
 
-- Seasonal themes that automatically change each month
-- Light/dark mode with system preference sync
-- Swipe gestures for month navigation (mobile)
-- Keyboard navigation with arrow keys
-- AI-generated illustrations for each season
-- Blur placeholders for smooth image loading
-- Responsive design optimized for mobile
+### Core Features
+- **Seasonal themes** - 12 unique monthly themes with AI-generated illustrations
+- **Daily image variations** - Weekly-generated images with automatic fallback to monthly themes
+- **Light/dark mode** - System preference sync with smooth 700ms transitions
+- **Work mode preview** - Secret project sneak peek with temporary overlay
+- **Responsive design** - Optimized for mobile and desktop with dynamic viewport height
+
+### Navigation
+- **Swipe gestures** - Touch-based month navigation on mobile
+- **Keyboard controls** - Arrow keys for desktop navigation
+- **Month indicators** - Visual navigation with chevron buttons
+
+### Performance & UX
+- **Blur placeholders** - Smooth image loading with pre-generated data URLs
+- **Dynamic theme colors** - Extracted color palettes per month and mode
+- **Meta theme-color sync** - Updates browser UI (address bar/status bar) on mode change
+- **Framer Motion animations** - Smooth slide transitions and pan gestures
+- **Geolocation-based sunrise/sunset** - Uses SunCalc for location-aware daylight detection
+- **Reduced motion support** - Respects user accessibility preferences
+- **Device orientation** - Tilt-based parallax effects on mobile devices
+- **Mouse parallax** - Subtle cursor-based animations on desktop
 
 ## Development
 
@@ -48,14 +66,36 @@
 # Install dependencies
 npm install
 
-# Start development server
+# Start development server (cleans .next first)
 npm run dev
 
 # Build for production
 npm run build
 
+# Start production server
+npm run start
+
+# Lint code
+npm run lint
+
+# Clean build artifacts
+npm run clean
+```
+
+### Image Generation Scripts
+
+```bash
+# Generate AI images for all months
+npm run generate-images
+
+# Generate weekly images (automated via workflow)
+npm run generate:daily
+
 # Generate blur placeholders (after adding new images)
 npm run generate-blur-placeholders
+
+# Extract theme colors from images
+npm run generate-theme-colors
 ```
 
 ## Deployment
@@ -71,15 +111,43 @@ To deploy your own:
 
 ```
 src/
-├── app/           # Next.js App Router
-├── components/    # React components
-├── config/        # Theme configuration
-├── hooks/         # Custom React hooks
-└── types/         # TypeScript definitions
+├── app/                        # Next.js App Router
+│   ├── layout.tsx             # Root layout with Analytics & Speed Insights
+│   ├── page.tsx               # Home page with Hero component
+│   └── globals.css            # Global styles and CSS variables
+├── components/                 # React components
+│   ├── Hero.tsx               # Main hero with images, navigation, and work mode
+│   ├── SocialLinks.tsx        # Social media links
+│   └── ThemeToggle.tsx        # Light/dark mode toggle
+├── config/                     # Configuration files
+│   ├── themes.ts              # Monthly theme definitions and image paths
+│   ├── blur-placeholders.ts   # Pre-generated blur data URLs
+│   ├── extracted-colors.ts    # Dynamic color palettes per theme
+│   ├── work.ts                # Work mode configuration
+│   └── prompts.ts             # AI image generation prompts
+├── hooks/                      # Custom React hooks
+│   ├── useCurrentMonth.ts     # Month state and navigation logic
+│   ├── useThemeMode.ts        # Light/dark mode with system sync
+│   ├── useSunPosition.ts      # Geolocation-based sunrise/sunset
+│   ├── useMouseParallax.ts    # Mouse-based parallax effects
+│   ├── useDeviceOrientation.ts # Tilt-based mobile parallax
+│   └── useReducedMotion.ts    # Accessibility motion preferences
+└── types/                      # TypeScript definitions
+    └── theme.ts               # Theme and mode type definitions
 
 public/
 └── images/
-    └── themes/    # Monthly theme images (light/dark)
+    ├── themes/                # Monthly theme images (light/dark)
+    ├── daily/                 # Weekly-generated image variations
+    └── work/                  # Work mode preview images
 
-scripts/           # Image generation utilities
+scripts/                        # Image generation utilities
+├── generate-images.ts         # AI-based monthly image generation
+├── generate-daily-images.ts   # Weekly variation generation
+├── generate-blur-placeholders.ts # Blur placeholder generation
+├── generate-theme-colors.ts   # Color extraction from images
+├── generate-favicon.ts        # Favicon generation
+├── generate-reference.ts      # Reference image generation
+├── generate-work-images.ts    # Work mode image generation
+└── dev.sh                     # Development helper script
 ```
