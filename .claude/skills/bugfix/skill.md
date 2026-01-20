@@ -362,9 +362,9 @@ ROOT_CAUSE: [from Phase 2]
    git push -u origin [branch]
    ```
 
-3. **Create DRAFT PR**:
+3. **Create PR**:
    ```bash
-   gh pr create --draft --base main --title "fix: [title]" --body "## Summary
+   gh pr create --base main --title "fix: [title]" --body "## Summary
    Fixes: [bug description]
 
    ## Root Cause
@@ -393,7 +393,7 @@ ROOT_CAUSE: [from Phase 2]
 ```yaml
 ---
 STATUS: COMPLETE
-DRAFT_PR: [url]
+PR_URL: [url]
 PLAN_DELETED: true
 ---
 ```
@@ -424,7 +424,7 @@ Summarize all results:
 - Lint: PASSED
 - Regressions: None found
 
-### PR Created (Draft)
+### PR Created
 [url]
 
 ### Next Steps
@@ -466,4 +466,4 @@ todos:
 3. **Fix the cause, not symptoms** - avoid band-aid solutions
 4. **Verify thoroughly** - confirm fix works, no regressions
 5. **Each step uses /task** - consistent implementation workflow
-6. **Clean completion** - plan files deleted, PRs created as drafts
+6. **Clean completion** - plan files deleted, PRs created

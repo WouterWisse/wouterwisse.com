@@ -363,9 +363,9 @@ USER_STORY_TITLE: [from Phase 0]
    git push -u origin [branch]
    ```
 
-3. **Create DRAFT PR**:
+3. **Create PR**:
    ```bash
-   gh pr create --draft --base main --title "[title]" --body "## Summary
+   gh pr create --base main --title "[title]" --body "## Summary
    [bullets from plan]
 
    ## Test Plan
@@ -387,7 +387,7 @@ USER_STORY_TITLE: [from Phase 0]
 ```yaml
 ---
 STATUS: COMPLETE
-DRAFT_PR: [url]
+PR_URL: [url]
 PLAN_DELETED: true
 ---
 ```
@@ -407,7 +407,7 @@ Summarize all results:
 ### Implementation
 - Steps completed: X
 - Commits: Y
-- PR created (draft): [url]
+- PR created: [url]
 
 ### Verification
 - Build: PASSED
@@ -454,4 +454,4 @@ todos:
 2. **Each step uses /task** - consistent implementation workflow
 3. **Waves for parallelism** - independent steps run simultaneously
 4. **Research informs planning** - patterns discovered before plan created
-5. **Clean completion** - plan files deleted, PRs created as drafts
+5. **Clean completion** - plan files deleted, PRs created

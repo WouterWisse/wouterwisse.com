@@ -32,65 +32,6 @@ allowed-tools: Task, TodoWrite, TaskOutput
 
 ---
 
-## Phase 0: Pre-Flight Check (NO REBASING)
-
-**CRITICAL: This skill does NOT rebase or modify git history. It only checks status.**
-
-Spawn a single subagent to verify repository is ready:
-
-```
-Task(general-purpose, model: opus):
-
-Check repository status before fixing PR comments. DO NOT modify any git state.
-
----
-
-## Tasks
-
-1. **Fetch latest changes** (read-only):
-   ```bash
-   git fetch origin
-   ```
-
-2. **Check current branch and status**:
-   ```bash
-   git branch --show-current
-   git status --short
-   ```
-
-3. **Check if branch is behind main** (informational only):
-   ```bash
-   git rev-list --count HEAD..origin/main 2>/dev/null || echo "0"
-   ```
-
-4. **Check for uncommitted changes**:
-   - If dirty working tree, report and STOP
-
-**DO NOT run git rebase, git merge, git reset, or any command that modifies history.**
-
----
-
-## Output Format
-
-```yaml
----
-PREFLIGHT_STATUS:
-  branch: feature/xyz
-  clean: true | false
-  uncommitted_files: [list if not clean]
-  commits_behind_main: 0
-OVERALL: READY | NOT_READY
-ISSUES: [if NOT_READY, list what needs attention]
----
-```
-```
-
-**If uncommitted changes exist, STOP and report to user.**
-
-**If branch is behind main:** Report it but continue. User can rebase manually if desired before running /fix-pr.
-
----
-
 ## Phase 1: Analysis Subagent
 
 Spawn a single subagent to detect PRs and fetch/categorize comments:
@@ -185,8 +126,6 @@ Based on analysis results, create todo list:
 
 ```yaml
 todos:
-  - content: "Pre-flight check (verify clean working tree)"
-    status: completed
   - content: "Analyze PR and categorize comments"
     status: completed
   - content: "Fix: error handling in page (coderabbitai)"
@@ -603,9 +542,6 @@ Summarize all results:
 
 ```markdown
 ## PR Fixes Complete
-
-### Pre-Flight Check
-- Clean working tree, ready to proceed
 
 ### PR Processed
 - PR #42: 5 comments addressed
