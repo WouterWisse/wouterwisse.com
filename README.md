@@ -28,20 +28,29 @@
 | Component | Technology |
 |-----------|------------|
 | Framework | Next.js 16 (App Router) |
-| UI | React 19, Tailwind CSS 4 |
-| Language | TypeScript |
+| UI Library | React 19 |
+| Styling | Tailwind CSS 4 |
+| Animation | Framer Motion |
+| Language | TypeScript 5 |
+| AI Images | Replicate (Flux) |
+| Analytics | Vercel Analytics & Speed Insights |
 | Deployment | Vercel |
 
 ## Features
 
-- Seasonal themes that automatically change each month
-- Light/dark mode with system preference sync
-- Swipe gestures for month navigation (mobile)
-- Keyboard navigation with arrow keys
-- AI-generated illustrations for each season
-- Automated weekly image generation via GitHub Actions
-- Blur placeholders for smooth image loading
-- Responsive design optimized for mobile
+- **Seasonal Themes**: 12 unique monthly themes with AI-generated illustrations
+- **Daily/Weekly Images**: Fresh images generated weekly with automatic fallback system
+- **Light/Dark Mode**: Seamless theme switching with system preference sync
+- **Dynamic Colors**: Auto-extracted color palettes from theme images
+- **Interactive Navigation**:
+  - Swipe gestures for month navigation (mobile)
+  - Keyboard arrow keys for desktop
+- **Work Mode**: Secret project sneak peek (click the Work button to discover)
+- **Smooth Animations**: Framer Motion for fluid transitions
+- **Performance**:
+  - Blur placeholders for progressive image loading
+  - Vercel Analytics and Speed Insights integration
+- **Responsive Design**: Optimized for all screen sizes
 
 ## Development
 
@@ -58,23 +67,30 @@ npm run start
 # Build for production
 npm run build
 
-# Run linting
+# Lint code
 npm run lint
 
 # Clean build cache
 npm run clean
+```
 
-# Generate blur placeholders (after adding new images)
-npm run generate-blur-placeholders
+### Image Generation Scripts
 
-# Generate daily themed images (see docs/WEEKLY_IMAGES.md)
+```bash
+# Generate all monthly theme images
+npm run generate-images
+
+# Generate weekly images for current week
 npm run generate:daily
 
-# Generate theme color configurations
+# Generate blur placeholders for images
+npm run generate-blur-placeholders
+
+# Extract and generate theme colors from images
 npm run generate-theme-colors
 
-# Generate all theme images
-npm run generate-images
+# Generate work mode images
+# (See scripts/generate-work-images.ts)
 ```
 
 ## Documentation
@@ -94,25 +110,62 @@ To deploy your own:
 
 ```
 src/
-├── app/           # Next.js App Router
-├── components/    # React components
-├── config/        # Theme configuration
-├── hooks/         # Custom React hooks
-└── types/         # TypeScript definitions
+├── app/
+│   ├── layout.tsx           # Root layout with Analytics
+│   ├── page.tsx             # Main page
+│   └── globals.css          # Global styles
+├── components/
+│   ├── Hero.tsx             # Main hero component with themes
+│   ├── SocialLinks.tsx      # Social media links
+│   └── ThemeToggle.tsx      # Light/dark mode toggle
+├── config/
+│   ├── themes.ts            # Monthly theme definitions
+│   ├── blur-placeholders.ts # Generated blur data
+│   ├── extracted-colors.ts  # Generated theme colors
+│   ├── work.ts              # Work mode configuration
+│   └── prompts.ts           # AI image generation prompts
+├── hooks/
+│   └── useCurrentMonth.ts   # Month navigation logic
+│   └── useThemeMode.ts      # Theme mode state
+└── types/
+    └── theme.ts             # TypeScript type definitions
 
 public/
 └── images/
-    └── themes/
-        ├── january/    # Monthly folders with light/dark images
-        ├── february/   # Each contains: light.png, dark.png
-        └── ...         # Plus dated images: YYYY-MM-DD-light.png
+    └── themes/              # Monthly theme images
+        ├── january/         # Light & dark variants
+        ├── february/        # Each contains: light.png, dark.png
+        └── ...              # Plus dated images: YYYY-MM-DD-light.png
 
-scripts/           # Image generation utilities
+scripts/
+├── generate-images.ts           # Generate all monthly images
+├── generate-daily-images.ts     # Generate weekly images
+├── generate-blur-placeholders.ts # Generate blur data
+├── generate-theme-colors.ts     # Extract theme colors
+└── generate-work-images.ts      # Generate work mode images
 
-docs/              # Additional documentation
+docs/                        # Additional documentation
 └── WEEKLY_IMAGES.md
 
 .github/
-├── assets/        # README hero images
-└── workflows/     # GitHub Actions (weekly-images.yml)
+├── assets/                  # README hero images
+└── workflows/               # GitHub Actions (weekly-images.yml)
 ```
+
+## Theme Customization
+
+Each month has unique light and dark themes with:
+- Custom AI-generated illustrations
+- Unique taglines that reflect the season and coding lifestyle
+- Auto-extracted color palettes for cohesive design
+- Weekly image variants for fresh content
+
+To customize themes:
+1. Update prompts in `src/config/prompts.ts`
+2. Run `npm run generate-images` to create new images
+3. Run `npm run generate-blur-placeholders` to generate blur data
+4. Run `npm run generate-theme-colors` to extract color palettes
+
+## License
+
+This project is open source and available under the MIT License.
