@@ -89,6 +89,7 @@ export function Hero() {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (isWorkMode) return;
       if (e.key === 'ArrowRight') {
         goToNextMonth();
       } else if (e.key === 'ArrowLeft') {
@@ -98,7 +99,7 @@ export function Hero() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [goToNextMonth, goToPrevMonth]);
+  }, [goToNextMonth, goToPrevMonth, isWorkMode]);
 
   // Sync background color to html element and meta theme-color for browser UI
   useEffect(() => {
@@ -135,6 +136,7 @@ export function Hero() {
   const textMuted = isDark ? '#a0a0b0' : '#94a3b8';
 
   const handlePanEnd = (_: unknown, info: { offset: { x: number } }) => {
+    if (isWorkMode) return;
     if (info.offset.x > SWIPE_THRESHOLD) {
       goToPrevMonth();
     } else if (info.offset.x < -SWIPE_THRESHOLD) {
