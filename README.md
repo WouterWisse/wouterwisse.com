@@ -39,6 +39,7 @@
 - Swipe gestures for month navigation (mobile)
 - Keyboard navigation with arrow keys
 - AI-generated illustrations for each season
+- Automated weekly image generation via GitHub Actions
 - Blur placeholders for smooth image loading
 - Responsive design optimized for mobile
 
@@ -51,12 +52,34 @@ npm install
 # Start development server
 npm run dev
 
+# Start production server
+npm run start
+
 # Build for production
 npm run build
 
+# Run linting
+npm run lint
+
+# Clean build cache
+npm run clean
+
 # Generate blur placeholders (after adding new images)
 npm run generate-blur-placeholders
+
+# Generate daily themed images (see docs/WEEKLY_IMAGES.md)
+npm run generate:daily
+
+# Generate theme color configurations
+npm run generate-theme-colors
+
+# Generate all theme images
+npm run generate-images
 ```
+
+## Documentation
+
+- [Weekly Image Generation](docs/WEEKLY_IMAGES.md) - Automated hero image generation with GitHub Actions
 
 ## Deployment
 
@@ -79,7 +102,17 @@ src/
 
 public/
 └── images/
-    └── themes/    # Monthly theme images (light/dark)
+    └── themes/
+        ├── january/    # Monthly folders with light/dark images
+        ├── february/   # Each contains: light.png, dark.png
+        └── ...         # Plus dated images: YYYY-MM-DD-light.png
 
 scripts/           # Image generation utilities
+
+docs/              # Additional documentation
+└── WEEKLY_IMAGES.md
+
+.github/
+├── assets/        # README hero images
+└── workflows/     # GitHub Actions (weekly-images.yml)
 ```
