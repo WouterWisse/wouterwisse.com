@@ -28,19 +28,31 @@
 | Component | Technology |
 |-----------|------------|
 | Framework | Next.js 16 (App Router) |
-| UI | React 19, Tailwind CSS 4 |
+| UI | React 19, Tailwind CSS 4, Framer Motion |
 | Language | TypeScript |
+| Analytics | Vercel Analytics & Speed Insights |
 | Deployment | Vercel |
 
 ## Features
 
+### Themes & Visuals
 - Seasonal themes that automatically change each month
+- Weekly refreshed AI-generated illustrations with thematic variations
 - Light/dark mode with system preference sync
+- Smooth transitions and animations powered by Framer Motion
+- Blur placeholders for smooth image loading
+- Work mode: Secret project sneak peek with special illustrations
+
+### Navigation
 - Swipe gestures for month navigation (mobile)
 - Keyboard navigation with arrow keys
-- AI-generated illustrations for each season
-- Blur placeholders for smooth image loading
-- Responsive design optimized for mobile
+- Month indicator with navigation controls
+
+### Performance & Analytics
+- Vercel Speed Insights for real-time performance monitoring
+- Vercel Analytics for visitor tracking
+- Optimized images with Next.js Image component
+- Responsive design optimized for all devices
 
 ## Development
 
@@ -56,6 +68,12 @@ npm run build
 
 # Generate blur placeholders (after adding new images)
 npm run generate-blur-placeholders
+
+# Generate weekly images (automated via GitHub Actions)
+npm run generate:daily
+
+# Generate theme colors
+npm run generate-theme-colors
 ```
 
 ## Deployment
@@ -73,13 +91,24 @@ To deploy your own:
 src/
 ├── app/           # Next.js App Router
 ├── components/    # React components
-├── config/        # Theme configuration
+│   ├── Hero.tsx   # Main hero component with theme switching
+│   └── ...
+├── config/        # Theme & feature configuration
+│   ├── themes.ts  # Monthly theme definitions
+│   └── work.ts    # Work mode configuration
 ├── hooks/         # Custom React hooks
 └── types/         # TypeScript definitions
 
 public/
 └── images/
-    └── themes/    # Monthly theme images (light/dark)
+    ├── themes/    # Monthly theme images
+    │   └── [month]/
+    │       ├── light.png          # Default monthly image
+    │       ├── dark.png           # Default monthly image
+    │       ├── YYYY-MM-DD-light.png  # Weekly variant
+    │       └── YYYY-MM-DD-dark.png   # Weekly variant
+    └── work/      # Work mode images (light/dark)
 
 scripts/           # Image generation utilities
+└── .claude/       # Claude Code skills for automation
 ```
