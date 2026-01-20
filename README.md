@@ -30,17 +30,27 @@
 | Framework | Next.js 16 (App Router) |
 | UI | React 19, Tailwind CSS 4 |
 | Language | TypeScript |
+| Animation | Framer Motion |
+| Analytics | Vercel Analytics, Vercel Speed Insights |
+| Sun Position | suncalc |
+| Image Processing | sharp |
+| AI Generation | Replicate (FLUX models) |
 | Deployment | Vercel |
 
 ## Features
 
-- Seasonal themes that automatically change each month
-- Light/dark mode with system preference sync
-- Swipe gestures for month navigation (mobile)
-- Keyboard navigation with arrow keys
-- AI-generated illustrations for each season
-- Blur placeholders for smooth image loading
-- Responsive design optimized for mobile
+- **Seasonal themes** - 12 unique monthly themes with 24 custom taglines and AI-generated images
+- **Work Mode** - Secret briefcase button for project sneak peek
+- **Sun-based theme switching** - Auto light/dark mode based on actual sunrise/sunset times
+- **Parallax effects** - Mouse tracking and device orientation animations
+- **Reduced motion support** - Accessibility-friendly with system preference detection
+- **Dynamic browser theme-color** - Meta tag updates to match current theme
+- **Daily AI image generation** - Automatic image generation with fallback system
+- **Light/dark mode** - System preference sync
+- **Swipe gestures** - Month navigation on mobile
+- **Keyboard navigation** - Arrow key support
+- **Blur placeholders** - Smooth image loading transitions
+- **Responsive design** - Optimized for mobile
 
 ## Development
 
@@ -54,8 +64,30 @@ npm run dev
 # Build for production
 npm run build
 
+# Start production server
+npm start
+
+# Run ESLint
+npm run lint
+
+# Clean build cache
+npm run clean
+
 # Generate blur placeholders (after adding new images)
 npm run generate-blur-placeholders
+```
+
+### Image Generation Scripts
+
+```bash
+# Generate all theme images using Replicate AI
+npm run generate-images
+
+# Generate daily image for current month
+npm run generate:daily
+
+# Extract theme colors from images
+npm run generate-theme-colors
 ```
 
 ## Deployment
@@ -73,7 +105,12 @@ To deploy your own:
 src/
 ├── app/           # Next.js App Router
 ├── components/    # React components
-├── config/        # Theme configuration
+├── config/
+│   ├── themes.ts            # Theme configuration
+│   ├── work.ts              # Work mode configuration (images, taglines)
+│   ├── extracted-colors.ts  # Auto-generated theme colors from images
+│   ├── prompts.ts           # AI prompts for generating monthly theme images
+│   └── blur-placeholders.ts # Base64 blur placeholder data
 ├── hooks/         # Custom React hooks
 └── types/         # TypeScript definitions
 
