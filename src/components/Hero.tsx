@@ -86,9 +86,12 @@ export function Hero() {
     setDarkSrc(darkPaths.fallback);
   }, [darkPaths.fallback]);
 
-  // Keyboard navigation
+  // Keyboard navigation (disabled during work mode)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Disable keyboard navigation during work mode
+      if (isWorkMode) return;
+
       if (e.key === 'ArrowRight') {
         goToNextMonth();
       } else if (e.key === 'ArrowLeft') {
@@ -98,7 +101,7 @@ export function Hero() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [goToNextMonth, goToPrevMonth]);
+  }, [goToNextMonth, goToPrevMonth, isWorkMode]);
 
   // Sync background color to html element and meta theme-color for browser UI
   useEffect(() => {
@@ -135,6 +138,9 @@ export function Hero() {
   const textMuted = isDark ? '#a0a0b0' : '#94a3b8';
 
   const handlePanEnd = (_: unknown, info: { offset: { x: number } }) => {
+    // Disable swiping during work mode
+    if (isWorkMode) return;
+
     if (info.offset.x > SWIPE_THRESHOLD) {
       goToPrevMonth();
     } else if (info.offset.x < -SWIPE_THRESHOLD) {
