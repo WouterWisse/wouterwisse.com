@@ -5,11 +5,9 @@ import { useState, useEffect, useCallback } from 'react';
 interface UseCurrentMonthReturn {
   displayedMonth: number | null;
   actualMonth: number | null;
-  isCurrentMonth: boolean;
   direction: 'left' | 'right' | null;
   goToNextMonth: () => void;
   goToPrevMonth: () => void;
-  goToCurrentMonth: () => void;
 }
 
 export function useCurrentMonth(): UseCurrentMonthReturn {
@@ -33,20 +31,11 @@ export function useCurrentMonth(): UseCurrentMonthReturn {
     setDisplayedMonth((prev) => (prev !== null ? (prev - 1 + 12) % 12 : null));
   }, []);
 
-  const goToCurrentMonth = useCallback(() => {
-    if (displayedMonth !== null && actualMonth !== null) {
-      setDirection(displayedMonth < actualMonth ? 'right' : 'left');
-    }
-    setDisplayedMonth(actualMonth);
-  }, [actualMonth, displayedMonth]);
-
   return {
     displayedMonth,
     actualMonth,
-    isCurrentMonth: displayedMonth === actualMonth,
     direction,
     goToNextMonth,
     goToPrevMonth,
-    goToCurrentMonth,
   };
 }

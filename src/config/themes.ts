@@ -205,10 +205,6 @@ export function getDailyImagePath(monthIndex: number, mode: Mode, date: Date = n
   };
 }
 
-export function getAllThemes(): MonthlyTheme[] {
-  return Object.values(THEMES);
-}
-
 // Background colors for CSS
 export const LIGHT_BACKGROUND = '#fafafa';
 export const DARK_BACKGROUND = '#1a1025';
