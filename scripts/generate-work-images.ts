@@ -1,9 +1,8 @@
-import Replicate from 'replicate';
 import fs from 'fs/promises';
 import path from 'path';
 import { CHARACTER_DESC, LIGHT_BASE_STYLE, DARK_BASE_STYLE } from '../src/config/prompts';
-
-const replicate = new Replicate();
+import { generateScene, sleep, RATE_LIMIT_DELAY } from './lib/replicate-utils';
+import { downloadImage, ensureDir } from './lib/file-utils';
 
 const OUTPUT_DIR = path.join(process.cwd(), 'public', 'images', 'work');
 
@@ -17,76 +16,10 @@ const CHARACTER_REFERENCE = process.env.CHARACTER_REF || 'https://raw.githubuser
 // API Keys
 const REPLICATE_TOKEN = process.env.REPLICATE_API_TOKEN;
 
-// Rate limiting delay (ms between requests) - Replicate has 6 req/min limit
-const RATE_LIMIT_DELAY = 12000;
-
 // Work scene prompts - secret project for tradespeople app
 const WORK_LIGHT_PROMPT = `${LIGHT_BASE_STYLE}, ${CHARACTER_DESC} sitting in ergonomic desk chair behind a single large wooden desk in home office with clay pink terracotta walls and natural wood acoustic panels, wearing casual grey t-shirt, IMPORTANT: one huge ultrawide curved widescreen monitor on desk showing colorful code editor with syntax highlighting, several smartphones and tablets scattered on the desk showing app mockups, CRITICAL POSE: right hand raised to face with index finger pressed vertically against closed lips in classic shhhh hush be quiet secretive gesture, mischievous playful eyes looking directly at viewer with raised eyebrows sharing a secret, tradesperson tools and props scattered on desk and around room - paintbrushes in jars, claw hammer, screwdrivers, adjustable wrench, yellow measuring tape, spirit level tool, jar of nails and screws, cordless power drill, red metal toolbox on floor, paint cans stacked nearby, all suggesting building an app for tradespeople, warm productive daylight, working on something exciting and secret, compact centered single desk setup`;
 
 const WORK_DARK_PROMPT = `${DARK_BASE_STYLE}, ${CHARACTER_DESC} sitting in ergonomic desk chair behind a single large wooden desk in home office with clay pink terracotta walls and natural wood acoustic panels, wearing casual grey t-shirt, IMPORTANT: one huge ultrawide curved widescreen monitor on desk glowing brightly showing colorful code editor with syntax highlighting as main light source, several smartphones and tablets scattered on the desk with glowing screens showing app mockups, CRITICAL POSE: right hand raised to face with index finger pressed vertically against closed lips in classic shhhh hush be quiet secretive gesture, mischievous playful eyes looking directly at viewer sharing a secret, tradesperson tools and props scattered on desk and around room - paintbrushes in jars, claw hammer, screwdrivers, adjustable wrench, yellow measuring tape, spirit level tool, jar of nails and screws, cordless power drill, red metal toolbox on floor, paint cans stacked nearby, dim ambient moody lighting with monitor glow illuminating face, late night coding session on secret project, working hard in the dark, compact centered single desk setup`;
-
-async function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function generateScene(prompt: string): Promise<string | null> {
-  if (dryRun) {
-    console.log(`  [DRY RUN] Would generate: "${prompt.substring(0, 100)}..."`);
-    return null;
-  }
-
-  try {
-    const input: Record<string, unknown> = {
-      prompt,
-      aspect_ratio: '1:1',
-      output_format: 'png',
-    };
-
-    // Use character reference if provided for consistent character appearance
-    if (CHARACTER_REFERENCE) {
-      input.image = CHARACTER_REFERENCE;
-    }
-
-    const output = await replicate.run(
-      'black-forest-labs/flux-kontext-pro',
-      { input }
-    );
-
-    // Handle different output formats from Replicate
-    if (typeof output === 'string') {
-      return output;
-    }
-    if (Array.isArray(output) && typeof output[0] === 'string') {
-      return output[0];
-    }
-    // Handle FileOutput object
-    if (output && typeof output === 'object') {
-      const obj = output as { url?: () => string | Promise<string> } | { toString?: () => string };
-      if ('url' in obj && typeof obj.url === 'function') {
-        return await obj.url();
-      }
-      const str = String(output);
-      if (str.startsWith('http')) {
-        return str;
-      }
-    }
-    console.error('  Unexpected output format:', typeof output, output);
-    return null;
-  } catch (error) {
-    console.error(`  Error generating scene:`, error);
-    return null;
-  }
-}
-
-async function downloadImage(url: string): Promise<Buffer> {
-  const response = await fetch(url);
-  const buffer = await response.arrayBuffer();
-  return Buffer.from(buffer);
-}
-
-async function ensureDir(dir: string): Promise<void> {
-  await fs.mkdir(dir, { recursive: true });
-}
 
 async function main() {
   console.log('🔨 Work Image Generation');
@@ -124,7 +57,10 @@ async function main() {
 
     console.log(`  🖼️  Generating scene...`);
 
-    const imageUrl = await generateScene(prompt);
+    const imageUrl = await generateScene(prompt, {
+      characterReference: CHARACTER_REFERENCE,
+      dryRun,
+    });
 
     if (imageUrl) {
       const imageBuffer = await downloadImage(imageUrl);
