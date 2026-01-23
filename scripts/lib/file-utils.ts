@@ -5,6 +5,9 @@ import fs from 'fs/promises';
  */
 export async function downloadImage(url: string): Promise<Buffer> {
   const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to download image from ${url}: ${response.status} ${response.statusText}`);
+  }
   const buffer = await response.arrayBuffer();
   return Buffer.from(buffer);
 }
