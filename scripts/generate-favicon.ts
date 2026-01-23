@@ -1,9 +1,8 @@
-import Replicate from 'replicate';
 import sharp from 'sharp';
 import fs from 'fs/promises';
 import path from 'path';
-
-const replicate = new Replicate();
+import { generateScene } from './lib/replicate-utils';
+import { downloadImage } from './lib/file-utils';
 
 const CHARACTER_DESC = 'single person, one man only, friendly young caucasian man in his early 30s, slim thin athletic build, lean body type, medium height, exactly two arms, exactly two hands with five fingers each, exactly two legs, short neat blonde hair with natural texture, light blonde eyebrows, visible light stubble beard covering jaw and chin, fair skin with slight tan, friendly long face shape, bright vivid blue eyes looking straight ahead not cross-eyed, larger than average nose, friendly slight smile showing no teeth, normal human ears, natural human proportions, gold wedding ring on left ring finger';
 
@@ -15,36 +14,18 @@ async function main() {
   console.log('🎨 Generating favicon...\n');
   console.log('📷 Using character reference:', CHARACTER_REFERENCE.substring(0, 60) + '...\n');
 
-  const output = await replicate.run(
-    'black-forest-labs/flux-kontext-pro',
-    {
-      input: {
-        prompt: PROMPT,
-        image: CHARACTER_REFERENCE,
-        aspect_ratio: '1:1',
-        output_format: 'png',
-      }
-    }
-  );
-
-  // Handle different output formats
-  let imageUrl: string | null = null;
-  if (typeof output === 'string') imageUrl = output;
-  else if (Array.isArray(output) && typeof output[0] === 'string') imageUrl = output[0];
-  else if (output && typeof output === 'object') {
-    const str = String(output);
-    if (str.startsWith('http')) imageUrl = str;
-  }
+  const imageUrl = await generateScene(PROMPT, {
+    characterReference: CHARACTER_REFERENCE,
+  });
 
   if (!imageUrl) {
-    console.error('Failed to get image URL from output:', output);
+    console.error('Failed to generate favicon');
     process.exit(1);
   }
 
   console.log('✅ Image generated, downloading...');
 
-  const response = await fetch(imageUrl);
-  const buffer = Buffer.from(await response.arrayBuffer());
+  const buffer = await downloadImage(imageUrl);
 
   // Save original
   const originalPath = path.join(process.cwd(), 'public', 'favicon-original.png');
