@@ -33,7 +33,7 @@ export function Hero() {
       >
         {sound.enabled ? <FiVolume2 aria-hidden="true" /> : <FiVolumeX aria-hidden="true" />}
       </button>
-      <h1 className="sr-only">Wouter Wisse, full stack developer</h1>
+      <h1 className="sr-only">Wouter Wisse, Full Stack Developer aka AI Agent Manager</h1>
       <OfficeScene isDark={isDark} onToggleLamp={toggleMode} onType={sound.tap} onPause={sound.silence} onSound={sound.playEffect} onStopSounds={sound.stopEffects} musicPlaying={sound.musicPlaying} onToggleMusic={toggleMusic} getMusicTime={sound.getMusicTime} />
       <p className="office-rotate-hint" aria-hidden="true"><FiSmartphone />Rotate for the full office</p>
     </section>
