@@ -116,6 +116,12 @@ const stickers: Sticker[] = [
   ) },
 ];
 
+// Grows a viewBox to four times its size around the same centre (see .office-sticker-decal).
+function paddedViewBox(viewBox: string) {
+  const [x, y, width, height] = viewBox.split(' ').map(Number);
+  return `${x - width * 1.5} ${y - height * 1.5} ${width * 4} ${height * 4}`;
+}
+
 // How far a sticker's backing reaches from its centre towards `angle`, in viewBox units.
 function stickerReach({ shape: { width, height, radius }, tilt }: Sticker, angle: number) {
   const local = angle - tilt * Math.PI / 180;
@@ -159,11 +165,11 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
   const mode = isDark ? 'night' : 'day';
 
   // Dragging peels a sticker from wherever it's grabbed. Positions are in the decal's viewBox, 100 units wide.
-  const startPeel = (event: React.PointerEvent<HTMLAnchorElement>) => {
+  const startPeel = (event: React.PointerEvent<HTMLAnchorElement>, viewBox: string) => {
     if (event.button !== 0) return;
     const sticker = event.currentTarget;
     const rect = sticker.getBoundingClientRect();
-    const top = sticker.querySelector('svg')!.viewBox.baseVal.y;
+    const top = Number(viewBox.split(' ')[1]);
     sticker.setPointerCapture(event.pointerId);
     sticker.dataset.peeling = 'true';
     peeledClick.current = false;
@@ -713,7 +719,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
           const { id, label, href, art, paper, tilt, shape, left, top, viewBox = '0 0 100 100', sheen = true } = sticker;
           return <a key={id} {...href ? { href, target: '_blank', rel: 'noopener noreferrer', 'aria-label': label } : { 'aria-hidden': true }} className={`office-sticker office-sticker-${id}`} data-sticker={id} style={{ left, top }}
             draggable={false}
-            onPointerDown={startPeel}
+            onPointerDown={event => startPeel(event, viewBox)}
             onPointerMove={event => movePeel(event, sticker)}
             onPointerLeave={event => { if (!peel.current) settlePeel(event.currentTarget); }}
             onPointerUp={event => endPeel(event, id)}
@@ -721,7 +727,9 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
             onClick={event => { if (peeledClick.current) { peeledClick.current = false; event.preventDefault(); } }}
           >
             {/* Keyed by lighting: Safari keeps painting a stale filter on these 3D-transformed decals otherwise. */}
-            <svg key={isDark && nightLight[id] ? 'night' : 'day'} className="office-sticker-decal" viewBox={viewBox} aria-hidden="true">
+            {/* Drawn on a canvas four times the sticker's size (same centre), so the fold-back flap and a
+                pulled-off sticker stay inside it: Safari clips overflow on these filtered, 3D-transformed SVGs. */}
+            <svg key={isDark && nightLight[id] ? 'night' : 'day'} className="office-sticker-decal" viewBox={paddedViewBox(viewBox)} aria-hidden="true">
               <defs>
                 <linearGradient id={`${id}-surface`} x1="0" y1="0" x2="1" y2="0">
                   <stop stopColor="#26354b" stopOpacity=".24" />

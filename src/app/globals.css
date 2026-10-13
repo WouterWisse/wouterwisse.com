@@ -473,8 +473,11 @@ html:has(.office-home[data-mode="night"]) { background: #181b25; }
 }
 .office-sticker-decal {
   pointer-events: none;
-  width: 100%;
-  height: 100%;
+  /* Four times the sticker, centred on it, matching the padded viewBox in OfficeScene. */
+  position: absolute;
+  inset: -150%;
+  width: 400%;
+  height: 400%;
   overflow: visible;
   color: #24292f;
   filter: drop-shadow(0 .35px .2px #0005);
