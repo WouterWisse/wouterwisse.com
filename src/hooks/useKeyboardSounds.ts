@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export type OfficeSound = 'notification' | 'growl' | 'slurp' | 'fan' | 'success' | 'lamp';
+export type OfficeSound = 'notification' | 'growl' | 'slurp' | 'fan' | 'success' | 'lamp' | 'sticker-peel' | 'sticker-loose';
 
 export function useKeyboardSounds() {
   const [enabled, setEnabled] = useState(false);
@@ -63,7 +63,7 @@ export function useKeyboardSounds() {
     try {
       const audio = context.current ?? new AudioContext({ latencyHint: 'interactive' });
       context.current = audio;
-      effectLoading.current ??= Promise.allSettled((['notification', 'growl', 'slurp', 'fan', 'success', 'lamp'] as const).map(async name => {
+      effectLoading.current ??= Promise.allSettled((['notification', 'growl', 'slurp', 'fan', 'success', 'lamp', 'sticker-peel', 'sticker-loose'] as const).map(async name => {
         const response = await fetch(name === 'notification' ? '/sounds/iphone-ping.mp3' : `/sounds/office-${name}.mp3${name === 'fan' ? '?v=2' : ''}`);
         if (!response.ok) return;
         effects.current[name] = await audio.decodeAudioData(await response.arrayBuffer());
@@ -107,7 +107,7 @@ export function useKeyboardSounds() {
       const source = audio.createBufferSource();
       const volume = audio.createGain();
       source.buffer = buffer;
-      volume.gain.value = name === 'fan' ? .035 : name === 'notification' || name === 'success' || name === 'lamp' ? .45 : .65;
+      volume.gain.value = name === 'fan' ? .035 : name === 'notification' || name === 'success' || name === 'lamp' || name.startsWith('sticker') ? .45 : .65;
       source.connect(volume);
       volume.connect(audio.destination);
       effectSources.current.add(source);

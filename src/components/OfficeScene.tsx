@@ -157,6 +157,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
     const dy = drag.top + (event.clientY - drag.rect.top) * 100 / drag.rect.width - drag.y;
     const length = Math.hypot(dx, dy);
     if (!drag.moved && length * drag.rect.width / 100 < 4) return;
+    if (!drag.moved) onSound('sticker-peel');
     drag.moved = true;
     // Fold along the perpendicular bisector of grab → pointer, so the grabbed spot lands under the pointer.
     // The fold's normal points back at the grabbed side, which is the side that flips over.
@@ -168,6 +169,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
     if (!shape.href && fold < -reach) {
       // Folded clean off: freeze the flipped-over sticker and carry it with the pointer from here.
       drag.loose = { x: event.clientX, y: event.clientY, dx: 0, dy: 0 };
+      onSound('sticker-loose');
       sticker.dataset.loose = 'true';
       sticker.style.setProperty('--peel', `${-reach - 1}px`);
       return;
