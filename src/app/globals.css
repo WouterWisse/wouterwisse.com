@@ -263,14 +263,24 @@ html {
   place-items: center;
   width: 44px;
   height: 44px;
+  border: 1.5px solid color-mix(in srgb, var(--office-ink) 25%, transparent);
   border-radius: 50%;
-  color: var(--office-muted);
+  background: color-mix(in srgb, var(--office-bg) 85%, transparent);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 12px #0002;
+  color: var(--office-ink);
   cursor: pointer;
-  transition: background-color 200ms ease, color 800ms ease;
+  transition: background-color 200ms ease, color 800ms ease, border-color 800ms ease;
 }
 .office-sound-toggle svg { width: 20px; height: 20px; }
-.office-sound-toggle:hover { background: color-mix(in srgb, var(--office-ink) 8%, transparent); }
+.office-sound-toggle:hover { background: color-mix(in srgb, var(--office-bg) 70%, var(--office-ink) 12%); }
 .office-sound-toggle:disabled { opacity: .4; cursor: default; }
+/* Muted: a soft ring pulse invites people to turn the sound on. */
+.office-sound-toggle[aria-pressed="false"]:not(:disabled) { animation: office-sound-pulse 2.4s ease-out infinite; }
+@keyframes office-sound-pulse {
+  0% { box-shadow: 0 2px 12px #0002, 0 0 0 0 color-mix(in srgb, var(--office-accent) 55%, transparent); }
+  70%, 100% { box-shadow: 0 2px 12px #0002, 0 0 0 12px transparent; }
+}
 .office-home { container-type: size; }
 /* The room covers the viewport, cropping 15% from the top and 85% from the bottom so heads and the lamp stay in frame. */
 .office-stage {
@@ -395,7 +405,9 @@ html {
   border-radius: 50%;
   pointer-events: auto;
   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  user-select: none;
+  touch-action: none; /* Touch drags peel the sticker instead of scrolling. */
 }
 .office-sticker-decal {
   width: 100%;
@@ -410,30 +422,32 @@ html {
   color: #0a66c2;
   transform: perspective(44cqw) rotateY(24deg) skewY(-3deg);
 }
-.office-sticker { --peel: 54px; }
+.office-sticker { --peel: 54px; --peel-angle: -40deg; }
 :is(.office-sticker-github, .office-sticker-besona) { --peel: 42px; }
 .office-sticker-besona { width: 8.5%; }
 .office-sticker-besona .office-sticker-decal { transform: perspective(44cqw) rotateY(14deg); }
+:is(.office-sticker-claude, .office-sticker-chatgpt) { width: 8%; }
+.office-sticker-the-mountain { width: 9.5%; }
+.office-sticker-the-mountain .office-sticker-decal { transform: perspective(44cqw) rotateY(20deg); }
+.office-sticker-claude .office-sticker-decal { color: #d97757; }
+.office-sticker-chatgpt .office-sticker-decal { color: #0d0d0d; transform: perspective(44cqw) rotateY(-10deg); }
+.office-sticker-property { width: 20%; aspect-ratio: 100 / 28; border-radius: 3px; }
+.office-sticker-property .office-sticker-decal { transform: none; }
+/* Decals without a link can be pulled clean off. */
+.office-sticker:not([href]) { cursor: grab; }
+.office-sticker:not([href])[data-peeling] { cursor: grabbing; }
 .office-peel-edge, .office-peel-flap { transition: transform 260ms cubic-bezier(.3, .7, .4, 1); }
+.office-peel-frame { transform: translate(50px, 50px) rotate(var(--peel-angle)); }
+.office-peel-back { transform: scale(-1, 1) rotate(calc(var(--peel-angle) * -1)) translate(-50px, -50px); }
 .office-peel-edge { transform: translateX(var(--peel)); }
+.office-sticker[data-peeling] :is(.office-peel-edge, .office-peel-flap) { transition: none; }
 .office-peel-flap {
   transform: translateX(calc(var(--peel) * 2));
   filter: drop-shadow(-.4px .9px .7px #0004);
 }
 .office-sticker:focus-visible { --peel: 46px; }
 :is(.office-sticker-github, .office-sticker-besona):focus-visible { --peel: 34px; }
-@media (hover: hover) {
-  .office-sticker:hover { --peel: 46px; }
-  :is(.office-sticker-github, .office-sticker-besona):hover { --peel: 34px; }
-}
-.office-label {
-  position: absolute;
-  width: 20%;
-  overflow: visible;
-  filter: drop-shadow(0 .35px .2px #0005);
-}
-.office-label-property { left: 39%; top: 17%; transform: rotate(-1.5deg); }
-.office-home[data-mode="night"] :is(.office-sticker-decal, .office-label) { filter: brightness(.8) sepia(.12) drop-shadow(0 .35px .2px #0005); }
+.office-home[data-mode="night"] .office-sticker-decal { filter: brightness(.8) sepia(.12) drop-shadow(0 .35px .2px #0005); }
 .office-hint {
   position: absolute;
   left: 50%;
@@ -459,7 +473,7 @@ html {
   .office-stage .office-layer-phone, .office-stage .office-layer-mug { animation: none !important; }
   .office-stage .office-mac-led, .office-stage .office-layer-mac-studio, .office-stage .office-face, .office-stage .office-foot { animation: none !important; }
   .office-stage[data-reaction="drink"]:not([data-phase="return"]) .office-layer-mug { opacity: 0; }
-  .office-rotate-hint svg { animation: none; }
+  .office-rotate-hint svg, .office-sound-toggle { animation: none !important; }
 }
 .office-home :focus-visible { outline: 2px solid var(--office-accent); outline-offset: 6px; }
 @media (max-width: 640px) {

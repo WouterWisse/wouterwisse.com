@@ -1,8 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState, type SVGProps } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type SVGProps } from 'react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { SiClaude, SiOpenai } from 'react-icons/si';
 import { OFFICE_LAYERS, OFFICE_MUSIC_BEAT, officeLayerStyle } from '@/config/office';
 import dayBounds from '@/config/office-layer-bounds.json';
 import nightBounds from '@/config/office-night-layer-bounds.json';
@@ -44,11 +45,52 @@ function BesonaLogo({ size, ...props }: SVGProps<SVGSVGElement> & { size: number
     </svg>
   );
 }
-const stickers = [
-  { id: 'github', label: 'GitHub', href: 'https://github.com/WouterWisse', icon: FaGithub, paper: '#fffaf0', tilt: -14, round: true, left: '15%', top: '32%' },
-  { id: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/wwisse/', icon: FaLinkedin, paper: '#fffaf0', tilt: 11, round: false, left: '75%', top: '19%' },
-  { id: 'besona', label: 'Besona', href: 'https://besona.ai', icon: BesonaLogo, paper: '#c4bdf2', tilt: -5, round: true, left: '66.75%', top: '51.4%' },
+interface Sticker {
+  id: string;
+  label: string;
+  /** Link stickers stick back after peeling; the rest can be pulled clean off. */
+  href?: string;
+  left: string;
+  top: string;
+  tilt: number;
+  paper: string;
+  /** Backing card centred on (50, 50) in the decal's 100-unit-wide viewBox. */
+  shape: { width: number; height: number; radius: number };
+  /** Artwork drawn upright; the sticker tilts it with the backing. */
+  art: ReactNode;
+  viewBox?: string;
+  sheen?: boolean;
+}
+const circle = { width: 82, height: 82, radius: 41 };
+const square = { width: 82, height: 82, radius: 13 };
+const stickers: Sticker[] = [
+  { id: 'github', label: 'GitHub', href: 'https://github.com/WouterWisse', art: <FaGithub x="17" y="17" size={66} />, paper: '#fffaf0', tilt: -14, shape: circle, left: '15%', top: '32%' },
+  { id: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/wwisse/', art: <FaLinkedin x="17" y="17" size={66} />, paper: '#fffaf0', tilt: 11, shape: square, left: '75%', top: '19%' },
+  { id: 'besona', label: 'Besona', href: 'https://besona.ai', art: <BesonaLogo x="17" y="17" size={66} />, paper: '#c4bdf2', tilt: -5, shape: circle, left: '66.75%', top: '51.4%' },
+  { id: 'claude', label: 'Claude', art: <SiClaude x="22" y="22" size={56} />, paper: '#faf9f5', tilt: 9, shape: circle, left: '8%', top: '9%' },
+  { id: 'chatgpt', label: 'ChatGPT', art: <SiOpenai x="22" y="22" size={56} />, paper: '#fffaf0', tilt: -8, shape: square, left: '29%', top: '57%' },
+  // Credits the deep-house track the Sonos plays, with the artist's Pixabay avatar.
+  { id: 'the-mountain', label: 'Music by The_Mountain', href: 'https://pixabay.com/users/the_mountain-3616498/', paper: '#fffaf0', tilt: 6, shape: circle, left: '81%', top: '50%', art: <>
+    <clipPath id="the-mountain-avatar"><circle cx="50" cy="50" r="35" /></clipPath>
+    <image href="/images/office/scene/stickers/the-mountain.webp" x="15" y="15" width="70" height="70" clipPath="url(#the-mountain-avatar)" />
+  </> },
+  // The page heading, as a decal: Hero keeps a screen-reader-only h1 for it. Drawn at half scale across the
+  // viewBox's middle band, so its centre stays at (50, 50) like the square stickers.
+  { id: 'property', label: 'Property of Wouter Wisse', viewBox: '0 36 100 28', sheen: false, paper: '#f3f0e8', tilt: -1.5, shape: { width: 99, height: 27, radius: 2.5 }, left: '39%', top: '17%', art: (
+    <g transform="translate(0 36) scale(.5)">
+      <rect x="1" y="1" width="198" height="54" rx="5" fill="none" stroke="#cfc8b8" strokeWidth="1.2" />
+      <path d="M1 6a5 5 0 0 1 5-5h188a5 5 0 0 1 5 5v15H1Z" fill="#2c3340" />
+      <text x="100" y="15.5" textAnchor="middle" fill="#f3f0e8" fontSize="10" fontWeight="800" letterSpacing="3">PROPERTY OF</text>
+      <text x="100" y="46" textAnchor="middle" fill="#2c3340" fontSize="23" fontWeight="900" letterSpacing="-.5">WOUTER WISSE</text>
+    </g>
+  ) },
 ];
+
+// How far a sticker's backing reaches from its centre towards `angle`, in viewBox units.
+function stickerReach({ shape: { width, height, radius }, tilt }: Sticker, angle: number) {
+  const local = angle - tilt * Math.PI / 180;
+  return (width / 2 - radius) * Math.abs(Math.cos(local)) + (height / 2 - radius) * Math.abs(Math.sin(local)) + radius;
+}
 
 interface OfficeSceneProps {
   isDark: boolean;
@@ -77,7 +119,92 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
   const busy = useRef(false);
   const reactionTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const glanceTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const peel = useRef<{ rect: DOMRect; top: number; x: number; y: number; moved: boolean; loose?: { x: number; y: number; dx: number; dy: number } } | null>(null);
+  const [removed, setRemoved] = useState<string[]>([]);
+  const peeledClick = useRef(false);
   const mode = isDark ? 'night' : 'day';
+
+  // Dragging peels a sticker from wherever it's grabbed. Positions are in the decal's viewBox, 100 units wide.
+  const startPeel = (event: React.PointerEvent<HTMLAnchorElement>) => {
+    if (event.button !== 0) return;
+    const sticker = event.currentTarget;
+    const rect = sticker.getBoundingClientRect();
+    const top = sticker.querySelector('svg')!.viewBox.baseVal.y;
+    sticker.setPointerCapture(event.pointerId);
+    sticker.dataset.peeling = 'true';
+    peeledClick.current = false;
+    peel.current = { rect, top, x: (event.clientX - rect.left) * 100 / rect.width, y: top + (event.clientY - rect.top) * 100 / rect.width, moved: false };
+  };
+  const movePeel = (event: React.PointerEvent<HTMLAnchorElement>, shape: Sticker) => {
+    const drag = peel.current;
+    const sticker = event.currentTarget;
+    if (!drag) {
+      if (event.pointerType !== 'mouse') return;
+      // Hovering lifts the edge nearest the mouse.
+      const rect = sticker.getBoundingClientRect();
+      const angle = Math.atan2(event.clientY - rect.top - rect.height / 2, event.clientX - rect.left - rect.width / 2);
+      sticker.style.setProperty('--peel-angle', `${angle}rad`);
+      sticker.style.setProperty('--peel', `${stickerReach(shape, angle) - 7}px`);
+      return;
+    }
+    if (drag.loose) {
+      drag.loose.dx = event.clientX - drag.loose.x;
+      drag.loose.dy = event.clientY - drag.loose.y;
+      sticker.style.translate = `${drag.loose.dx}px ${drag.loose.dy}px`;
+      return;
+    }
+    const dx = (event.clientX - drag.rect.left) * 100 / drag.rect.width - drag.x;
+    const dy = drag.top + (event.clientY - drag.rect.top) * 100 / drag.rect.width - drag.y;
+    const length = Math.hypot(dx, dy);
+    if (!drag.moved && length * drag.rect.width / 100 < 4) return;
+    drag.moved = true;
+    // Fold along the perpendicular bisector of grab → pointer, so the grabbed spot lands under the pointer.
+    // The fold's normal points back at the grabbed side, which is the side that flips over.
+    const nx = -dx / length, ny = -dy / length;
+    const angle = Math.atan2(ny, nx);
+    const fold = (drag.x + dx / 2 - 50) * nx + (drag.y + dy / 2 - 50) * ny;
+    const reach = stickerReach(shape, angle);
+    sticker.style.setProperty('--peel-angle', `${angle}rad`);
+    if (!shape.href && fold < -reach) {
+      // Folded clean off: freeze the flipped-over sticker and carry it with the pointer from here.
+      drag.loose = { x: event.clientX, y: event.clientY, dx: 0, dy: 0 };
+      sticker.dataset.loose = 'true';
+      sticker.style.setProperty('--peel', `${-reach - 1}px`);
+      return;
+    }
+    // Links leave a sliver stuck down so they hang off the monitor rather than detaching.
+    sticker.style.setProperty('--peel', `${shape.href ? Math.max(-36, fold) : fold}px`);
+  };
+  // Stick back down along the current fold (60 clears every sticker), then hand back to the resting peel.
+  const settlePeel = (sticker: HTMLElement) => {
+    if (sticker.dataset.loose) return;
+    sticker.style.setProperty('--peel', '60px');
+    setTimeout(() => {
+      if (sticker.dataset.peeling || sticker.matches(':hover')) return;
+      sticker.style.removeProperty('--peel');
+      sticker.style.removeProperty('--peel-angle');
+    }, 300);
+  };
+  const endPeel = (event: React.PointerEvent<HTMLAnchorElement>, id: string) => {
+    const sticker = event.currentTarget;
+    const drag = peel.current;
+    // A drag shouldn't open the link; the click only follows pointerup.
+    peeledClick.current = event.type === 'pointerup' && !!drag?.moved;
+    peel.current = null;
+    delete sticker.dataset.peeling;
+    if (!drag?.loose) {
+      if (drag?.moved) settlePeel(sticker);
+      return;
+    }
+    // Let go of a loose sticker and it drops away, tumbling around the point it was held by.
+    const { x, y, dx, dy } = drag.loose;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    sticker.style.transformOrigin = `${x - drag.rect.left}px ${y - drag.rect.top}px`;
+    sticker.animate([
+      { translate: `${dx}px ${dy}px`, rotate: '0deg', opacity: 1 },
+      { translate: `${dx + (still ? 0 : (Math.random() - .5) * 40)}px ${dy + (still ? 0 : 140)}px`, rotate: `${still ? 0 : (Math.random() - .5) * 60}deg`, opacity: 0 },
+    ], { duration: still ? 200 : 650, easing: 'cubic-bezier(.5, 0, .9, .5)', fill: 'forwards' }).onfinish = () => setRemoved(previous => [...previous, id]);
+  };
   const reacting = reaction !== 'idle';
   const bodyReaction = reaction === 'phone' || reaction === 'drink';
   const turboRunning = reaction === 'turbo' && phase === 'start';
@@ -145,7 +272,11 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
         setEmpty(previous => ({ ...previous, [mode]: true }));
         onSound('slurp');
       }, 800);
-      later(() => setPhase('return'), 3450);
+      // The slurp ends in a satisfied "ahh" 1.55 s in: lower the cup and raise the eyebrows on it.
+      later(() => {
+        setPhase('return');
+        setExpression('smile');
+      }, 2350);
       later(finishReaction, 4250);
     } else {
       setExpression('focus');
@@ -455,7 +586,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
                     loading="eager"
                     className="office-layer office-face"
                     data-face={face}
-                    style={{ ...officeLayerStyle(character, mode === 'night'), clipPath: 'inset(0 0 72% 0)', visibility: ready && !bodyReaction && visibleExpression === face ? 'visible' : 'hidden' }}
+                    style={{ ...officeLayerStyle(character, mode === 'night'), clipPath: 'inset(0 0 72% 0)', visibility: ready && (!bodyReaction || phase === 'return') && visibleExpression === face ? 'visible' : 'hidden' }}
                     onLoad={() => { faceLoads.current.add(`${mode}-${face}`); if (faceLoads.current.size === faces.length * 2) setFacesReady(true); }}
                   />
                 ))}
@@ -486,26 +617,33 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
         className="office-monitor-stickers"
         style={{ left: `${monitor.x / 1536 * 100}%`, top: `${monitor.y / 1024 * 100}%`, width: `${monitor.width / 1536 * 100}%`, height: `${monitor.height / 1024 * 100}%`, visibility: ready ? 'visible' : 'hidden' }}
       >
-        {stickers.map(({ id, label, href, icon: Icon, paper, tilt, round, left, top }) => (
-          <a key={id} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className={`office-sticker office-sticker-${id}`} style={{ left, top }}>
-            <svg className="office-sticker-decal" viewBox="0 0 100 100" aria-hidden="true">
+        {stickers.filter(({ id }) => !removed.includes(id)).map(sticker => {
+          const { id, label, href, art, paper, tilt, shape, left, top, viewBox = '0 0 100 100', sheen = true } = sticker;
+          return <a key={id} {...href ? { href, target: '_blank', rel: 'noopener noreferrer', 'aria-label': label } : { 'aria-hidden': true }} className={`office-sticker office-sticker-${id}`} style={{ left, top }}
+            draggable={false}
+            onPointerDown={startPeel}
+            onPointerMove={event => movePeel(event, sticker)}
+            onPointerLeave={event => { if (!peel.current) settlePeel(event.currentTarget); }}
+            onPointerUp={event => endPeel(event, id)}
+            onPointerCancel={event => endPeel(event, id)}
+            onClick={event => { if (peeledClick.current) { peeledClick.current = false; event.preventDefault(); } }}
+          >
+            <svg className="office-sticker-decal" viewBox={viewBox} aria-hidden="true">
               <defs>
                 <linearGradient id={`${id}-surface`} x1="0" y1="0" x2="1" y2="0">
                   <stop stopColor="#26354b" stopOpacity=".24" />
                   <stop offset=".55" stopColor="#fff8e6" stopOpacity=".03" />
                   <stop offset="1" stopColor="#fff8e6" stopOpacity=".2" />
                 </linearGradient>
-                <g id={`${id}-shape`} transform={`rotate(${tilt} 50 50)`}>
-                  {round ? <circle cx="50" cy="50" r="41" /> : <rect x="9" y="9" width="82" height="82" rx="13" />}
-                </g>
+                <rect id={`${id}-shape`} x={50 - shape.width / 2} y={50 - shape.height / 2} width={shape.width} height={shape.height} rx={shape.radius} transform={`rotate(${tilt} 50 50)`} />
                 <g id={`${id}-artwork`}>
                   <use href={`#${id}-shape`} fill={paper} />
-                  <g transform={`rotate(${tilt} 50 50)`}><Icon x="17" y="17" size={66} /></g>
-                  <use href={`#${id}-shape`} fill={`url(#${id}-surface)`} />
+                  <g transform={`rotate(${tilt} 50 50)`}>{art}</g>
+                  {sheen && <use href={`#${id}-shape`} fill={`url(#${id}-surface)`} />}
                 </g>
-                {/* Peel from the top-right: everything past the moving fold line is mirrored back as the flap. */}
-                <mask id={`${id}-peel`} maskUnits="userSpaceOnUse" x="-50" y="-50" width="200" height="200">
-                  <g transform="translate(50 50) rotate(-40)"><rect className="office-peel-edge" x="-200" y="-100" width="200" height="200" fill="#fff" /></g>
+                {/* Everything past the fold line (at --peel along --peel-angle) is mirrored back as the flap. */}
+                <mask id={`${id}-peel`} maskUnits="userSpaceOnUse" x="-150" y="-150" width="400" height="400">
+                  <g className="office-peel-frame"><rect className="office-peel-edge" x="-200" y="-100" width="200" height="200" fill="#fff" /></g>
                 </mask>
                 {id === 'github' && <>
                   {/* Creases follow the monitor's ridge edges, measured from the day/night monitor.webp in this (pre-perspective) viewBox. */}
@@ -533,23 +671,16 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
                     <path d="M0 71.23L100 79.02" stroke="#344052" strokeOpacity=".3" strokeWidth=".7" />
                   </g>
                 </> : <use href={`#${id}-artwork`} />}
-                <g transform="translate(50 50) rotate(-40)">
+                <g className="office-peel-frame">
                   <g className="office-peel-flap">
-                    <use href={`#${id}-shape`} transform="scale(-1 1) rotate(40) translate(-50 -50)" fill="#ebe5d6" />
+                    <use href={`#${id}-shape`} className="office-peel-back" fill="#ebe5d6" />
                   </g>
                 </g>
               </g>
             </svg>
-            <span className="office-hint" aria-hidden="true">{label}</span>
-          </a>
-        ))}
-        {/* The page heading, as a decal: Hero keeps a screen-reader-only h1 for it. */}
-        <svg className="office-label office-label-property" viewBox="0 0 200 56" aria-hidden="true">
-          <rect x="1" y="1" width="198" height="54" rx="5" fill="#f3f0e8" stroke="#cfc8b8" strokeWidth="1.2" />
-          <path d="M1 6a5 5 0 0 1 5-5h188a5 5 0 0 1 5 5v15H1Z" fill="#2c3340" />
-          <text x="100" y="15.5" textAnchor="middle" fill="#f3f0e8" fontSize="10" fontWeight="800" letterSpacing="3">PROPERTY OF</text>
-          <text x="100" y="46" textAnchor="middle" fill="#2c3340" fontSize="23" fontWeight="900" letterSpacing="-.5">WOUTER WISSE</text>
-        </svg>
+            {href && <span className="office-hint" aria-hidden="true">{label}</span>}
+          </a>;
+        })}
       </div>
       <button
         type="button"
