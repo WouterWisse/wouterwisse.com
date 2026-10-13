@@ -1,0 +1,15 @@
+{
+  "tool": "Built-in image_gen",
+  "assets": [
+    {
+      "name": "sonos-day",
+      "prompt": "Use case: stylized-concept. Asset type: isolated transparent 3D website scene layer. Reference images 1 and 2 show the actual Sonos PLAY:1 speaker to reproduce: dark charcoal black rounded rectangular tower, fine perforated metal grille wrapping front and sides, black top cap with small buttons and indicator, subtle SONOS wordmark on upper front band. Reference image 3 is the material/rendering and soft daylight style of the existing desktop scene, NOT an object to include. Create ONE speaker only, stylized polished softly rounded 3D realism matching image 3. Front view with slight visibility of LEFT side, modestly elevated camera so top surface visible, much less top-down than the photos. Upright at center of a 1536x1024 transparent canvas, speaker approximately 410px wide and 620px tall, entirely visible with generous transparent margin. Daylight from upper left, soft warm bounce, subtle translucent contact shadow immediately under base. Genuine alpha transparency, no floor, no background, no Mac, no extra objects, no cable. Text only small exact SONOS logo. Preserve the recognizable proportions and controls of the photographed speaker.",
+      "output": "public/images/office/scene/sonos.webp"
+    },
+    {
+      "name": "sonos-night",
+      "prompt": "Use case: lighting-weather. Image 1 is the edit target: an isolated Sonos speaker scene layer. Change ONLY its illumination to match a nighttime office: restrained warm amber light from a nearby table lamp at upper right, soft cool dim monitor fill from left. Charcoal body stays dark and readable with subtle amber highlight along top/right edge. Preserve EXACT 1536x1024 canvas, speaker silhouette, position, size, front left camera perspective, SONOS logo, grille, buttons, proportions and contact shadow. Do not move anything or add objects. Keep genuine alpha transparent background and translucent contact shadow. No glow or colored halo outside the object, no floor, no background.",
+      "output": "public/images/office/scene/night/sonos.webp"
+    }
+  ]
+}

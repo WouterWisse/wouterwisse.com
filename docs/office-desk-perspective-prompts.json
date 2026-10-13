@@ -1,0 +1,31 @@
+{
+  "tool": "Built-in image_gen",
+  "geometry": "office-perspective-guides/geometry.json",
+  "method": "Separate projected construction boxes based on the desk depth edges, at each object's scene position. Mac depth recedes up-right, Sonos depth up-left. Guide corners are construction envelopes for the rounded objects, not claims of exact raster edge coordinates.",
+  "assets": [
+    {
+      "name": "day-mac-studio-desk-perspective",
+      "prompt": "Use case: sketch-to-render / compositing. Image 1 is the AUTHORITATIVE CAMERA GEOMETRY: render the object into this exact projected box, with softly rounded corners. Image 2 is ONLY the object's identity/material reference; its symmetric product-shot perspective is WRONG and MUST NOT be preserved. Image 3 shows the actual desk placement and explains why this asymmetry is required. Output ONE isolated silver Apple desktop computer on a genuine alpha transparent 1536x1024 canvas. Maintain the exact bounding box and plane directions of image 1. The top recedes UP AND RIGHT. Its rear corners are at (388,194) and (1318,194); front top corners are at (218,429) and (1192,429). Front bottom is (218,830) to (1192,830), rear right bottom (1318,577). Show the RIGHT SIDE face: camera sees this object from the desk center to its right. All depth edges must point up-right as in the guide, not opposite directions. Preserve rounded aluminum block, thin dark rubber base, Apple logo mapped to the skewed top plane. Front stays level, clean and blank; no ports, text, or status LED. The guide is a construction envelope: apply the product's rounded corners while keeping its projection and plane layout. Soft neutral DAYLIGHT from upper left, polished 3D realism matching existing illustration. A small translucent contact shadow underneath. No outline strokes, no guide lines, no visible box, no flat diagram styling, no desk/background/other objects, no glow. Crucially do NOT center the top symmetrically above the front: follow the asymmetric guide exactly.",
+      "guide": "docs/office-perspective-guides/mac-studio.png",
+      "output": "public/images/office/scene/mac-studio.webp"
+    },
+    {
+      "name": "day-sonos-desk-perspective",
+      "prompt": "Use case: sketch-to-render / compositing. Image 1 is the AUTHORITATIVE CAMERA GEOMETRY: render the object into this exact projected box, with softly rounded corners. Image 2 is ONLY the object's identity/material reference; its symmetric product-shot perspective is WRONG and MUST NOT be preserved. Image 3 shows the actual desk placement and explains why this asymmetry is required. Output ONE isolated charcoal Sonos PLAY:1 speaker on a genuine alpha transparent 1536x1024 canvas. Maintain the exact bounding box and plane directions of image 1. The top recedes UP AND LEFT. Its rear corners are at (516,132) and (896,132); front top corners are (622,278) and (1020,278). Front bottom is (622,892) to (1020,892), rear left bottom (516,718). Show the LEFT SIDE face: camera sees this object from the desk center to its left. All depth edges must point up-left as in the guide, not opposite directions. Preserve the rounded rectangular tower, black top with original play/volume buttons, fine perforated grille wrapping front/left side, SONOS centered on the FRONT BAND (not centered across the entire visible width). The guide is a construction envelope: apply the product's rounded corners while keeping its projection and plane layout. Soft neutral DAYLIGHT from upper left, polished 3D realism matching existing illustration. A small translucent contact shadow underneath. No outline strokes, no guide lines, no visible box, no flat diagram styling, no desk/background/other objects, no glow. Crucially do NOT center the top symmetrically above the front: follow the asymmetric guide exactly.",
+      "guide": "docs/office-perspective-guides/sonos.png",
+      "output": "public/images/office/scene/sonos.webp"
+    },
+    {
+      "name": "night-mac-studio-desk-perspective",
+      "prompt": "Use case: lighting-weather. Change ONLY the lighting of the supplied silver Apple desktop image to night: restrained cool blue fill from left, soft warm amber lamp highlights from right. Preserve EXACT canvas 1536x1024, pixel silhouette, position, proportions, perspective and geometry. This artwork was aligned to a specific desk perspective: its top recedes up-right and its RIGHT SIDE is visible. Do not symmetrize, rotate, recenter or change any edge or corner. Preserve the logo, top controls/materials, and soft contact shadow below. Genuine alpha transparent background. No extra objects, no external glow, no outline. Keep front blank; no status LED, ports, or text.",
+      "guide": "docs/office-perspective-guides/mac-studio.png",
+      "output": "public/images/office/scene/night/mac-studio.webp"
+    },
+    {
+      "name": "night-sonos-desk-perspective",
+      "prompt": "Use case: lighting-weather. Change ONLY the lighting of the supplied charcoal Sonos speaker image to night: restrained cool blue fill from left, soft warm amber lamp highlights from right. Preserve EXACT canvas 1536x1024, pixel silhouette, position, proportions, perspective and geometry. This artwork was aligned to a specific desk perspective: its top recedes up-left and its LEFT SIDE is visible. Do not symmetrize, rotate, recenter or change any edge or corner. Preserve the logo, top controls/materials, and soft contact shadow below. Genuine alpha transparent background. No extra objects, no external glow, no outline. ",
+      "guide": "docs/office-perspective-guides/sonos.png",
+      "output": "public/images/office/scene/night/sonos.webp"
+    }
+  ]
+}

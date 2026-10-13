@@ -1,9 +1,6 @@
-name: Generate Weekly Images
+name: Generate Legacy Seasonal Images (Manual)
 
 on:
-  schedule:
-    # Run every Monday at 00:00 UTC on main branch
-    - cron: '0 0 * * 1'
   workflow_dispatch: # Allow manual triggering for testing
 
 jobs:

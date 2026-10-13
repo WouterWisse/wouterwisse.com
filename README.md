@@ -10,7 +10,7 @@
   </picture>
   <br>
   <br>
-  <em>My personal website with seasonal themes that change throughout the year.</em>
+  <em>My personal website, with a layered illustration of my home office.</em>
   <br>
   <br>
   <a href="https://wouterwisse.com">wouterwisse.com</a>
@@ -36,29 +36,84 @@
 | Image Processing | Sharp |
 | Deployment | Vercel |
 
-## Features
+## Office scene
 
-### Core Features
-- **Seasonal themes** - 12 unique monthly themes with AI-generated illustrations
-- **Daily image variations** - Weekly-generated images with automatic fallback to monthly themes
-- **Light/dark mode** - System preference sync with smooth 700ms transitions
-- **Work mode preview** - Secret project sneak peek with temporary overlay
-- **Responsive design** - Optimized for mobile and desktop with dynamic viewport height
+The homepage uses one fixed composition with ten independently replaceable layers:
+room, chair, complete seated character, desk, keyboard, monitor, Mac Studio, phone,
+coffee mug, and lamp.
+All foreground assets have real alpha transparency and baked contact shadows. The
+neutral pose sits behind the monitor. The deeper desktop has room for the keyboard
+behind the monitor base, with the character's fingertips resting on the keys.
+The original soft radial fade and blur surround the assembled scene.
 
-### Navigation
-- **Swipe gestures** - Touch-based month navigation on mobile
-- **Keyboard controls** - Arrow keys for desktop navigation
-- **Month indicators** - Visual navigation with chevron buttons
+- Source PNGs: `public/images/office/scene/sources/`
+- Optimized WebP assets: `public/images/office/scene/`
+- Placement and stacking: `src/config/office.ts` (1536 × 1024 scene coordinates)
+- Generation prompts: `docs/office-layers.json`, `docs/office-night-prompts.json`, `docs/office-expression-prompts.json`
+- Night assets: `public/images/office/scene/night/`
+- Shoe contact-shadow renders: `docs/office-shoe-shadow-prompts.json`; day and night character assets preserve the existing legs and upper body.
+- Facial frames: `public/images/office/scene/expressions/`
+- Rebuild optimized assets and validate transparency: `npx tsx scripts/prepare-office-assets.ts`
+- Rebuild night assets: `npx tsx scripts/prepare-office-assets.ts --night`
+- Validate composition, connected character, and baked contact shadows: `npm run test:office`
 
-### Performance & UX
-- **Blur placeholders** - Smooth image loading with pre-generated data URLs
-- **Dynamic theme colors** - Extracted color palettes per month and mode
-- **Meta theme-color sync** - Updates browser UI (address bar/status bar) on mode change
-- **Framer Motion animations** - Smooth slide transitions and pan gestures
-- **Geolocation-based sunrise/sunset** - Uses SunCalc for location-aware daylight detection
-- **Reduced motion support** - Respects user accessibility preferences
-- **Device orientation** - Tilt-based parallax effects on mobile devices
-- **Mouse parallax** - Subtle cursor-based animations on desktop
+Click the lamp to switch between daylight (lamp off) and night (warm lamp on).
+The saved mode takes precedence over the system preference. All ten layers have
+separate night artwork with baked warm lighting and shadows; switching modes
+crossfades those assets without a global tint or lamp filter. Only the fabric shade
+is emissive; the ceramic lamp base receives reflected light.
+Typing runs in short, irregular bursts with subtle movement of the complete body
+and fingertips. The right foot (screen left) taps in occasional bursts of 2–4 taps,
+with varied speed and pauses; it stops in hidden tabs and with reduced motion.
+The 18 key-tap sounds from `ctrlaltwisse` in `public/sounds/` start
+after the first click or keypress; the speaker button toggles sound. Typing pauses
+in hidden tabs, and reduced-motion preferences disable movement, expressions and
+lamp shake. Blinks use half-closed and closed frames at irregular intervals, with
+occasional amused expressions. Only the head is replaced; the connected body and
+hands stay fixed behind the desk. Each expression has matching day/night lighting.
+Earlier generated concepts are retained for reference; the homepage does not rotate
+through them. Automatic seasonal-image generation is disabled.
+
+Tap the phone for an illuminated screen, vibration, the supplied iPhone notification
+sound and an annoyed growl. Tap the cup to pause typing, lift it for a recorded
+sip, and return it empty. Tapping the lamp refills both coffee (day) and tea (night).
+Reactions cannot overlap; switching the lamp or hiding the tab cancels the current
+sequence. The speaker button mutes typing and effects together. Reduced motion
+keeps the static reaction poses without shaking or moving the cup.
+The character stays seated; the monitor occludes his lower face, the lifted cup,
+and his torso.
+
+Tap the Mac Studio for turbo mode: its front status light pulses, the Mac subtly
+shakes, and the supplied vacuum recording plays quietly beneath the typing.
+Only the typing sounds accelerate for 5.2 seconds. His hands and body
+keep their normal pace; his head peeks slightly higher, then slowly settles behind
+the monitor while he squints. A soft success ding and smile finish the sequence.
+Tapping again while it runs triggers a brief
+annoyed sideways glance without restarting the work. Lamp changes and hidden tabs
+cancel the sequence; mute silences all audio, and reduced motion keeps the status
+light steady, the Mac still, and the character still. No actual build or device operation runs.
+
+Tapping the lamp plays the supplied switch recording in both directions, trimmed
+to start immediately. The speaker button also mutes this effect.
+
+The Sonos on the camera-right corner of the desk has a “Vibecode” hover label.
+Tap it to toggle the supplied `deep-house.mp3`, streamed on demand and looped.
+Wouter keeps typing with a smiling head bob and one rhythmic foot tap, still seated
+behind the monitor. Phone, drink, turbo, and lamp interactions leave the track
+running; their reactions take priority, then he returns to vibing. The global
+mute silences music without resetting its playback position. Reduced motion
+keeps the character still while music remains available.
+The foot tap, head nod, and subtle Sonos squash/bounce share the track's measured
+110 BPM beat (65 ms phase offset), driven by the audio playback clock so reactions,
+pauses, and track loops cannot put the animation out of sync. The speaker keeps
+bouncing while the character handles another interaction.
+
+- Interaction artwork: `public/images/office/scene/interactions/` (source PNGs in `sources/`)
+- Built-in ImageGen prompts: `docs/office-interaction-prompts.json`
+- Turbo expression prompts: `docs/office-turbo-prompts.json`; artwork in `public/images/office/scene/expressions/`
+- Sonos day/night artwork: `public/images/office/scene/{,night/}sonos.webp`; built-in ImageGen prompts in `docs/office-sonos-prompts.json`
+- Current Sonos/Mac renders: `docs/office-desk-perspective-prompts.json`, using separate construction guides in `docs/office-perspective-guides/`. Depth recedes up-right for the Mac on the left and up-left for the Sonos on the right, following the desk's shared perspective. Earlier source PNGs are retained in the scene's `sources/three-quarter/`, `sources/low-front/`, and `sources/symmetric-front/` directories. The Mac's LED sits on its front face, clear of the visible right side.
+- Sound sources and licenses: `public/sounds/office-sources.md`
 
 ## Development
 
@@ -88,7 +143,7 @@ npm run clean
 # Generate AI images for all months
 npm run generate-images
 
-# Generate weekly images (automated via workflow)
+# Generate legacy weekly images manually
 npm run generate:daily
 
 # Generate blur placeholders (after adding new images)
@@ -107,47 +162,16 @@ To deploy your own:
 2. Import to Vercel
 3. Add your custom domain in Vercel dashboard
 
-## Project Structure
+## Scene implementation
 
-```
-src/
-├── app/                        # Next.js App Router
-│   ├── layout.tsx             # Root layout with Analytics & Speed Insights
-│   ├── page.tsx               # Home page with Hero component
-│   └── globals.css            # Global styles and CSS variables
-├── components/                 # React components
-│   ├── Hero.tsx               # Main hero with images, navigation, and work mode
-│   ├── SocialLinks.tsx        # Social media links
-│   └── ThemeToggle.tsx        # Light/dark mode toggle
-├── config/                     # Configuration files
-│   ├── themes.ts              # Monthly theme definitions and image paths
-│   ├── blur-placeholders.ts   # Pre-generated blur data URLs
-│   ├── extracted-colors.ts    # Dynamic color palettes per theme
-│   ├── work.ts                # Work mode configuration
-│   └── prompts.ts             # AI image generation prompts
-├── hooks/                      # Custom React hooks
-│   ├── useCurrentMonth.ts     # Month state and navigation logic
-│   ├── useThemeMode.ts        # Light/dark mode with system sync
-│   ├── useSunPosition.ts      # Geolocation-based sunrise/sunset
-│   ├── useMouseParallax.ts    # Mouse-based parallax effects
-│   ├── useDeviceOrientation.ts # Tilt-based mobile parallax
-│   └── useReducedMotion.ts    # Accessibility motion preferences
-└── types/                      # TypeScript definitions
-    └── theme.ts               # Theme and mode type definitions
+`Hero.tsx` provides the page layout. `OfficeScene.tsx` stacks the artwork in DOM order,
+so the character is one complete body behind the desk. `office.ts` registers the assets
+to the same coordinate system without changing their source images. Each layer can
+be replaced, repositioned, or hidden independently.
 
-public/
-└── images/
-    ├── themes/                # Monthly theme images (light/dark)
-    ├── daily/                 # Weekly-generated image variations
-    └── work/                  # Work mode preview images
+The fingertips are revealed above the keyboard using skin-outline clips of the same
+character asset, with a small offset toward the rear keys. The complete body remains
+one image behind the desk.
 
-scripts/                        # Image generation utilities
-├── generate-images.ts         # AI-based monthly image generation
-├── generate-daily-images.ts   # Weekly variation generation
-├── generate-blur-placeholders.ts # Blur placeholder generation
-├── generate-theme-colors.ts   # Color extraction from images
-├── generate-favicon.ts        # Favicon generation
-├── generate-reference.ts      # Reference image generation
-├── generate-work-images.ts    # Work mode image generation
-└── dev.sh                     # Development helper script
-```
+Legacy seasonal configuration and generation utilities remain in the repository but
+are no longer used by the homepage.

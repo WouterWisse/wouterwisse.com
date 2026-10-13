@@ -1,0 +1,14 @@
+{
+  "method": "Built-in image_gen",
+  "outputs": [
+    "public/images/office/scene/sources/character.png",
+    "public/images/office/scene/character.webp",
+    "public/images/office/scene/night/sources/character.png",
+    "public/images/office/scene/night/character.webp"
+  ],
+  "integration": "Only rows below y=830 were applied, blending through y=840. All source pixels above the ankles and the existing layer registration were preserved. WebP quality 90, alpha quality 100. Character cache version 12.",
+  "prompts": {
+    "day": "Use case: precise-object-edit. Edit the provided transparent 1536x1024 character layer for an animated website. Change ONLY the two sneakers at the bottom into white Nike low-top leather sneakers with clearly recognizable BLACK NIKE SWOOSH logos on the visible side panel of each shoe. White uppers, white laces, white soles, black swoosh. Match the existing Pixar-like 3D render and soft daylight. Preserve EXACT original canvas 1536x1024, character coordinates, shoe positions, foot angles, silhouette size and pose. Keep the entire character face, hair, sweater, hands, jeans, ankles and lighting unchanged. Feet point slightly outward as in the original. The black Nike swooshes must be visibly on the side panels in perspective, not on top of the laces. Preserve genuine alpha transparency. No background, no new floor, no extra objects, no labels or text. Return the complete original character layer with ONLY the shoes edited.",
+    "night": "Use case: precise-object-edit. Image 1 is the EDIT TARGET: a nighttime transparent 1536x1024 seated character layer. Image 2 is a SHOE DESIGN reference ONLY. Change ONLY the two sneakers at the bottom of Image 1 to the identical white Nike low-top leather sneakers with BLACK NIKE SWOOSH on each visible side panel shown in Image 2. Preserve Image 1 nighttime lighting: subtle cool blue shadow on left, warm amber lamp light on right, shoes must be appropriately dim and warmly lit. Match sneaker geometry, white uppers, laces, white soles, toe perforations and black swoosh placement of Image 2. Keep EXACT Image 1 canvas 1536x1024, coordinates, foot angles and overall silhouette size. Keep ALL Image 1 face, hair, sweater, hands, jeans, ankles and lighting unchanged. Preserve genuine alpha transparency. No background, no new floor or shadows, no extra objects, no text labels. Return complete nighttime character with only the shoes edited."
+  }
+}

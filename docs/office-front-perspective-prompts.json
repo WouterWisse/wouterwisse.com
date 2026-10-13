@@ -1,0 +1,26 @@
+{
+  "tool": "Built-in image_gen",
+  "preparation": "Transparent contain-fit to shared 1536x1024 canvas, WebP conversion, alpha bounds measured. Previous source PNGs retained in sources/three-quarter/.",
+  "assets": [
+    {
+      "name": "day-sonos-front",
+      "prompt": "Use case: precise-object-edit. Reference image 1 is the object to re-render. Image 2 is ONLY a camera/style reference of the website office scene; do not output the room. Create ONE isolated object on genuine transparent background, canvas exactly 1536x1024, with a soft translucent contact shadow just beneath its base. Correct the perspective: camera directly in front, zero horizontal yaw, perfectly horizontal front edges, symmetrical left and right corners. Camera elevation is very low, approximately 6 degrees above the top; only a narrow sliver of the top surface should be visible, not the broad top-down view in image 1. Match the frontal desk scene. Retain materials, visual identity, softly rounded polished 3D rendering and daylight from upper left. No background, no desk, no other objects. Subject: the dark charcoal Sonos PLAY:1 speaker, front grille facing straight at the viewer, SONOS centered horizontally on the front black upper band, fine perforated grille, rounded rectangular tower. Retain its proportions. Only the thin top rim and a hint of top controls should be visible. Centered, around 560px wide and 820px high, base at y=925. The body must look upright and square to the viewer, no diagonal logo or side view.",
+      "output": "public/images/office/scene/sonos.webp"
+    },
+    {
+      "name": "day-mac-studio-front",
+      "prompt": "Use case: precise-object-edit. Reference image 1 is the object to re-render. Image 2 is ONLY a camera/style reference of the website office scene; do not output the room. Create ONE isolated object on genuine transparent background, canvas exactly 1536x1024, with a soft translucent contact shadow just beneath its base. Correct the perspective: camera directly in front, zero horizontal yaw, perfectly horizontal front edges, symmetrical left and right corners. Camera elevation is very low, approximately 6 degrees above the top; only a narrow sliver of the top surface should be visible, not the broad top-down view in image 1. Match the frontal desk scene. Retain materials, visual identity, softly rounded polished 3D rendering and daylight from upper left. No background, no desk, no other objects. Subject: the existing silver aluminum Apple compact desktop computer, rounded rectangular block, clean blank silver FRONT face with no ports or printed text, thin dark rubber base. Preserve its existing body design. Apple logo remains on the top, heavily foreshortened and barely visible from this much lower frontal angle. Do not bake in a status-light dot; that is added interactively by the app. Centered, around 950px wide, front aluminum body around 350px tall with just 50px of shallow top surface visible, base at y=740. No visible side panel; front face dominates.",
+      "output": "public/images/office/scene/mac-studio.webp"
+    },
+    {
+      "name": "night-sonos-front",
+      "prompt": "Use case: lighting-weather. The supplied image is the EDIT TARGET, a frontal charcoal Sonos PLAY:1 speaker isolated on transparency. Change ONLY illumination to match the same office at night: soft cool blue monitor fill from left, restrained warm amber lamp highlight along the right edge and shallow top strip. Keep the front readable, realistic, and softly rendered. Preserve EXACT same canvas dimensions and object position, outline, shape, size, proportions, perfectly frontal zero-yaw view, narrow foreshortened top, logo, texture and translucent contact shadow. No geometry changes. Genuine transparent background, no surroundings, no floor, no extra objects or lights. Keep SONOS centered on the front band.",
+      "output": "public/images/office/scene/night/sonos.webp"
+    },
+    {
+      "name": "night-mac-studio-front",
+      "prompt": "Use case: lighting-weather. The supplied image is the EDIT TARGET, a frontal silver aluminum Apple desktop computer isolated on transparency. Change ONLY illumination to match the same office at night: soft cool blue monitor fill from left, restrained warm amber lamp highlight along the right edge and shallow top strip. Keep the front readable, realistic, and softly rendered. Preserve EXACT same canvas dimensions and object position, outline, shape, size, proportions, perfectly frontal zero-yaw view, narrow foreshortened top, logo, texture and translucent contact shadow. No geometry changes. Genuine transparent background, no surroundings, no floor, no extra objects or lights. Do not add any status light, ports or text to the clean blank front.",
+      "output": "public/images/office/scene/night/mac-studio.webp"
+    }
+  ]
+}

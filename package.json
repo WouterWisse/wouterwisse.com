@@ -11,7 +11,8 @@
     "generate-images": "tsx scripts/generate-images.ts && npm run clean",
     "generate:daily": "tsx scripts/generate-daily-images.ts",
     "generate-blur-placeholders": "tsx scripts/generate-blur-placeholders.ts",
-    "generate-theme-colors": "tsx scripts/generate-theme-colors.ts"
+    "generate-theme-colors": "tsx scripts/generate-theme-colors.ts",
+    "test:office": "tsx scripts/check-office.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",

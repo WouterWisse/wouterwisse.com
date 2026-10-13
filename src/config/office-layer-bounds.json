@@ -1,0 +1,68 @@
+{
+  "room": {
+    "left": 0,
+    "top": 0,
+    "width": 1536,
+    "height": 1024
+  },
+  "chair": {
+    "left": 459,
+    "top": 30,
+    "width": 621,
+    "height": 896
+  },
+  "character": {
+    "left": 558,
+    "top": 12,
+    "width": 415,
+    "height": 980
+  },
+  "desk": {
+    "left": 13,
+    "top": 129,
+    "width": 1512,
+    "height": 754
+  },
+  "keyboard": {
+    "left": 73,
+    "top": 401,
+    "width": 1390,
+    "height": 243
+  },
+  "monitor": {
+    "left": 87,
+    "top": 198,
+    "width": 1364,
+    "height": 652
+  },
+  "mac-studio": {
+    "left": 217,
+    "top": 191,
+    "width": 1111,
+    "height": 639
+  },
+  "phone": {
+    "left": 208,
+    "top": 255,
+    "width": 1136,
+    "height": 554
+  },
+  "mug": {
+    "left": 374,
+    "top": 117,
+    "width": 896,
+    "height": 763
+  },
+  "lamp": {
+    "left": 1174,
+    "top": 174,
+    "width": 209,
+    "height": 334
+  },
+  "sonos": {
+    "left": 515,
+    "top": 123,
+    "width": 502,
+    "height": 779
+  }
+}

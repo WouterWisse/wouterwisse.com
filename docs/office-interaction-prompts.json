@@ -1,0 +1,53 @@
+{
+  "tool": "Built-in image_gen",
+  "assets": [
+    {
+      "name": "day-phone-lit",
+      "reference": "public/images/office/scene/sources/phone.png",
+      "prompt": "Use case: precise-object-edit / identity-preserve. Image 1 is the EDIT TARGET for an animation asset. Change ONLY the black screen to a bright illuminated iPhone-style lock screen, soft cyan blue gradient wallpaper and one white rounded notification banner, small white clock reading 09:41. Screen illumination clearly visible at tiny size. Preserve EXACT phone geometry, position, angle, metal frame and daylight lighting. CRITICAL: keep exact 1536x1024 canvas and exact original registration, no recentering, no zoom, no new background. Match existing polished stylized 3D artwork. Real alpha transparent background, preserve existing contact shadows. Output ONE asset only, no sprite sheet, no captions.",
+      "output": "public/images/office/scene/interactions/day-phone-lit.webp"
+    },
+    {
+      "name": "night-phone-lit",
+      "reference": "public/images/office/scene/night/sources/phone.png",
+      "prompt": "Use case: precise-object-edit / identity-preserve. Image 1 is the EDIT TARGET for an animation asset. Change ONLY the black screen to a bright illuminated iPhone-style lock screen, soft cyan blue gradient wallpaper and one white rounded notification banner, small white clock reading 21:41. Screen illumination clearly visible at tiny size. Preserve EXACT phone geometry, position, angle, metal frame and nighttime warm right rim and cool left lighting. CRITICAL: keep exact 1536x1024 canvas and exact original registration, no recentering, no zoom, no new background. Match existing polished stylized 3D artwork. Real alpha transparent background, preserve existing contact shadows. Output ONE asset only, no sprite sheet, no captions.",
+      "output": "public/images/office/scene/interactions/night-phone-lit.webp"
+    },
+    {
+      "name": "day-angry",
+      "reference": "public/images/office/scene/sources/character.png",
+      "prompt": "Use case: precise-object-edit / identity-preserve. Image 1 is the EDIT TARGET for an animation asset. Change ONLY his face to a comically annoyed angry expression: deeply furrowed downward eyebrows, narrowed eyes looking toward viewer, mouth open in a small gritted-teeth arrrgh growl. Keep EXACT hair outline, head position, ears, neck, whole body, pose, clothing, feet and daylight lighting. CRITICAL: keep exact 1536x1024 canvas and exact original registration, no recentering, no zoom, no new background. Match existing polished stylized 3D artwork. Real alpha transparent background, preserve existing contact shadows. Output ONE asset only, no sprite sheet, no captions.",
+      "output": "public/images/office/scene/interactions/day-angry.webp"
+    },
+    {
+      "name": "night-angry",
+      "reference": "public/images/office/scene/night/sources/character.png",
+      "prompt": "Use case: precise-object-edit / identity-preserve. Image 1 is the EDIT TARGET for an animation asset. Change ONLY his face to a comically annoyed angry expression: deeply furrowed downward eyebrows, narrowed eyes looking toward viewer, mouth open in a small gritted-teeth arrrgh growl. Keep EXACT hair outline, head position, ears, neck, whole body, pose, clothing, feet and nighttime warm right rim and cool left lighting. CRITICAL: keep exact 1536x1024 canvas and exact original registration, no recentering, no zoom, no new background. Match existing polished stylized 3D artwork. Real alpha transparent background, preserve existing contact shadows. Output ONE asset only, no sprite sheet, no captions.",
+      "output": "public/images/office/scene/interactions/night-angry.webp"
+    },
+    {
+      "name": "day-mug-empty",
+      "reference": "public/images/office/scene/sources/mug.png",
+      "prompt": "Use case: precise-object-edit / identity-preserve. Image 1 is the EDIT TARGET for an animation asset. Change ONLY the contents of this coffee cup: it has been completely drunk, reveal the empty ivory ceramic inner bowl and bottom, with only a subtle tiny coffee stain at the bottom. No liquid surface, no steam. Keep EXACT cup silhouette, handle, position, size, perspective, daylight lighting and shadow. CRITICAL: keep exact 1536x1024 canvas and exact original registration, no recentering, no zoom, no new background. Match existing polished stylized 3D artwork. Real alpha transparent background, preserve existing contact shadows. Output ONE asset only, no sprite sheet, no captions.",
+      "output": "public/images/office/scene/interactions/day-mug-empty.webp"
+    },
+    {
+      "name": "night-mug-empty",
+      "reference": "public/images/office/scene/night/sources/mug.png",
+      "prompt": "Use case: precise-object-edit. Edit target is the original FULL tea cup image. Make the tea cup EMPTY by removing only the amber liquid surface and showing a clean empty ceramic interior in the SAME ellipse. CRITICAL: preserve the EXACT perfectly smooth continuous original elliptical rim, front lip silhouette and original camera perspective. Do not cut away, lower, bend or distort the front rim to reveal the inside. The tea bag is deep at the bottom and NOT visible. Keep existing external string and green tea tag. Every exterior cup pixel, handle, light, shadow, registration, size and 1536x1024 canvas must remain unchanged. No liquid, no steam. Genuine alpha transparent background.",
+      "output": "public/images/office/scene/interactions/night-mug-empty.webp"
+    },
+    {
+      "name": "day-sip",
+      "reference": "public/images/office/scene/sources/character.png",
+      "prompt": "Use case: precise-object-edit / identity-preserve. Image 1 is the EDIT TARGET for an animation asset. Change ONLY the man's screen-right arm and hand and face. He is drinking from a small ivory ceramic coffee mug held at his mouth with his screen-right hand gripping its handle, elbow bent, mug rim touching lips, eyes glancing down toward the mug with a relaxed contented expression. Cup about 90 pixels wide in the 1536x1024 canvas, handle right. Preserve EXACT head location, hair, neck, torso, screen-left arm, hips, legs, shoes and seating position. Same daylight lighting. Full connected body. No chair. CRITICAL: keep exact 1536x1024 canvas and exact original registration, no recentering, no zoom, no new background. Match existing polished stylized 3D artwork. Real alpha transparent background, preserve existing contact shadows. Output ONE asset only, no sprite sheet, no captions.",
+      "output": "public/images/office/scene/interactions/day-sip.webp"
+    },
+    {
+      "name": "night-sip",
+      "reference": "public/images/office/scene/night/sources/character.png",
+      "prompt": "Use case: precise-object-edit / identity-preserve. Image 1 is the EDIT TARGET for an animation asset. Change ONLY the man's screen-right arm and hand and face. He is drinking from a small ivory ceramic tea mug held at his mouth with his screen-right hand gripping its handle, elbow bent, mug rim touching lips, eyes glancing down toward the mug with a relaxed contented expression. Cup about 90 pixels wide in the 1536x1024 canvas, handle right, tiny cream teabag tag with green leaf hanging in front. Preserve EXACT head location, hair, neck, torso, screen-left arm, hips, legs, shoes and seating position. Same nighttime warm right rim and cool left lighting. Full connected body. No chair. CRITICAL: keep exact 1536x1024 canvas and exact original registration, no recentering, no zoom, no new background. Match existing polished stylized 3D artwork. Real alpha transparent background, preserve existing contact shadows. Output ONE asset only, no sprite sheet, no captions.",
+      "output": "public/images/office/scene/interactions/night-sip.webp"
+    }
+  ]
+}

@@ -1,68 +1,47 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useSyncExternalStore, useCallback } from 'react';
 import type { Mode } from '@/types/theme';
-import { isDaytime } from './useSunPosition';
 
 const STORAGE_KEY = 'theme-mode';
+const CHANGE_EVENT = 'theme-mode-change';
+let memoryPreference: Mode | null = null;
 
-function getSystemPreference(): Mode | null {
-  if (typeof window === 'undefined') return null;
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  return mediaQuery.matches ? 'dark' : 'light';
+function getPreference(): Mode {
+  if (memoryPreference) return memoryPreference;
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'light' || saved === 'dark') return saved;
+  } catch { /* Storage may be disabled. */ }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function subscribe(onChange: () => void) {
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const onStorage = (event: StorageEvent) => {
+    if (event.key === STORAGE_KEY || event.key === null) { memoryPreference = null; onChange(); }
+  };
+  media.addEventListener('change', onChange);
+  window.addEventListener(CHANGE_EVENT, onChange);
+  window.addEventListener('storage', onStorage);
+  return () => {
+    media.removeEventListener('change', onChange);
+    window.removeEventListener(CHANGE_EVENT, onChange);
+    window.removeEventListener('storage', onStorage);
+  };
 }
 
 export function useThemeMode() {
-  const [mode, setModeState] = useState<Mode>('light');
-  const [mounted, setMounted] = useState(false);
-
-  // Load saved preference on mount, fallback to system preference, then sun position
-  useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem(STORAGE_KEY) as Mode | null;
-    if (saved === 'light' || saved === 'dark') {
-      setModeState(saved);
-    } else {
-      // Check system preference first, then fall back to sun position
-      const systemPref = getSystemPreference();
-      if (systemPref) {
-        setModeState(systemPref);
-      } else {
-        const daytime = isDaytime();
-        setModeState(daytime ? 'light' : 'dark');
-      }
-    }
-  }, []);
-
-  // Listen for system preference changes (only when no saved preference)
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) return; // User has explicit preference, don't override
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
-      setModeState(e.matches ? 'dark' : 'light');
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
-
+  const mode = useSyncExternalStore(subscribe, getPreference, () => 'light' as Mode);
+  const mounted = useSyncExternalStore(subscribe, () => true, () => false);
   const setMode = useCallback((newMode: Mode) => {
-    setModeState(newMode);
-    localStorage.setItem(STORAGE_KEY, newMode);
+    memoryPreference = newMode;
+    try { localStorage.setItem(STORAGE_KEY, newMode); } catch { /* Keep the in-memory preference. */ }
+    window.dispatchEvent(new Event(CHANGE_EVENT));
   }, []);
-
   const toggleMode = useCallback(() => {
-    setMode(mode === 'light' ? 'dark' : 'light');
-  }, [mode, setMode]);
+    setMode(getPreference() === 'light' ? 'dark' : 'light');
+  }, [setMode]);
 
-  return {
-    mode,
-    setMode,
-    toggleMode,
-    mounted,
-    isDark: mode === 'dark',
-    isLight: mode === 'light',
-  };
+  return { mode, setMode, toggleMode, mounted, isDark: mode === 'dark', isLight: mode === 'light' };
 }

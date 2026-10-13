@@ -1,0 +1,29 @@
+{
+  "tool": "Built-in image_gen",
+  "assets": [
+    {
+      "name": "day-focus",
+      "prompt": "Use case: identity-preserve / precise-object-edit. Image 1 is the EDIT TARGET: a full seated 3D character animation asset. Change ONLY the face. He concentrates intensely on his computer: eyes squint slightly with both pupils directed down-forward, brow gently furrowed, lips relaxed but pursed. Alert thoughtful concentration, not angry, not sleepy. Preserve EXACT 1536x1024 canvas, same hair silhouette, head outline and coordinates, ears, neck, body, clothes, hands, shoes, seated pose, size, shadows and soft daylight. This must register exactly as a replacement face without any upward movement. No new objects, no text, no chair. Genuine alpha transparent background. One asset only.",
+      "reference": "public/images/office/scene/sources/character.png",
+      "output": "public/images/office/scene/expressions/day-focus.webp"
+    },
+    {
+      "name": "day-side-eye",
+      "prompt": "Use case: identity-preserve / precise-object-edit. Image 1 is the EDIT TARGET: a full seated 3D character animation asset. Change ONLY the face. He gives an annoyed sideways glance toward the LEFT EDGE OF THE IMAGE where his computer sits: both pupils shifted visibly toward image-left, slightly narrowed eyelids, one eyebrow raised and the other lowered, small closed-mouth unimpressed expression as if saying I am working on it. Do NOT turn or move his head. Preserve EXACT 1536x1024 canvas, same hair silhouette, head outline and coordinates, ears, neck, body, clothes, hands, shoes, seated pose, size, shadows and soft daylight. This must register exactly as a replacement face without any upward movement. No new objects, no text, no chair. Genuine alpha transparent background. One asset only.",
+      "reference": "public/images/office/scene/sources/character.png",
+      "output": "public/images/office/scene/expressions/day-side-eye.webp"
+    },
+    {
+      "name": "night-focus",
+      "prompt": "Use case: identity-preserve / precise-object-edit. Image 1 is the EDIT TARGET: a full seated 3D character animation asset. Change ONLY the face. He concentrates intensely on his computer: eyes squint slightly with both pupils directed down-forward, brow gently furrowed, lips relaxed but pursed. Alert thoughtful concentration, not angry, not sleepy. Preserve EXACT 1536x1024 canvas, same hair silhouette, head outline and coordinates, ears, neck, body, clothes, hands, shoes, seated pose, size, shadows and night lighting with warm right rim and cool left fill. This must register exactly as a replacement face without any upward movement. No new objects, no text, no chair. Genuine alpha transparent background. One asset only.",
+      "reference": "public/images/office/scene/night/sources/character.png",
+      "output": "public/images/office/scene/expressions/night-focus.webp"
+    },
+    {
+      "name": "night-side-eye",
+      "prompt": "Use case: identity-preserve / precise-object-edit. Image 1 is the EDIT TARGET: a full seated 3D character animation asset. Change ONLY the face. He gives an annoyed sideways glance toward the LEFT EDGE OF THE IMAGE where his computer sits: both pupils shifted visibly toward image-left, slightly narrowed eyelids, one eyebrow raised and the other lowered, small closed-mouth unimpressed expression as if saying I am working on it. Do NOT turn or move his head. Preserve EXACT 1536x1024 canvas, same hair silhouette, head outline and coordinates, ears, neck, body, clothes, hands, shoes, seated pose, size, shadows and night lighting with warm right rim and cool left fill. This must register exactly as a replacement face without any upward movement. No new objects, no text, no chair. Genuine alpha transparent background. One asset only.",
+      "reference": "public/images/office/scene/night/sources/character.png",
+      "output": "public/images/office/scene/expressions/night-side-eye.webp"
+    }
+  ]
+}
