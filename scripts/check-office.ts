@@ -83,7 +83,7 @@ async function main() {
       }
       assert(opaque > 20000 && transparent > OFFICE_WIDTH * OFFICE_HEIGHT * .2, `${file} must contain a visible object and genuine transparent surroundings`);
     }
-    for (const face of ['blink-half', 'blink-closed', 'smile', 'focus', 'side-eye', 'look-bottle']) {
+    for (const face of ['blink-half', 'blink-closed', 'smile', 'focus', 'side-eye', 'look-bottle', 'wtf']) {
       const file = `public/images/office/scene/expressions/${mode}-${face}.webp`;
       const metadata = await sharp(file).metadata();
       assert(metadata.hasAlpha && metadata.width === OFFICE_WIDTH && metadata.height === OFFICE_HEIGHT, `${file} must match the character canvas and preserve transparency`);

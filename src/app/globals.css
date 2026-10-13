@@ -353,6 +353,8 @@ html:has(.office-home[data-mode="night"]) { background: #181b25; }
 }
 /* Spotting the bottle, he peeks up a little over the monitor for a better look. */
 .office-stage[data-looking] .office-face[data-face="look-bottle"] { animation: office-peek-up 2600ms ease-in-out both; }
+/* All the stickers gone: he rises up from behind the monitor to look at whoever did it. */
+.office-stage[data-baffled] .office-face[data-face="wtf"] { animation: office-peek-up 2000ms ease-in-out both; }
 @keyframes office-peek-up {
   0%, 100% { transform: translateY(0); }
   15%, 80% { transform: translateY(-3%); }

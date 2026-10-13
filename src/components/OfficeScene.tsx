@@ -35,7 +35,7 @@ const wineBottle = OFFICE_LAYERS.find(layer => layer.id === 'wine')!;
 const mug = OFFICE_LAYERS.find(layer => layer.id === 'mug')!;
 const macStudio = OFFICE_LAYERS.find(layer => layer.id === 'mac-studio')!;
 const sonos = OFFICE_LAYERS.find(layer => layer.id === 'sonos')!;
-const faces = ['blink-half', 'blink-closed', 'smile', 'focus', 'side-eye', 'look-bottle'];
+const faces = ['blink-half', 'blink-closed', 'smile', 'focus', 'side-eye', 'look-bottle', 'wtf'];
 type Reaction = 'idle' | 'phone' | 'drink' | 'turbo';
 type Phase = 'start' | 'sip' | 'return' | 'success';
 // Besona is retired for now; uncomment this and its sticker entry to bring it back.
@@ -161,6 +161,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
   const glanceTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const peel = useRef<{ rect: DOMRect; top: number; x: number; y: number; moved: boolean; loose?: { x: number; y: number; dx: number; dy: number } } | null>(null);
   const [removed, setRemoved] = useState<string[]>([]);
+  const [baffled, setBaffled] = useState(false);
   const peeledClick = useRef(false);
   const mode = isDark ? 'night' : 'day';
 
@@ -261,6 +262,18 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
       if (id === 'sixwines') popBottle();
     };
   };
+  // Peel off the last sticker that comes off (phones hide the small ones) and he rises up and stares
+  // at you, eyebrows up, for two seconds; after the bottle glance if the 6wines one went last.
+  useEffect(() => {
+    const stuck = [...stage.current?.querySelectorAll<HTMLElement>('[data-sticker]') ?? []].some(element => {
+      const sticker = stickers.find(({ id }) => id === element.dataset.sticker);
+      return (sticker?.removable ?? !sticker?.href) && getComputedStyle(element).visibility !== 'hidden';
+    });
+    if (!removed.length || stuck) return;
+    const start = removed.at(-1) === 'sixwines' ? 2600 : 300;
+    const timers = [setTimeout(() => setBaffled(true), start), setTimeout(() => setBaffled(false), start + 2000)];
+    return () => timers.forEach(clearTimeout);
+  }, [removed]);
   // At night each sticker takes the light the monitor gets where it sits: the night monitor's colour
   // there divided by the day monitor's, applied to that sticker as a colour matrix.
   const [nightLight, setNightLight] = useState<Record<string, string>>({});
@@ -299,9 +312,9 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
   const reacting = reaction !== 'idle';
   const bodyReaction = reaction === 'phone' || reaction === 'drink';
   const turboRunning = reaction === 'turbo' && phase === 'start';
-  const typingPaused = reacting && !turboRunning;
+  const typingPaused = reacting && !turboRunning || baffled;
   const vibing = musicPlaying && !reacting;
-  const visibleExpression = lookingAtBottle ? 'look-bottle' : vibing ? 'smile' : expression;
+  const visibleExpression = baffled ? 'wtf' : lookingAtBottle ? 'look-bottle' : vibing ? 'smile' : expression;
 
   const finishReaction = () => {
     reactionTimers.current.forEach(clearTimeout);
@@ -594,7 +607,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
   };
 
   return (
-    <div ref={stage} className="office-stage" data-renderer="layers" data-ready={ready} data-expression={reaction === 'phone' ? 'angry' : reaction === 'drink' && phase === 'sip' ? 'sip' : visibleExpression} data-reaction={reaction} data-phase={phase} data-cup={empty[mode] ? 'empty' : 'full'} data-pop={popping || undefined} data-looking={lookingAtBottle || undefined} data-music={musicPlaying} data-vibing={vibing}>
+    <div ref={stage} className="office-stage" data-renderer="layers" data-ready={ready} data-expression={reaction === 'phone' ? 'angry' : reaction === 'drink' && phase === 'sip' ? 'sip' : visibleExpression} data-reaction={reaction} data-phase={phase} data-cup={empty[mode] ? 'empty' : 'full'} data-pop={popping || undefined} data-looking={lookingAtBottle || undefined} data-baffled={baffled || undefined} data-music={musicPlaying} data-vibing={vibing}>
       <div className="office-visual" role="img" aria-label={`Wouter typing in his home office ${isDark ? 'at night, lit by a warm table lamp' : 'in daylight'}, behind a curved monitor on an oak desk.`}>
         {OFFICE_LAYERS.map((layer, index) => (
           <div key={layer.id} className={`office-layer-group office-layer-${layer.id}`} data-layer={layer.id} style={{ zIndex: index * 2, visibility: ready ? 'visible' : 'hidden', transformOrigin: layer.id === 'sonos' ? `${(layer.x + layer.width / 2) / 1536 * 100}% ${(layer.y + layer.height) / 1024 * 100}%` : undefined }}>

@@ -126,6 +126,9 @@ bottle of 6wines red springs up in its place with a pop, wobbles and settles whi
 glances at it with raised eyebrows. One sip (with a burp instead of the "ahh") leaves an
 empty, opened bottle. Toggling the lamp puts the coffee or tea back.
 
+Peel off every sticker that comes off and he rises up over the monitor and stares at you,
+eyebrows up, for two seconds before going back to work (or vibing).
+
 - Sticker artwork and behaviour: `src/components/OfficeScene.tsx`
 - Wine bottle prompts: `docs/office-wine-prompts.json`
 - White skirting refinement: `docs/office-skirting-refinement.json`
