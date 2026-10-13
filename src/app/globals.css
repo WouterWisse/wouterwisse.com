@@ -427,6 +427,15 @@ html {
 .office-sticker-besona { width: 8.5%; }
 .office-sticker-besona .office-sticker-decal { transform: perspective(44cqw) rotateY(14deg); }
 :is(.office-sticker-claude, .office-sticker-chatgpt) { width: 8%; }
+:is(.office-sticker-react, .office-sticker-nextjs, .office-sticker-typescript, .office-sticker-tailwind, .office-sticker-apple, .office-sticker-android, .office-sticker-kotlin, .office-sticker-swift) { width: 5.5%; }
+.office-sticker-react .office-sticker-decal { color: #61dafb; }
+.office-sticker-nextjs .office-sticker-decal { color: #000; }
+.office-sticker-typescript .office-sticker-decal { color: #3178c6; transform: perspective(44cqw) rotateY(8deg); }
+.office-sticker-tailwind .office-sticker-decal { color: #06b6d4; transform: perspective(44cqw) rotateY(12deg); }
+.office-sticker-apple .office-sticker-decal { color: #000; transform: perspective(44cqw) rotateY(26deg); }
+.office-sticker-android .office-sticker-decal { color: #3ddc84; }
+.office-sticker-kotlin .office-sticker-decal { color: #7f52ff; transform: perspective(44cqw) rotateY(-6deg); }
+.office-sticker-swift .office-sticker-decal { color: #f05138; transform: perspective(44cqw) rotateY(6deg); }
 .office-sticker-the-mountain { width: 9.5%; }
 .office-sticker-the-mountain .office-sticker-decal { transform: perspective(44cqw) rotateY(20deg); }
 .office-sticker-claude .office-sticker-decal { color: #d97757; }

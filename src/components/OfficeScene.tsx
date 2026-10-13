@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState, type ReactNode, type SVGProps } from 'react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
-import { SiClaude, SiOpenai } from 'react-icons/si';
+import { SiAndroid, SiApple, SiClaude, SiKotlin, SiNextdotjs, SiOpenai, SiReact, SiSwift, SiTailwindcss, SiTypescript } from 'react-icons/si';
 import { OFFICE_LAYERS, OFFICE_MUSIC_BEAT, officeLayerStyle } from '@/config/office';
 import dayBounds from '@/config/office-layer-bounds.json';
 import nightBounds from '@/config/office-night-layer-bounds.json';
@@ -69,6 +69,15 @@ const stickers: Sticker[] = [
   { id: 'besona', label: 'Besona', href: 'https://besona.ai', art: <BesonaLogo x="17" y="17" size={66} />, paper: '#c4bdf2', tilt: -5, shape: circle, left: '66.75%', top: '51.4%' },
   { id: 'claude', label: 'Claude', art: <SiClaude x="22" y="22" size={56} />, paper: '#faf9f5', tilt: 9, shape: circle, left: '8%', top: '9%' },
   { id: 'chatgpt', label: 'ChatGPT', art: <SiOpenai x="22" y="22" size={56} />, paper: '#fffaf0', tilt: -8, shape: square, left: '29%', top: '57%' },
+  // Tiny decals of the platforms and packages Wouter builds with.
+  { id: 'react', label: 'React', art: <SiReact x="19" y="19" size={62} />, paper: '#20232a', tilt: 12, shape: circle, left: '20%', top: '6%' },
+  { id: 'nextjs', label: 'Next.js', art: <SiNextdotjs x="12" y="12" size={76} />, paper: '#fff', tilt: -10, shape: circle, left: '28%', top: '15%' },
+  { id: 'typescript', label: 'TypeScript', art: <SiTypescript x="17" y="17" size={66} />, paper: '#fff', tilt: 7, shape: square, left: '61%', top: '9%' },
+  { id: 'tailwind', label: 'Tailwind CSS', art: <SiTailwindcss x="19" y="19" size={62} />, paper: '#fff', tilt: -6, shape: circle, left: '66%', top: '27%' },
+  { id: 'apple', label: 'Apple', art: <SiApple x="21" y="19" size={58} />, paper: '#fff', tilt: -9, shape: circle, left: '88.5%', top: '22%' },
+  { id: 'android', label: 'Android', art: <SiAndroid x="17" y="17" size={66} />, paper: '#fffaf0', tilt: 10, shape: circle, left: '12%', top: '62%' },
+  { id: 'kotlin', label: 'Kotlin', art: <SiKotlin x="22" y="22" size={56} />, paper: '#fff', tilt: -7, shape: square, left: '38.5%', top: '66%' },
+  { id: 'swift', label: 'Swift', art: <SiSwift x="20" y="20" size={60} />, paper: '#fff', tilt: 8, shape: square, left: '57.5%', top: '62%' },
   // Credits the deep-house track the Sonos plays, with the artist's Pixabay avatar.
   { id: 'the-mountain', label: 'Music by The_Mountain', href: 'https://pixabay.com/users/the_mountain-3616498/', paper: '#fffaf0', tilt: 6, shape: circle, left: '81%', top: '50%', art: <>
     <clipPath id="the-mountain-avatar"><circle cx="50" cy="50" r="35" /></clipPath>
