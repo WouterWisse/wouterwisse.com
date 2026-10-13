@@ -19,21 +19,21 @@ export const viewport: Viewport = { viewportFit: 'cover' };
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://wouterwisse.com'),
-  title: 'Wouter Wisse | Full Stack Developer aka AI Agent Manager',
-  description: 'Full stack developer with 15 years of experience. Building web and mobile applications.',
+  title: 'Wouter Wisse',
+  description: 'Full Stack Developer aka AI Agent Manager',
   keywords: ['Full Stack Developer', 'AI Agents', 'iOS Developer', 'Web Developer', 'React', 'Next.js', 'Swift'],
   authors: [{ name: 'Wouter Wisse' }],
   openGraph: {
-    title: 'Wouter Wisse | Full Stack Developer aka AI Agent Manager',
-    description: 'Full stack developer with 15 years of experience',
+    title: 'Wouter Wisse',
+    description: 'Full Stack Developer aka AI Agent Manager',
     url: 'https://wouterwisse.com',
     siteName: 'Wouter Wisse',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Wouter Wisse | Full Stack Developer aka AI Agent Manager',
-    description: 'Full stack developer with 15 years of experience',
+    title: 'Wouter Wisse',
+    description: 'Full Stack Developer aka AI Agent Manager',
   },
 };
 
