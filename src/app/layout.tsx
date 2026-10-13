@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -13,6 +13,9 @@ const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 });
+
+// Draw under the notch and translucent browser toolbars; the office scene fills that space.
+export const viewport: Viewport = { viewportFit: 'cover' };
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://wouterwisse.com'),

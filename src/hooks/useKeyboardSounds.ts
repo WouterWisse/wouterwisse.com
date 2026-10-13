@@ -4,6 +4,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 export type OfficeSound = 'notification' | 'growl' | 'slurp' | 'fan' | 'success' | 'lamp' | 'sticker-peel' | 'sticker-loose';
 
+// iOS silences Web Audio under the ring/silent switch unless the page's audio session is 'playback'
+// (Safari 16.4+); only the Sonos' <audio> element switched it before. 'auto' hands it back when muted.
+function setAudioSession(type: 'playback' | 'auto') {
+  const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+  if (session) session.type = type;
+}
+
 export function useKeyboardSounds() {
   const [enabled, setEnabled] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
@@ -59,6 +66,7 @@ export function useKeyboardSounds() {
     if (active.current) return;
     active.current = true;
     setEnabled(true);
+    setAudioSession('playback');
     if (music.current) music.current.muted = false;
     try {
       const audio = context.current ?? new AudioContext({ latencyHint: 'interactive' });
@@ -82,6 +90,7 @@ export function useKeyboardSounds() {
       active.current = false;
       setEnabled(false);
       setUnavailable(true);
+      setAudioSession('auto');
       if (music.current) music.current.muted = true;
     }
   }, []);
@@ -90,6 +99,7 @@ export function useKeyboardSounds() {
     if (!active.current) return enable();
     active.current = false;
     setEnabled(false);
+    setAudioSession('auto');
     if (music.current) music.current.muted = true;
     silence();
     stopEffects();

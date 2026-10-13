@@ -14,8 +14,11 @@ html {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #faf8f5;
   transition: background-color 700ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* Matches the office wall colour wherever the browser shows the page background (overscroll, toolbars). */
+html:has(.office-home[data-mode="night"]) { background: #181b25; }
 
 /* Disable text selection globally */
 * {
@@ -239,9 +242,14 @@ html {
   --office-ink: #79553f;
   --office-muted: #8b6b53;
   --office-accent: #b57552;
-  position: relative;
+  /* Fixed and as tall as the largest viewport, so the scene continues under collapsing
+     browser toolbars without making the page scrollable. */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   isolation: isolate;
-  height: 100svh;
+  height: 100lvh;
   overflow: clip;
   background: var(--office-bg);
   color: var(--office-ink);
@@ -256,8 +264,8 @@ html {
 }
 .office-sound-toggle {
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: max(24px, calc(env(safe-area-inset-top) + 12px));
+  right: max(24px, calc(env(safe-area-inset-right) + 12px));
   z-index: 4;
   display: grid;
   place-items: center;

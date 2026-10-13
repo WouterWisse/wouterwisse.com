@@ -66,7 +66,9 @@ Typing runs in short, irregular bursts with subtle movement of the complete body
 and fingertips. The right foot (screen left) taps in occasional bursts of 2–4 taps,
 with varied speed and pauses; it stops in hidden tabs and with reduced motion.
 The 18 key-tap sounds from `ctrlaltwisse` in `public/sounds/` start
-after the first click or keypress; the speaker button toggles sound. Typing pauses
+once the visitor turns sound on with the speaker button (or starts the music on the Sonos).
+On iOS that switches the page's audio session to playback, so sound also plays with the
+ring/silent switch on. Typing pauses
 in hidden tabs, and reduced-motion preferences disable movement, expressions and
 lamp shake. Blinks use half-closed and closed frames at irregular intervals, with
 occasional amused expressions. Only the head is replaced; the connected body and
