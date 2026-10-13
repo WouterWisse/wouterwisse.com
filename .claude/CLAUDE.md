@@ -7,28 +7,30 @@
 - Use Next.js App Router conventions for routing and layouts
 - Co-locate hooks in `src/hooks/` with `use` prefix and barrel exports
 - Store configuration in `src/config/` with typed exports
-- Pre-generate blur placeholders and theme colors via scripts
+- The homepage is one layered office scene (`OfficeScene.tsx`) registered to a 1536×1024 coordinate system in `src/config/office.ts`
 
 ## Gotchas
 
-- Run `npm run generate-blur-placeholders` after adding new images
-- Run `npm run generate-theme-colors` after adding new theme images
-- Daily images fallback to monthly theme images when not available
+- After replacing an office layer's source PNG, run `npx tsx scripts/prepare-office-assets.ts` (add `--night` for night assets), then `npm run test:office`
+- Bump the layer's `?v=` cache version in `OfficeScene.tsx` when its artwork changes
 - Theme mode changes sync with browser meta theme-color
+- The Turbopack dev server can keep serving stale CSS after files change in quick succession (e.g. a branch switch); restart with `npm run dev`, which clears `.next`
 
 ## Conventions
 
 - TypeScript strict mode for all source files
 - Tailwind CSS 4 for styling with CSS variables
-- Framer Motion for animations (respect reduced motion preferences)
+- CSS and the Web Animations API for animations (respect reduced motion preferences)
 - Named exports with barrel files (index.ts) for modules
+- Record image-generation prompts in `docs/` and sound sources and licenses in `public/sounds/office-sources.md`
 
 ## Architecture
 
-- `src/app/` - Next.js App Router pages and layouts
-- `src/components/` - React components (Hero, ThemeToggle, SocialLinks)
-- `src/hooks/` - Custom React hooks for state and effects
-- `src/config/` - Static configuration and generated data
+- `src/app/` - Next.js App Router pages, layouts and the link-preview image
+- `src/components/` - React components (Hero, OfficeScene)
+- `src/hooks/` - Custom React hooks (theme mode, office sounds)
+- `src/config/` - Office layer placement and generated layer bounds
 - `src/types/` - TypeScript type definitions
-- `scripts/` - Node.js utilities for image generation
-- `public/images/` - Static assets organized by theme/month
+- `scripts/` - Office asset preparation and validation
+- `public/images/office/scene/` - Office layers (day, `night/`, expressions, interactions, stickers) with source PNGs in `sources/`
+- `public/sounds/` - Typing, interaction and sticker sounds

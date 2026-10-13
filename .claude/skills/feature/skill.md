@@ -96,7 +96,7 @@ Find:
 - Components matching the feature needs
 - Common patterns for layout, interactions
 - Tailwind CSS patterns used
-- Framer Motion animation patterns
+- CSS and Web Animations API patterns
 
 Output only the relevant findings as a summary.
 

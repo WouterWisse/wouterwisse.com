@@ -69,7 +69,7 @@ Follow this cycle strictly:
 - **Framework**: Next.js 16+ with App Router
 - **Language**: TypeScript (strict mode)
 - **Styling**: Tailwind CSS 4
-- **Animation**: Framer Motion
+- **Animation**: CSS and the Web Animations API
 - **State**: React hooks (useState, useEffect, etc.)
 
 ### Patterns to Follow
@@ -104,7 +104,6 @@ export default async function Component() {
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 
 export function Component() {
   const [state, setState] = useState()
@@ -232,16 +231,16 @@ If something fails:
 ## Example Subagent Prompt
 
 ```
-Implement the new theme toggle component.
+Implement the new office interaction.
 
 Context:
-- This is step 2 of 4 in adding theme support
+- This is step 2 of 4 in adding the interaction
 - The project uses Next.js with TypeScript
-- Framer Motion is available for animations
+- Animations use CSS and the Web Animations API
 
 Task:
-- Create src/components/ThemeToggle.tsx
-- Use the existing useTheme hook from src/hooks/
+- Extend src/components/OfficeScene.tsx
+- Use the existing useKeyboardSounds hook from src/hooks/
 - Follow patterns from src/components/
 
 Do NOT commit - just implement and verify it works.
