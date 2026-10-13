@@ -504,7 +504,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
             {(['day', 'night'] as const).map(mode => (
               <Image
                 key={mode}
-                src={`/images/office/scene/${mode === 'night' ? 'night/' : ''}${layer.id}.webp?v=${layer.id === 'character' ? 13 : layer.id === 'sonos' || layer.id === 'mac-studio' ? 17 : 11}`}
+                src={`/images/office/scene/${mode === 'night' ? 'night/' : ''}${layer.id}.webp?v=${layer.id === 'character' ? 13 : layer.id === 'room' ? 18 : layer.id === 'sonos' || layer.id === 'mac-studio' ? 17 : 11}`}
                 alt=""
                 aria-hidden="true"
                 width={1536}
