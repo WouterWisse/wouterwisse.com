@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://wouterwisse.com'),
   title: 'Wouter Wisse | full stack developer',
   description: 'Full stack developer with 15 years of experience. Building web and mobile applications.',
   keywords: ['Full Stack Developer', 'iOS Developer', 'Web Developer', 'React', 'Next.js', 'Swift'],

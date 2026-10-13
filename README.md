@@ -1,7 +1,7 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/hero-dark.png">
-    <img src=".github/assets/hero-light.png" alt="Wouter Wisse" width="400">
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/hero-dark.jpg">
+    <img src=".github/assets/hero-light.jpg" alt="Wouter Wisse in his illustrated home office" width="640">
   </picture>
   <br>
   <br>
@@ -30,7 +30,7 @@
 | Framework | Next.js 16 (App Router) |
 | UI | React 19, Tailwind CSS 4 |
 | Language | TypeScript |
-| Animation | Framer Motion |
+| Animation | CSS and the Web Animations API |
 | Analytics | Vercel Analytics & Speed Insights |
 | Fonts | Geist Sans & Geist Mono |
 | Image Processing | Sharp |
@@ -71,8 +71,6 @@ in hidden tabs, and reduced-motion preferences disable movement, expressions and
 lamp shake. Blinks use half-closed and closed frames at irregular intervals, with
 occasional amused expressions. Only the head is replaced; the connected body and
 hands stay fixed behind the desk. Each expression has matching day/night lighting.
-Earlier generated concepts are retained for reference; the homepage does not rotate
-through them. Automatic seasonal-image generation is disabled.
 
 Tap the phone for an illuminated screen, vibration, the supplied iPhone notification
 sound and an annoyed growl. Tap the cup to pause typing, lift it for a recorded
@@ -112,8 +110,18 @@ bouncing while the character handles another interaction.
 - Built-in ImageGen prompts: `docs/office-interaction-prompts.json`
 - Turbo expression prompts: `docs/office-turbo-prompts.json`; artwork in `public/images/office/scene/expressions/`
 - Sonos day/night artwork: `public/images/office/scene/{,night/}sonos.webp`; built-in ImageGen prompts in `docs/office-sonos-prompts.json`
-- Current Sonos/Mac renders: `docs/office-desk-perspective-prompts.json`, using separate construction guides in `docs/office-perspective-guides/`. Depth recedes up-right for the Mac on the left and up-left for the Sonos on the right, following the desk's shared perspective. Earlier source PNGs are retained in the scene's `sources/three-quarter/`, `sources/low-front/`, and `sources/symmetric-front/` directories. The Mac's LED sits on its front face, clear of the visible right side.
+- Current Sonos/Mac renders: `docs/office-desk-perspective-prompts.json`, using separate construction guides in `docs/office-perspective-guides/`. Depth recedes up-right for the Mac on the left and up-left for the Sonos on the right, following the desk's shared perspective. The Mac's LED sits on its front face, clear of the visible right side.
 - Sound sources and licenses: `public/sounds/office-sources.md`
+
+The monitor stickers peel from wherever they're grabbed: the fold sits halfway between the
+grabbed spot and the pointer, and hovering lifts the edge nearest the mouse. Link stickers
+(GitHub, LinkedIn, Besona and the music credit) stick back down on release. The Claude,
+ChatGPT and "Property of" decals can be pulled clean off; released, they fall and fade
+until the next visit. Peeling and pulling off have their own sticker sounds.
+
+- Sticker artwork and behaviour: `src/components/OfficeScene.tsx`
+- White skirting refinement: `docs/office-skirting-refinement.json`
+- Link previews: `src/app/opengraph-image.jpg`
 
 ## Development
 
@@ -137,22 +145,6 @@ npm run lint
 npm run clean
 ```
 
-### Image Generation Scripts
-
-```bash
-# Generate AI images for all months
-npm run generate-images
-
-# Generate legacy weekly images manually
-npm run generate:daily
-
-# Generate blur placeholders (after adding new images)
-npm run generate-blur-placeholders
-
-# Extract theme colors from images
-npm run generate-theme-colors
-```
-
 ## Deployment
 
 This site is deployed on [Vercel](https://vercel.com) with automatic deployments on push to the `develop` branch.
@@ -172,6 +164,3 @@ be replaced, repositioned, or hidden independently.
 The fingertips are revealed above the keyboard using skin-outline clips of the same
 character asset, with a small offset toward the rear keys. The complete body remains
 one image behind the desk.
-
-Legacy seasonal configuration and generation utilities remain in the repository but
-are no longer used by the homepage.
