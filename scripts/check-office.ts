@@ -35,7 +35,7 @@ async function main() {
     assert.equal(metadata.width, OFFICE_WIDTH);
     assert.equal(metadata.height, OFFICE_HEIGHT);
     if (layer.id !== 'room') assert(metadata.hasAlpha, `${layer.id} lost transparency`);
-    if (['chair', 'mac-studio', 'phone', 'mug', 'sonos'].includes(layer.id)) {
+    if (['chair', 'mac-studio', 'phone', 'mug', 'wine', 'sonos'].includes(layer.id)) {
       const pixels = await sharp(`${directory}${layer.id}.webp`).ensureAlpha().raw().toBuffer();
       let shadowPixels = 0;
       for (let y = source.top + source.height; y < OFFICE_HEIGHT; y++) {
@@ -72,7 +72,7 @@ async function main() {
   }
   assert(largest / total > .99, 'Character should be one connected full body');
   for (const mode of ['day', 'night']) {
-    for (const variant of ['phone-lit', 'mug-empty', 'angry', 'sip']) {
+    for (const variant of ['phone-lit', 'mug-empty', 'wine-empty', 'angry', 'sip']) {
       const file = `public/images/office/scene/interactions/${mode}-${variant}.webp`;
       const { data, info } = await sharp(file).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
       assert(info.width === OFFICE_WIDTH && info.height === OFFICE_HEIGHT, `${file} must register with the original layer`);
@@ -83,7 +83,7 @@ async function main() {
       }
       assert(opaque > 20000 && transparent > OFFICE_WIDTH * OFFICE_HEIGHT * .2, `${file} must contain a visible object and genuine transparent surroundings`);
     }
-    for (const face of ['blink-half', 'blink-closed', 'smile', 'focus', 'side-eye']) {
+    for (const face of ['blink-half', 'blink-closed', 'smile', 'focus', 'side-eye', 'look-bottle']) {
       const file = `public/images/office/scene/expressions/${mode}-${face}.webp`;
       const metadata = await sharp(file).metadata();
       assert(metadata.hasAlpha && metadata.width === OFFICE_WIDTH && metadata.height === OFFICE_HEIGHT, `${file} must match the character canvas and preserve transparency`);
@@ -97,6 +97,6 @@ async function main() {
       assert(head > 20000 && clear > 300000, `${file} needs an opaque head and transparent surroundings`);
     }
   }
-  console.log('Day and night office checks passed: layer order, alignment, alpha, baked contact shadows, connected full body, and eight interaction assets.');
+  console.log('Day and night office checks passed: layer order, alignment, alpha, baked contact shadows, connected full body, and ten interaction assets.');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

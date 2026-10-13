@@ -7,6 +7,9 @@
 - `office-success.mp3`: original synthesized two-note glass chime (G5, C6), generated locally.
 - `office-sticker-peel.mp3`: user-supplied `sticker.mp3`; its quickest peel (5.25–5.98 seconds), mono with short fades. Plays when a monitor sticker starts peeling.
 - `office-sticker-loose.mp3`: the same recording's snap at the end of the second peel (4.48–4.85 seconds), mono with short fades. Plays when a decal comes clean off the monitor.
+- `office-pop.mp3`: user-supplied `pop.mp3`; the pop itself (0.95–1.25 seconds), mono with short fades. Plays when the mug swaps for the 6wines bottle.
+- `office-sip.mp3`: the first 1.45 seconds of `office-slurp.mp3` (the sip without its "ahh"), with a short fade out. Plays when he drinks the wine.
+- `office-burp.mp3`: “Short Burp” by danlucaz, [Freesound 517672](https://freesound.org/people/danlucaz/sounds/517672/), CC0. The burp at 0.12–0.45 seconds, mono with short fades. Replaces the "ahh" after a sip of wine.
 - `office-lamp.mp3`: user-supplied `lamp.mp3`; the first switch action (1.01–1.43 seconds), with short edge fades so it responds immediately to both on and off taps.
 - `deep-house.mp3`: user-supplied track from Downloads, copied unchanged. Loops through a separate streaming audio element at 30% volume; the Sonos toggles playback and the page sound control mutes it without resetting its position.
 

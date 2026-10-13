@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export type OfficeSound = 'notification' | 'growl' | 'slurp' | 'fan' | 'success' | 'lamp' | 'sticker-peel' | 'sticker-loose';
+export type OfficeSound = 'notification' | 'growl' | 'slurp' | 'fan' | 'success' | 'lamp' | 'sticker-peel' | 'sticker-loose' | 'pop' | 'sip' | 'burp';
 
 // iOS silences Web Audio under the ring/silent switch unless the page's audio session is 'playback'
 // (Safari 16.4+); only the Sonos' <audio> element switched it before. 'auto' hands it back when muted.
@@ -71,7 +71,7 @@ export function useKeyboardSounds() {
     try {
       const audio = context.current ?? new AudioContext({ latencyHint: 'interactive' });
       context.current = audio;
-      effectLoading.current ??= Promise.allSettled((['notification', 'growl', 'slurp', 'fan', 'success', 'lamp', 'sticker-peel', 'sticker-loose'] as const).map(async name => {
+      effectLoading.current ??= Promise.allSettled((['notification', 'growl', 'slurp', 'fan', 'success', 'lamp', 'sticker-peel', 'sticker-loose', 'pop', 'sip', 'burp'] as const).map(async name => {
         const response = await fetch(name === 'notification' ? '/sounds/iphone-ping.mp3' : `/sounds/office-${name}.mp3${name === 'fan' ? '?v=2' : ''}`);
         if (!response.ok) return;
         effects.current[name] = await audio.decodeAudioData(await response.arrayBuffer());

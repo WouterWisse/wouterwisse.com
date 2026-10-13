@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 
 const night = process.argv.includes('--night');
 const root = path.resolve('public/images/office/scene', night ? 'night' : '.');
-const names = ['room', 'chair', 'character', 'desk', 'keyboard', 'monitor', 'mac-studio', 'phone', 'mug', 'lamp', 'sonos'];
+const names = ['room', 'chair', 'character', 'desk', 'keyboard', 'monitor', 'mac-studio', 'phone', 'mug', 'wine', 'lamp', 'sonos'];
 
 async function main() {
   await mkdir(root, { recursive: true });

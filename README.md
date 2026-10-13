@@ -121,7 +121,13 @@ grabbed spot and the pointer, and hovering lifts the edge nearest the mouse. Lin
 ChatGPT and "Property of" decals can be pulled clean off; released, they fall and fade
 until the next visit. Peeling and pulling off have their own sticker sounds.
 
+The 6wines sticker links to 6wines.nl but can also be pulled off: the mug pops away and a
+bottle of 6wines red springs up in its place with a pop, wobbles and settles while he
+glances at it with raised eyebrows. One sip (with a burp instead of the "ahh") leaves an
+empty, opened bottle. Toggling the lamp puts the coffee or tea back.
+
 - Sticker artwork and behaviour: `src/components/OfficeScene.tsx`
+- Wine bottle prompts: `docs/office-wine-prompts.json`
 - White skirting refinement: `docs/office-skirting-refinement.json`
 - Link previews: `src/app/opengraph-image.jpg`
 

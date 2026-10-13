@@ -17,6 +17,8 @@ export const OFFICE_LAYERS = [
   { id: 'mac-studio', x: 294, y: 520.5, width: 128.76, height: 74.5 },
   { id: 'phone', x: 918, y: 522, width: 100, height: 30 },
   { id: 'mug', x: 1050, y: 460, width: 78, height: 66 },
+  // Replaces the mug once the 6wines sticker is pulled off; same base line and centre.
+  { id: 'wine', x: 1064, y: 351, width: 50, height: 175 },
   { id: 'monitor', x: 428, y: 274, width: 635, height: 326 },
   { id: 'lamp', x: 1175, y: 184, width: 146, height: 262 },
   { id: 'sonos', x: 1119.5, y: 469.3, width: 88.5, height: 133.7 },

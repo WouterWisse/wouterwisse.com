@@ -31,10 +31,11 @@ const legsOrigin = `${725 / 1536 * 100}% ${625 / 1024 * 100}%`; // centre of the
 const lamp = OFFICE_LAYERS.find(layer => layer.id === 'lamp')!;
 const monitor = OFFICE_LAYERS.find(layer => layer.id === 'monitor')!;
 const phone = OFFICE_LAYERS.find(layer => layer.id === 'phone')!;
+const wineBottle = OFFICE_LAYERS.find(layer => layer.id === 'wine')!;
 const mug = OFFICE_LAYERS.find(layer => layer.id === 'mug')!;
 const macStudio = OFFICE_LAYERS.find(layer => layer.id === 'mac-studio')!;
 const sonos = OFFICE_LAYERS.find(layer => layer.id === 'sonos')!;
-const faces = ['blink-half', 'blink-closed', 'smile', 'focus', 'side-eye'];
+const faces = ['blink-half', 'blink-closed', 'smile', 'focus', 'side-eye', 'look-bottle'];
 type Reaction = 'idle' | 'phone' | 'drink' | 'turbo';
 type Phase = 'start' | 'sip' | 'return' | 'success';
 // Besona is retired for now; uncomment this and its sticker entry to bring it back.
@@ -66,6 +67,8 @@ interface Sticker {
   label: string;
   /** Link stickers stick back after peeling; the rest can be pulled clean off. */
   href?: string;
+  /** Lets a link sticker be pulled clean off too. */
+  removable?: boolean;
   left: string;
   top: string;
   tilt: number;
@@ -84,7 +87,7 @@ const stickers: Sticker[] = [
   { id: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/wwisse/', art: <FaLinkedin x="17" y="17" size={66} />, paper: '#fffaf0', tilt: 11, shape: square, left: '75%', top: '19%' },
   // { id: 'besona', label: 'Besona', href: 'https://besona.ai', art: <BesonaLogo x="17" y="17" size={66} />, paper: '#c4bdf2', tilt: -5, shape: circle, left: '66.75%', top: '51.4%' },
   // A pill in 6wines' burgundy and peach, centred where Besona was.
-  { id: 'sixwines', label: '6wines', href: 'https://www.6wines.nl/', viewBox: '0 32 100 36', sheen: false, art: <SixWinesLogo x="12" y="40.1" width="76" height="19.8" />, paper: '#511027', tilt: -4, shape: { width: 92, height: 32, radius: 16 }, left: '64.5%', top: '55.1%' },
+  { id: 'sixwines', label: '6wines', href: 'https://www.6wines.nl/', removable: true, viewBox: '0 32 100 36', sheen: false, art: <SixWinesLogo x="12" y="40.1" width="76" height="19.8" />, paper: '#511027', tilt: -4, shape: { width: 92, height: 32, radius: 16 }, left: '64.5%', top: '55.1%' },
   { id: 'claude', label: 'Claude', art: <SiClaude x="22" y="22" size={56} />, paper: '#faf9f5', tilt: 9, shape: circle, left: '8%', top: '9%' },
   { id: 'chatgpt', label: 'ChatGPT', art: <SiOpenai x="22" y="22" size={56} />, paper: '#fffaf0', tilt: -8, shape: square, left: '29%', top: '57%' },
   // Tiny decals of the platforms and packages Wouter builds with.
@@ -141,6 +144,10 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
   const [reaction, setReaction] = useState<Reaction>('idle');
   const [phase, setPhase] = useState<Phase>('start');
   const [empty, setEmpty] = useState({ day: false, night: false });
+  // The 6wines bottle replaces the cup until the lamp resets the desk; one sip empties it.
+  const [wine, setWine] = useState<'none' | 'full' | 'empty'>('none');
+  const [popping, setPopping] = useState(false);
+  const [lookingAtBottle, setLookingAtBottle] = useState(false);
   const [interactionsReady, setInteractionsReady] = useState(false);
   const interactionLoads = useRef(new Set<string>());
   const busy = useRef(false);
@@ -192,8 +199,9 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
     const angle = Math.atan2(ny, nx);
     const fold = (drag.x + dx / 2 - 50) * nx + (drag.y + dy / 2 - 50) * ny;
     const reach = stickerReach(shape, angle);
+    const removable = shape.removable ?? !shape.href;
     sticker.style.setProperty('--peel-angle', `${angle}rad`);
-    if (!shape.href && fold < -reach) {
+    if (removable && fold < -reach) {
       // Folded clean off: freeze the flipped-over sticker and carry it with the pointer from here.
       drag.loose = { x: event.clientX, y: event.clientY, dx: 0, dy: 0 };
       onSound('sticker-loose');
@@ -201,8 +209,18 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
       sticker.style.setProperty('--peel', `${-reach - 1}px`);
       return;
     }
-    // Links leave a sliver stuck down so they hang off the monitor rather than detaching.
-    sticker.style.setProperty('--peel', `${shape.href ? Math.max(-36, fold) : fold}px`);
+    // Fixed stickers leave a sliver stuck down so they hang off the monitor rather than detaching.
+    sticker.style.setProperty('--peel', `${removable ? fold : Math.max(-36, fold)}px`);
+  };
+  // Pulling the 6wines sticker off pops the cup away and a bottle of their red up in its place;
+  // he glances at it with raised eyebrows while it wobbles and settles.
+  const popBottle = () => {
+    setWine('full');
+    setPopping(true);
+    setLookingAtBottle(true);
+    onSound('pop');
+    setTimeout(() => setPopping(false), 1200);
+    setTimeout(() => setLookingAtBottle(false), 2600);
   };
   // Stick back down along the current fold (60 clears every sticker), then hand back to the resting peel.
   const settlePeel = (sticker: HTMLElement) => {
@@ -232,7 +250,10 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
     sticker.animate([
       { translate: `${dx}px ${dy}px`, rotate: '0deg', opacity: 1 },
       { translate: `${dx + (still ? 0 : (Math.random() - .5) * 40)}px ${dy + (still ? 0 : 140)}px`, rotate: `${still ? 0 : (Math.random() - .5) * 60}deg`, opacity: 0 },
-    ], { duration: still ? 200 : 650, easing: 'cubic-bezier(.5, 0, .9, .5)', fill: 'forwards' }).onfinish = () => setRemoved(previous => [...previous, id]);
+    ], { duration: still ? 200 : 650, easing: 'cubic-bezier(.5, 0, .9, .5)', fill: 'forwards' }).onfinish = () => {
+      setRemoved(previous => [...previous, id]);
+      if (id === 'sixwines') popBottle();
+    };
   };
   // At night each sticker takes the light the monitor gets where it sits: the night monitor's colour
   // there divided by the day monitor's, applied to that sticker as a colour matrix.
@@ -274,7 +295,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
   const turboRunning = reaction === 'turbo' && phase === 'start';
   const typingPaused = reacting && !turboRunning;
   const vibing = musicPlaying && !reacting;
-  const visibleExpression = vibing ? 'smile' : expression;
+  const visibleExpression = lookingAtBottle ? 'look-bottle' : vibing ? 'smile' : expression;
 
   const finishReaction = () => {
     reactionTimers.current.forEach(clearTimeout);
@@ -318,7 +339,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
       }
       return;
     }
-    if (next === 'drink' && empty[mode]) return;
+    if (next === 'drink' && (wine === 'none' ? empty[mode] : wine === 'empty')) return;
     busy.current = true;
     onPause();
     setExpression('neutral');
@@ -333,13 +354,19 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
     } else if (next === 'drink') {
       later(() => {
         setPhase('sip');
-        setEmpty(previous => ({ ...previous, [mode]: true }));
-        onSound('slurp');
+        if (wine === 'none') setEmpty(previous => ({ ...previous, [mode]: true }));
+        // Wine gets the sip without the coffee's "ahh"; a burp follows instead.
+        onSound(wine === 'none' ? 'slurp' : 'sip');
       }, 800);
       // The slurp ends in a satisfied "ahh" 1.55 s in: lower the cup and raise the eyebrows on it.
       later(() => {
         setPhase('return');
         setExpression('smile');
+        // The bottle stays visible at his mouth, so it only comes back down empty.
+        if (wine !== 'none') {
+          onSound('burp');
+          setWine('empty');
+        }
       }, 2350);
       later(finishReaction, 4250);
     } else {
@@ -548,6 +575,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
   const toggleLamp = () => {
     finishReaction();
     setEmpty({ day: false, night: false });
+    setWine('none');
     onSound('lamp');
     onToggleLamp();
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -561,7 +589,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
   };
 
   return (
-    <div ref={stage} className="office-stage" data-renderer="layers" data-ready={ready} data-expression={reaction === 'phone' ? 'angry' : reaction === 'drink' && phase === 'sip' ? 'sip' : visibleExpression} data-reaction={reaction} data-phase={phase} data-cup={empty[mode] ? 'empty' : 'full'} data-music={musicPlaying} data-vibing={vibing}>
+    <div ref={stage} className="office-stage" data-renderer="layers" data-ready={ready} data-expression={reaction === 'phone' ? 'angry' : reaction === 'drink' && phase === 'sip' ? 'sip' : visibleExpression} data-reaction={reaction} data-phase={phase} data-cup={empty[mode] ? 'empty' : 'full'} data-pop={popping || undefined} data-looking={lookingAtBottle || undefined} data-music={musicPlaying} data-vibing={vibing}>
       <div className="office-visual" role="img" aria-label={`Wouter typing in his home office ${isDark ? 'at night, lit by a warm table lamp' : 'in daylight'}, behind a curved monitor on an oak desk.`}>
         {OFFICE_LAYERS.map((layer, index) => (
           <div key={layer.id} className={`office-layer-group office-layer-${layer.id}`} data-layer={layer.id} style={{ zIndex: index * 2, visibility: ready ? 'visible' : 'hidden', transformOrigin: layer.id === 'sonos' ? `${(layer.x + layer.width / 2) / 1536 * 100}% ${(layer.y + layer.height) / 1024 * 100}%` : undefined }}>
@@ -576,20 +604,21 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
                 priority
                 unoptimized
                 className={`office-layer office-base-layer office-mode-layer office-mode-${mode}`}
-                style={{ ...officeLayerStyle(layer, mode === 'night'), clipPath: layer.id === 'character' ? `polygon(0 ${bodyReaction ? 52 : visibleExpression === 'neutral' ? 0 : 28}%, 100% ${bodyReaction ? 52 : visibleExpression === 'neutral' ? 0 : 28}%, 100% ${LEG_SEAM}%, 0 ${LEG_SEAM}%)` : undefined, visibility: layer.id === 'phone' && reaction === 'phone' || layer.id === 'mug' && empty[mode] ? 'hidden' : undefined }}
+                style={{ ...officeLayerStyle(layer, mode === 'night'), clipPath: layer.id === 'character' ? `polygon(0 ${bodyReaction ? 52 : visibleExpression === 'neutral' ? 0 : 28}%, 100% ${bodyReaction ? 52 : visibleExpression === 'neutral' ? 0 : 28}%, 100% ${LEG_SEAM}%, 0 ${LEG_SEAM}%)` : undefined, visibility: layer.id === 'phone' && reaction === 'phone' || layer.id === 'mug' && (empty[mode] || wine !== 'none' && !popping) || layer.id === 'wine' && wine !== 'full' ? 'hidden' : undefined }}
                 onLoad={() => { loaded.current.add(`${mode}-${layer.id}`); if (loaded.current.size === OFFICE_LAYERS.length * 2) setReady(true); }}
               />
             ))}
             {layer.id === 'mac-studio' && <span className="office-mac-led" aria-hidden="true" style={{ left: `${(macStudio.x + macStudio.width * .75) / 1536 * 100}%`, top: `${(macStudio.y + macStudio.height * .75) / 1024 * 100}%` }} />}
-            {(layer.id === 'phone' || layer.id === 'mug') && (['day', 'night'] as const).map(mode => {
-              const variant = layer.id === 'phone' ? 'phone-lit' : 'mug-empty';
+            {(layer.id === 'phone' || layer.id === 'mug' || layer.id === 'wine') && (['day', 'night'] as const).map(mode => {
+              const variant = layer.id === 'phone' ? 'phone-lit' : `${layer.id}-empty`;
+              const shown = layer.id === 'phone' ? reaction === 'phone' : layer.id === 'mug' ? empty[mode] && (wine === 'none' || popping) : wine === 'empty';
               return <Image
                 key={`${mode}-${variant}`}
                 src={`/images/office/scene/interactions/${mode}-${variant}.webp`}
                 alt="" aria-hidden="true" width={1536} height={1024} unoptimized loading="eager"
                 className={`office-layer office-mode-layer office-mode-${mode}`}
-                style={{ ...officeLayerStyle(layer, mode === 'night'), visibility: ready && (layer.id === 'phone' ? reaction === 'phone' : empty[mode]) ? 'visible' : 'hidden' }}
-                onLoad={() => { interactionLoads.current.add(`${mode}-${variant}`); if (interactionLoads.current.size === 8) setInteractionsReady(true); }}
+                style={{ ...officeLayerStyle(layer, mode === 'night'), visibility: ready && shown ? 'visible' : 'hidden' }}
+                onLoad={() => { interactionLoads.current.add(`${mode}-${variant}`); if (interactionLoads.current.size === 10) setInteractionsReady(true); }}
               />;
             })}
             {layer.id === 'character' && <div className="office-layer-group office-reaction-body" style={{ visibility: ready && bodyReaction ? 'visible' : 'hidden' }}>
@@ -601,7 +630,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
                   className="office-layer"
                   data-pose={pose}
                   style={{ ...officeLayerStyle(character, mode === 'night'), clipPath: 'inset(0 0 48% 0)', visibility: ready && bodyReaction && pose === (reaction === 'phone' ? 'angry' : phase === 'sip' ? 'sip' : 'neutral') ? 'visible' : 'hidden' }}
-                  onLoad={() => { if (pose !== 'neutral') interactionLoads.current.add(`${mode}-${pose}`); if (interactionLoads.current.size === 8) setInteractionsReady(true); }}
+                  onLoad={() => { if (pose !== 'neutral') interactionLoads.current.add(`${mode}-${pose}`); if (interactionLoads.current.size === 10) setInteractionsReady(true); }}
                 />)}
               </div>)}
             </div>}
@@ -729,7 +758,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
                   </mask>
                 </>}
               </defs>
-              <g filter={isDark && nightLight[id] ? `url(#${id}-night)` : undefined}><g mask={`url(#${id}-peel)`}>
+              <g filter={isDark && nightLight[id] ? `url(#${id}-night)` : undefined}><g mask={`url(#${id}-peel)`} pointerEvents="visiblePainted">
                 {id === 'github' ? <>
                   <use href="#github-folded" />
                   <g mask="url(#github-folded-shape)">
@@ -739,7 +768,9 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
                     <path d="M0 71.23L100 79.02" stroke="#344052" strokeOpacity=".3" strokeWidth=".7" />
                   </g>
                 </> : <use href={`#${id}-artwork`} />}
-                <g className="office-peel-frame">
+                {/* The fold-back flap waits, masked away, beside the sticker. Browsers hit-test through masks,
+                    so it must not catch the pointer over a neighbour; drags capture the pointer anyway. */}
+                <g className="office-peel-frame" pointerEvents="none">
                   <g className="office-peel-flap">
                     <use href={`#${id}-shape`} className="office-peel-back" fill="#ebe5d6" />
                   </g>
@@ -768,16 +799,16 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
         disabled={!ready || !facesReady}
         onClick={onToggleMusic}
       ><span className="office-hint" aria-hidden="true">Vibecode</span></button>
-      {[phone, mug].map(object => <button
+      {[phone, wine === 'none' ? mug : wineBottle].map(object => <button
         key={object.id}
         type="button"
         className={`office-object-button office-${object.id}-button`}
         style={{ left: `${(object.x + object.width / 2) / 1536 * 100}%`, top: `${(object.y + object.height / 2) / 1024 * 100}%`, width: `${object.width / 1536 * 100}%`, height: `${object.height / 1024 * 100}%` }}
-        aria-label={object.id === 'phone' ? 'Ping the phone' : empty[mode] ? `${isDark ? 'Tea' : 'Coffee'} cup is empty` : `Drink the ${isDark ? 'tea' : 'coffee'}`}
-        aria-disabled={!ready || !interactionsReady || !facesReady || reacting || (object.id === 'mug' && empty[mode])}
+        aria-label={object.id === 'phone' ? 'Ping the phone' : wine === 'empty' ? 'The wine bottle is empty' : wine === 'full' ? 'Drink the red wine' : empty[mode] ? `${isDark ? 'Tea' : 'Coffee'} cup is empty` : `Drink the ${isDark ? 'tea' : 'coffee'}`}
+        aria-disabled={!ready || !interactionsReady || !facesReady || reacting || (object.id === 'mug' && empty[mode]) || (object.id === 'wine' && wine === 'empty')}
         onClick={() => react(object.id === 'phone' ? 'phone' : 'drink')}
-      ><span className="office-hint" aria-hidden="true">{object.id === 'phone' ? 'Ping!' : reaction === 'drink' ? 'Sip...' : empty[mode] ? 'All gone' : 'Take a sip'}</span></button>)}
-      <span className="sr-only" role="status">{reaction === 'turbo' ? phase === 'success' ? 'Build succeeded. Wouter smiles.' : expression === 'side-eye' ? 'Working on it! Wouter gives an annoyed sideways glance.' : 'Turbo mode. The Mac fans spin up, the keys chatter faster, and Wouter squints at the screen.' : reaction === 'phone' ? 'New notification. Wouter growls at the interruption.' : reaction === 'drink' ? `Wouter takes a sip of ${isDark ? 'tea' : 'coffee'}.` : empty[mode] ? `The ${isDark ? 'tea' : 'coffee'} cup is empty.` : ''}</span>
+      ><span className="office-hint" aria-hidden="true">{object.id === 'phone' ? 'Ping!' : reaction === 'drink' ? 'Sip...' : (wine === 'none' ? empty[mode] : wine === 'empty') ? 'All gone' : 'Take a sip'}</span></button>)}
+      <span className="sr-only" role="status">{reaction === 'turbo' ? phase === 'success' ? 'Build succeeded. Wouter smiles.' : expression === 'side-eye' ? 'Working on it! Wouter gives an annoyed sideways glance.' : 'Turbo mode. The Mac fans spin up, the keys chatter faster, and Wouter squints at the screen.' : reaction === 'phone' ? 'New notification. Wouter growls at the interruption.' : reaction === 'drink' ? `Wouter takes a sip of ${wine === 'none' ? isDark ? 'tea' : 'coffee' : 'red wine'}.` : wine === 'empty' ? 'The wine bottle is empty.' : wine === 'full' ? 'Pop! A bottle of 6wines red appears on the desk.' : empty[mode] ? `The ${isDark ? 'tea' : 'coffee'} cup is empty.` : ''}</span>
       <button
         type="button"
         className="office-lamp-switch"
