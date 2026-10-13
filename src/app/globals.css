@@ -464,7 +464,6 @@ html:has(.office-home[data-mode="night"]) { background: #181b25; }
 }
 .office-sticker:focus-visible { --peel: 46px; }
 :is(.office-sticker-github, .office-sticker-besona):focus-visible { --peel: 34px; }
-.office-home[data-mode="night"] .office-sticker-decal { filter: brightness(.8) sepia(.12) drop-shadow(0 .35px .2px #0005); }
 .office-hint {
   position: absolute;
   left: 50%;

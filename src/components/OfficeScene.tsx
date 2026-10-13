@@ -216,6 +216,41 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
       { translate: `${dx + (still ? 0 : (Math.random() - .5) * 40)}px ${dy + (still ? 0 : 140)}px`, rotate: `${still ? 0 : (Math.random() - .5) * 60}deg`, opacity: 0 },
     ], { duration: still ? 200 : 650, easing: 'cubic-bezier(.5, 0, .9, .5)', fill: 'forwards' }).onfinish = () => setRemoved(previous => [...previous, id]);
   };
+  // At night each sticker takes the light the monitor gets where it sits: the night monitor's colour
+  // there divided by the day monitor's, applied to that sticker as a colour matrix.
+  const [nightLight, setNightLight] = useState<Record<string, string>>({});
+  useEffect(() => {
+    const root = stage.current;
+    const context = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+    const [day, night] = (['day', 'night'] as const).map(mode => root?.querySelector<HTMLImageElement>(`.office-layer-monitor .office-mode-${mode}`));
+    if (!ready || !root || !context || !day?.naturalWidth || !night?.naturalWidth) return;
+    const colourAt = (image: HTMLImageElement, x: number, y: number) => {
+      const rect = image.getBoundingClientRect();
+      const scale = image.naturalWidth / rect.width;
+      context.clearRect(0, 0, 8, 8);
+      context.drawImage(image, (x - rect.left) * scale - 12, (y - rect.top) * scale - 12, 24, 24, 0, 0, 8, 8);
+      const pixels = context.getImageData(0, 0, 8, 8).data;
+      const sum = [0, 0, 0];
+      let count = 0;
+      for (let i = 0; i < pixels.length; i += 4) {
+        if (pixels[i + 3] < 200) continue;
+        sum[0] += pixels[i]; sum[1] += pixels[i + 1]; sum[2] += pixels[i + 2];
+        count++;
+      }
+      return count ? sum.map(channel => channel / count) : null;
+    };
+    const light: Record<string, string> = {};
+    root.querySelectorAll<HTMLElement>('[data-sticker]').forEach(sticker => {
+      const rect = sticker.getBoundingClientRect();
+      const x = rect.left + rect.width / 2, y = rect.top + rect.height / 2;
+      const [lit, base] = [colourAt(night, x, y), colourAt(day, x, y)];
+      if (!lit || !base) return;
+      // The .85 exponent eases the darkest corners so stickers stay legible; tune it to taste.
+      const [r, g, b] = lit.map((channel, i) => Math.min(1.1, (channel / Math.max(1, base[i])) ** .85).toFixed(3));
+      light[sticker.dataset.sticker!] = `${r} 0 0 0 0  0 ${g} 0 0 0  0 0 ${b} 0 0  0 0 0 1 0`;
+    });
+    setNightLight(light);
+  }, [ready]);
   const reacting = reaction !== 'idle';
   const bodyReaction = reaction === 'phone' || reaction === 'drink';
   const turboRunning = reaction === 'turbo' && phase === 'start';
@@ -630,7 +665,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
       >
         {stickers.filter(({ id }) => !removed.includes(id)).map(sticker => {
           const { id, label, href, art, paper, tilt, shape, left, top, viewBox = '0 0 100 100', sheen = true } = sticker;
-          return <a key={id} {...href ? { href, target: '_blank', rel: 'noopener noreferrer', 'aria-label': label } : { 'aria-hidden': true }} className={`office-sticker office-sticker-${id}`} style={{ left, top }}
+          return <a key={id} {...href ? { href, target: '_blank', rel: 'noopener noreferrer', 'aria-label': label } : { 'aria-hidden': true }} className={`office-sticker office-sticker-${id}`} data-sticker={id} style={{ left, top }}
             draggable={false}
             onPointerDown={startPeel}
             onPointerMove={event => movePeel(event, sticker)}
@@ -639,7 +674,8 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
             onPointerCancel={event => endPeel(event, id)}
             onClick={event => { if (peeledClick.current) { peeledClick.current = false; event.preventDefault(); } }}
           >
-            <svg className="office-sticker-decal" viewBox={viewBox} aria-hidden="true">
+            {/* Keyed by lighting: Safari keeps painting a stale filter on these 3D-transformed decals otherwise. */}
+            <svg key={isDark && nightLight[id] ? 'night' : 'day'} className="office-sticker-decal" viewBox={viewBox} aria-hidden="true">
               <defs>
                 <linearGradient id={`${id}-surface`} x1="0" y1="0" x2="1" y2="0">
                   <stop stopColor="#26354b" stopOpacity=".24" />
@@ -652,6 +688,9 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
                   <g transform={`rotate(${tilt} 50 50)`}>{art}</g>
                   {sheen && <use href={`#${id}-shape`} fill={`url(#${id}-surface)`} />}
                 </g>
+                {nightLight[id] && <filter id={`${id}-night`} filterUnits="userSpaceOnUse" x="-150" y="-150" width="400" height="400" colorInterpolationFilters="sRGB">
+                  <feColorMatrix values={nightLight[id]} />
+                </filter>}
                 {/* Everything past the fold line (at --peel along --peel-angle) is mirrored back as the flap. */}
                 <mask id={`${id}-peel`} maskUnits="userSpaceOnUse" x="-150" y="-150" width="400" height="400">
                   <g className="office-peel-frame"><rect className="office-peel-edge" x="-200" y="-100" width="200" height="200" fill="#fff" /></g>
@@ -672,7 +711,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
                   </mask>
                 </>}
               </defs>
-              <g mask={`url(#${id}-peel)`}>
+              <g filter={isDark && nightLight[id] ? `url(#${id}-night)` : undefined}><g mask={`url(#${id}-peel)`}>
                 {id === 'github' ? <>
                   <use href="#github-folded" />
                   <g mask="url(#github-folded-shape)">
@@ -687,7 +726,7 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
                     <use href={`#${id}-shape`} className="office-peel-back" fill="#ebe5d6" />
                   </g>
                 </g>
-              </g>
+              </g></g>
             </svg>
             {href && <span className="office-hint" aria-hidden="true">{label}</span>}
           </a>;
