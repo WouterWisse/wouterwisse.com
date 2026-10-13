@@ -408,7 +408,6 @@ html:has(.office-home[data-mode="night"]) { background: #181b25; }
   display: grid;
   place-items: center;
   width: 12%;
-  min-width: 24px;
   aspect-ratio: 1;
   border-radius: 50%;
   pointer-events: auto;
@@ -416,6 +415,12 @@ html:has(.office-home[data-mode="night"]) { background: #181b25; }
   -webkit-touch-callout: none;
   user-select: none;
   touch-action: none; /* Touch drags peel the sticker instead of scrolling. */
+}
+/* Stickers scale exactly with the monitor; this larger, invisible hit area keeps small ones tappable. */
+.office-sticker::before { content: ''; position: absolute; inset: -6px; }
+/* On a small monitor (phones) keep the links and the name label; the decorative decals would be specks. */
+@container (max-width: 420px) {
+  :is(.office-sticker-claude, .office-sticker-chatgpt, .office-sticker-react, .office-sticker-nextjs, .office-sticker-typescript, .office-sticker-tailwind, .office-sticker-apple, .office-sticker-android, .office-sticker-kotlin, .office-sticker-swift) { visibility: hidden; }
 }
 .office-sticker-decal {
   width: 100%;
@@ -434,6 +439,8 @@ html:has(.office-home[data-mode="night"]) { background: #181b25; }
 :is(.office-sticker-github, .office-sticker-besona) { --peel: 42px; }
 .office-sticker-besona { width: 8.5%; }
 .office-sticker-besona .office-sticker-decal { transform: perspective(44cqw) rotateY(14deg); }
+.office-sticker-sixwines { width: 13%; aspect-ratio: 100 / 36; border-radius: 999px; }
+.office-sticker-sixwines .office-sticker-decal { color: #fdeee7; transform: perspective(44cqw) rotateY(14deg); }
 :is(.office-sticker-claude, .office-sticker-chatgpt) { width: 8%; }
 :is(.office-sticker-react, .office-sticker-nextjs, .office-sticker-typescript, .office-sticker-tailwind, .office-sticker-apple, .office-sticker-android, .office-sticker-kotlin, .office-sticker-swift) { width: 5.5%; }
 .office-sticker-react .office-sticker-decal { color: #61dafb; }
