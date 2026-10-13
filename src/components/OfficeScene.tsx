@@ -363,11 +363,10 @@ export function OfficeScene({ isDark, onToggleLamp, onType, onPause, onSound, on
         setPhase('return');
         setExpression('smile');
         // The bottle stays visible at his mouth, so it only comes back down empty.
-        if (wine !== 'none') {
-          onSound('burp');
-          setWine('empty');
-        }
+        if (wine !== 'none') setWine('empty');
       }, 2350);
+      // The burp waits until the bottle is back on the desk (the return takes 800 ms).
+      if (wine !== 'none') later(() => onSound('burp'), 3250);
       later(finishReaction, 4250);
     } else {
       setExpression('focus');

@@ -400,11 +400,12 @@ html:has(.office-home[data-mode="night"]) { background: #181b25; }
   91% { transform: rotate(1.2deg); }
   100% { transform: none; }
 }
-/* From the desk to his mouth (behind the monitor) in an arc: the neck ends at his mouth and the
-   base rises above the monitor's top edge. */
+/* From the desk to his mouth without floating in view: it slides left behind the monitor at desk
+   height, tips over while still hidden, and only its base rises above the monitor's top edge. */
 @keyframes office-bottle-lift {
   from { transform: none; }
-  50% { transform: translate(-9%, -17%) rotate(-55deg); }
+  35% { transform: translate(-11%, 0); }
+  70% { transform: translate(-17.8%, -6%) rotate(-100deg); }
   to { transform: translate(-17.8%, -14.4%) rotate(-120deg); }
 }
 @keyframes office-bottle-glug {
